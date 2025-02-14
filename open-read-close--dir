@@ -1,0 +1,59 @@
+DIR *opendir(const char *name)
+<sys/types.h, dirent.h>
+opens directory stream, returns pointer to it [first entry]
+!!on error, returns NULL & sets errno
+
+struct dirent *readdir(DIR *dirp)
+<dirent.h>
+returns pointer to the currently pointed part of stream as a 
+struct dirent
+{
+	ino_t d_ino (inode number);
+	char d_name[256] (name of object found);
+}
+once done, returns NULL (errno == 0)
+!!on error, returns NULL & sets errno
+
+int closedir(DIR *dirp)
+<sys/types.h, dirent.h>
+closes dir stream, returns 0
+!!on error, returns -1 & sets errno
+
+example use ::
+#include <sys/types.h>
+#include <dirent.h>
+
+//we're looking for a specific file_name "bob" in the directory "names" (i use == here as a simplifying gesture)
+
+DIR *dirp;
+struct dirent *current_obj;
+
+dirp = NULL; //init (?)
+dirp = opendir("names");
+if (dirp == NULL)
+{
+	perror("opendir" || "names");
+	return (NULL);
+}
+errno = 0;
+current_obj = readdir(dirp);
+while (current_obj != NULL)
+{
+	if (current_obj->d_name == "bob")
+	{
+		if (closedir(dirp) == -1)
+			strerror("closedir");
+		return (current_obj);
+	}
+	current_obj = readdir(dirp);
+}
+if (errno != 0)
+	perror("readdir");
+if (closedir(dirp) == -1)
+	strerror("closedir");
+return (NULL);
+
+
+
+notes :: there is a possibility to use an unstandardized d_type in the struct dirent, but i'd rather avoid it if possible. lstat is allowed, so we'll probably go with that to figure out the type of object encountered.
+also, don't forget to set errno before checking for mistakes for that readdir NULL return :]
