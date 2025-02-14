@@ -1,11 +1,12 @@
 <sys/stat.h, sys/types.h, unistd.h>
 
-int	stat(const char *path, struct stat *restrict statbuf)
+int	stat(const char *path, struct stat *statbuf)
 adjusts given stat structure based on file path
 {
 	ino_t     st_ino;         /* Inode number */
-        mode_t    st_mode;        /* File type and mode */
-        //etc.
+    mode_t    st_mode;        /* File type and mode */
+    mode_t     st_mode;     /* File type and mode */
+    //etc.
 }
 !!on error, returns -1 && sets errno
 
@@ -17,4 +18,23 @@ int	lstat(const char *path, struct stat *statbuf)
 adjusts given stat struct based on the file or, if symlink, on the link itself
 !!on error, returns -1 && sets errno
 
+
+
+The following mask values are defined for the file type:
+           S_IFMT     0170000   bit mask for the file type bit field
+
+           S_IFSOCK   0140000   socket
+           S_IFLNK    0120000   symbolic link
+           S_IFREG    0100000   regular file
+           S_IFBLK    0060000   block device
+           S_IFDIR    0040000   directory
+           S_IFCHR    0020000   character device
+           S_IFIFO    0010000   FIFO
+
+       Thus, to test for a regular file (for example), one could write:
+
+           stat(pathname, &sb);
+           if ((sb.st_mode & S_IFMT) == S_IFREG) {
+               /* Handle regular file */
+           }
 
