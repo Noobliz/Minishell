@@ -2,13 +2,16 @@
 #include <dirent.h>
 #include <stdio.h>
 
-//note : no error handling here, just a demo of the function's uses
-int main(void)
+//this takes the name of a folder as argument and lists out its contents. please don't break, no err handling. just demo
+
+int main(int argc, char **argv)
 {
   DIR *dirp;
-  char *name = "folder"; //here the name of the folder you want to see
+  char *name = "folder";
   struct dirent *content;
   
+  if (argc > 1)
+    name = argv[1];
   dirp = opendir(name);
   content = readdir(dirp);
   while (content)
