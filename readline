@@ -2,8 +2,20 @@ void add_history (const char *string)
 <?>
 Place string at the end of the history list. The associated data field (if any) is set to NULL
 
+? rl_clear_history(void)
+<>
+presumably clears the history ? I assume this means freeing every past line previously added to history, but still needs testing to be sure.
+
+int rl_redisplay(void)
+<>
+adjusts current display to the immediate state of readline buffer (in case changes have been made)
+
+int rl_on_new_line(void)
+<>
+tells the routine we've moved to a new, empty line, usually once newline was used as output
+
 char *readline(const char *prompt)
-<stdio.h>
+<stdio.h, readline/readline.h, readline/history.h>
 shows prompt then allows more intricate input before returning said input at first nl
 note :: also has a built-in history and an instruction file (in etc/inputrc), should work about the same as the og bash input
 
@@ -18,7 +30,6 @@ note :: also has a built-in history and an instruction file (in etc/inputrc), sh
 	}
 	printf("here the string given :: %s !", new_line);
 	add_history(new_line);
-	free(new_line);
 	new_line = readline("write here > ");
 	while (!new_line || !new_line[0])
 	{
@@ -28,5 +39,8 @@ note :: also has a built-in history and an instruction file (in etc/inputrc), sh
 	}
 	printf("here the string given :: %s !", new_line);
 	add_history(new_line);
-	free(new_line);
 	printf("check your history !");
+	rl_clear_history();
+
+
+note :: documentation about these funcs is scarce and scattered (lots of different tag and mods we either don't have access to or don't need), so lots of testing is required.
