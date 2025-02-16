@@ -1,0 +1,32 @@
+void add_history (const char *string)
+<?>
+Place string at the end of the history list. The associated data field (if any) is set to NULL
+
+char *readline(const char *prompt)
+<stdio.h>
+shows prompt then allows more intricate input before returning said input at first nl
+note :: also has a built-in history and an instruction file (in etc/inputrc), should work about the same as the og bash input
+
+#include <stdio.h>
+
+	char *new_line = readline("write here > ");
+	while (!new_line || !new_line[0])
+	{
+		if (new_line)
+			free(new_line);
+		new_line = readline("write here > ");
+	}
+	printf("here the string given :: %s !", new_line);
+	add_history(new_line);
+	free(new_line);
+	new_line = readline("write here > ");
+	while (!new_line || !new_line[0])
+	{
+		if (new_line)
+			free(new_line);
+		new_line = readline("write here > ");
+	}
+	printf("here the string given :: %s !", new_line);
+	add_history(new_line);
+	free(new_line);
+	printf("check your history !");
