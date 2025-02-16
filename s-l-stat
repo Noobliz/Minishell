@@ -38,3 +38,4 @@ The following mask values are defined for the file type:
                /* Handle regular file */
            }
 
+note :: file type && mode are stored in the same variable. both are accessible from there (could be useful as an alternative for access())

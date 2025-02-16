@@ -1,0 +1,46 @@
+char *getcwd(char buf[.size], size_t size)
+<unistd.h>
+takes an allocated buffer of size size and fills it with a NULL-terminated string of the absolute path to the current directory.
+!!on error (size is too small), returns NULL and sets errno to ERANGE
+
+int chdir(const char *path)
+<unsitd.h>
+moves the current program/process/processes into a given directory
+!!on error, returns -1 & sets errno
+
+note :: path argument is relative
+
+
+ex : updating the PWD variable (here a return char *var)
+
+#include <unistd.h>
+#include <stdlib.h>
+
+char *new_pwd(void)
+{
+	//here we start our buffer at size 2, then add 1 until the path fits;
+	char *buffer = malloc(2);
+	size_t	size = 2;
+	if (!buffer)
+		return (NULL);
+	while (!getcwd(buffer, size))
+	{
+		free(buffer);
+		size++;
+		buffer = malloc(size);
+		if (!buffer)
+			return (NULL);
+	}
+	return (buffer);
+}
+
+char *move_dir(char *dir_name)
+{
+	//first of course check that given name is in fact a directory, then
+	if (chdir(dir_name) == -1)
+	{
+		perror(dir_name);
+		return(NULL);
+	}
+	return (new_pwd());
+}
