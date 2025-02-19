@@ -9,6 +9,9 @@ is_dir: file_type.c
 
 new_pwd: new_pwd.c
 	$(CC) $(FLAGS) -o new_pwd new_pwd.c
+
+tty_test: tty_test.c
+	$(CC) $(FLAGS) -o tty_test tty_test.c
 clean:
 	rm -f see_dir is_dir
 

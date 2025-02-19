@@ -1,0 +1,31 @@
+int isatty(int fd)
+<unistd.h>
+checks if the filedesc given refers to one of the terminal slots ; if yes, returns 1, if no returns 0 and sets errno at ENOTTY
+!!on error (fd invalid), returns 0 and sets errno at EBADF
+
+char *ttyname(int fd)
+<unistd.h>
+returns a pointer to the pathname of the terminal device fd refers to
+!!on error, returns NULL and sets errno to aforementioned
+
+int ttyslot(void)
+<unistd.h>
+//returns the slot number terminal reference :: wrong
+returns the index of the current user's entry in the user accounting database.
+!!on error, returns 0 or -1 (system-dependent)
+
+note : i have no idea what this can possible be useful for. i suppose maybe keeping track of duped terminals kept on hand ? unclear
+
+
+ex :: returning a struct t_tty{char *name, int slot} on a given fd
+
+#include <unsistd.h>
+
+struct t_tty	*tty_info(struct t_tty *tty, int fd)
+{
+	if (isatty(fd) == 0)
+		return (NULL);
+	tty->name = ttyname(fd);
+	tty->slot = ttyslot(fd);
+	return (tty);
+}
