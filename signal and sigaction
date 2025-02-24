@@ -27,9 +27,9 @@ SYNOPSIS
                      struct sigaction *oldact);
 
  The  sigaction() system call is used to change the action taken by a process on receipt
-       of a specific signal.  (See signal(7) for an overview of signals.)
+       of a specific signal.
 
-       signum specifies the signal and can be any valid signal except SIGKILL and SIGSTOP.
+       signum specifies the signal and can be any valid signal except SIGKILL and SIGSTOP. why?
 
       act : A pointer to a structure sigaction that dertermines how to handle the signal (and more).
       oldact : A pointer to an other struct sigaction where the previous behavior (ex: what function is called to handle the signal) was stored
@@ -37,15 +37,14 @@ SYNOPSIS
        If act is non-NULL, the new action for signal signum is installed from act.  If  oldact
        is non-NULL, the previous action is saved in oldact.
        
- The sigaction structure is defined as something like:
+ The sigaction structure:
 
            struct sigaction {
                void     (*sa_handler)(int);
                void     (*sa_sigaction)(int, siginfo_t *, void *);
                sigset_t   sa_mask;
                int        sa_flags;
-               void     (*sa_restorer)(void); # is not intended for application use.  (POSIX does not  specify  a
-       sa_restorer  field.)
+               void     (*sa_restorer)(void); # is not intended for application use.
            };
 
 sa_handler : Function to call when a signal is captured. It's parameter is the signal number.
