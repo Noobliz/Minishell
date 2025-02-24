@@ -1,0 +1,60 @@
+ #include <signal.h>
+
+       typedef void (*sighandler_t)(int);
+
+       sighandler_t signal(int signum, sighandler_t handler);
+
+WARNING:
+        the  behavior  of  signal()  varies across UNIX versions, and has al
+so
+       varied historically across different versions of Linux.  Avoid its us
+e:
+       use sigaction(2) instead.
+
+signal() sets the disposition of the signal signum to handler, which is
+       either SIG_IGN (ignore signal), SIG_DFL (default action), or the address of a  programmer-defined  func‐
+       tion (a "signal handler").
+
+# Because the man recommand to not use signal(), let's focus en sigaction instead. (diff :Signal is simpler and sigaction stronger and more malleable)
+
+NAME
+       sigaction, rt_sigaction - examine and change a signal action
+
+SYNOPSIS
+       #include <signal.h>
+
+       int sigaction(int signum, const struct sigaction *act,
+                     struct sigaction *oldact);
+
+ The  sigaction() system call is used to change the action taken by a process on receipt
+       of a specific signal.  (See signal(7) for an overview of signals.)
+
+       signum specifies the signal and can be any valid signal except SIGKILL and SIGSTOP.
+
+      act : A pointer to a structure sigaction that dertermines how to handle the signal (and more).
+      oldact : A pointer to an other struct sigaction where the previous behavior (ex: what function is called to handle the signal) was stored
+      
+       If act is non-NULL, the new action for signal signum is installed from act.  If  oldact
+       is non-NULL, the previous action is saved in oldact.
+       
+ The sigaction structure is defined as something like:
+
+           struct sigaction {
+               void     (*sa_handler)(int);
+               void     (*sa_sigaction)(int, siginfo_t *, void *);
+               sigset_t   sa_mask;
+               int        sa_flags;
+               void     (*sa_restorer)(void); # is not intended for application use.  (POSIX does not  specify  a
+       sa_restorer  field.)
+           };
+
+sa_handler : Function to call when a signal is captured. It's parameter is the signal number.
+sa_sigaction : Alternative to sa_handler, more advanced because allows to take an extra context. #But I don't understand what context exactly
+sa_mask : A mask of signals to block. For example if we want to avoid handling specifics signals.
+sa_flags : To add options #looks important, need to do more research
+
+
+
+
+
+       
