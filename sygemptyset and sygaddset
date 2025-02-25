@@ -1,0 +1,18 @@
+//----sygemptyset----//
+
+#include <signal.h>
+
+int sigemptyset(sigset_t *set);
+
+set = a pointer a struct of signals.
+return value: 0 if success, -1 if failure.
+
+Set all the signals to empty. We should use it when we use sigaction (initialize the sa_mask with sigemptyset) to be sure that no signals are blocked. Afterward, we can use sigaddset() to add the signals we want to block.
+
+//----sygaddset-----//
+
+#include <signal.h>
+
+int sigaddset(sigset_t *set, int signum);
+ set : pointer to a struct of signals
+ signum : number of the signal to add
