@@ -37,6 +37,7 @@ int main() {
 }
 
 // Example with sigaction, we want to ignore ctrl+\ (sigquit) during 5sec but not ctrl+C, after pressing ctrl+C and waiting 5sec we can use ctrl+\
+Note : if in understood the minishell subject properly, ctrl+\ should do nothing, this is why we will need to ignore it at all time
 
 #include <stdio.h>
 #include <signal.h>
