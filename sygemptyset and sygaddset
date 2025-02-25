@@ -30,7 +30,7 @@ Add a signal to a structure of signals.
 int main() {
     sigset_t set;
 
-    sigemptyset(&set);  // Initialise the set with empty (NULL?)
+    sigemptyset(&set);  // Initialise the set with empty (desactivate the bit from 1 to 0)
     sigaddset(&set, SIGINT);  // add SIGINT (CTRL+C)
     sigaddset(&set, SIGQUIT); // add SIGQUIT (CTRL+\)
     return 0;
