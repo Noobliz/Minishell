@@ -1,0 +1,76 @@
+Signal Behavior in Bash/Minishell
+=================================
+
+1️⃣ Interactive Mode (Shell Waiting for Input)
+----------------------------------------------
+- CTRL+C (SIGINT) → Should not terminate the shell. Instead:
+  - Print a new prompt on a new line.
+  - Not interrupt or delete the current input.
+- CTRL+D (EOF) → Should exit the shell.
+- CTRL+\ (SIGQUIT) → Does nothing (ignored).
+
+Implementation:
+- Use sigaction() to ignore SIGQUIT and handle SIGINT properly.
+
+Example:
+```c
+struct sigaction sa;
+sa.sa_handler = handle_sigint;  // Custom handler for SIGINT
+sa.sa_flags = 0;
+sigemptyset(&sa.sa_mask);
+sigaction(SIGINT, &sa, NULL);
+
+sa.sa_handler = SIG_IGN;  // Ignore SIGQUIT
+sigaction(SIGQUIT, &sa, NULL);
+```
+
+2️⃣ When a Command is Running (Forked Child Process)
+----------------------------------------------------
+- CTRL+C (SIGINT) → Should terminate the running child process (but not the shell).
+- CTRL+D (EOF) → Behaves as an end-of-input signal.
+- CTRL+\ (SIGQUIT) → Should terminate the child process and produce a core dump.
+
+Implementation:
+- The shell should not handle SIGINT or SIGQUIT for children.
+- The parent shell should not exit when the child dies.
+
+3️⃣ When Handling Pipelines
+----------------------------
+- CTRL+C (SIGINT) → Should terminate all running processes in the pipeline.
+- CTRL+\ (SIGQUIT) → Should terminate all running processes in the pipeline.
+- The shell should not be affected.
+
+Implementation:
+- If a pipeline (cmd1 | cmd2 | cmd3) is running, CTRL+C should send SIGINT to all processes in the pipeline.
+- Use killpg() (kill process group) to send the signal to all child processes in the pipeline.
+
+Example:
+```c
+if (child_pid > 0) {
+    kill(-child_pid, SIGINT);  // Send SIGINT to all children in the group
+}
+```
+
+4️⃣ When Handling Here-Documents (<<)
+-------------------------------------
+- CTRL+C (SIGINT) → Should cancel the here-document input.
+- CTRL+D (EOF) → Should behave as an end-of-input signal.
+
+Implementation:
+- SIGINT should only affect the read() operation inside the here-document process, not the whole shell.
+
+Summary Table:
+------------------------------------------------------------
+| Context                    | CTRL+C (SIGINT) | CTRL+D (EOF) | CTRL+\ (SIGQUIT) |
+|----------------------------|----------------|--------------|------------------|
+| Shell waiting for input    | Print prompt   | Exit shell   | Do nothing       |
+| Running foreground process | Terminate proc | End input    | Kill (core dump) |
+| Running pipeline           | Kill all procs | End input    | Kill all procs   |
+| Here-document (<<)         | Cancel input   | End input    | Do nothing       |
+
+Final Thoughts:
+- In the shell itself → Only CTRL+D should exit, CTRL+C should not.
+- In a child process → CTRL+C and CTRL+\ should terminate it.
+- In pipelines → All processes in the pipeline should receive the signal.
+
+This behavior mimics Bash and ensures that Minishell behaves like a real shell.
