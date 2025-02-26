@@ -42,7 +42,7 @@ Implementation:
 
 Implementation:
 - If a pipeline (cmd1 | cmd2 | cmd3) is running, CTRL+C should send SIGINT to all processes in the pipeline.
-- Use killpg() (kill process group) to send the signal to all child processes in the pipeline.
+- Use kill to send the signal to all child processes in the pipeline.
 
 Example:
 ```c
@@ -68,9 +68,3 @@ Summary Table:
 | Running pipeline           | Kill all procs | End input    | Kill all procs   |
 | Here-document (<<)         | Cancel input   | End input    | Do nothing       |
 
-Final Thoughts:
-- In the shell itself → Only CTRL+D should exit, CTRL+C should not.
-- In a child process → CTRL+C and CTRL+\ should terminate it.
-- In pipelines → All processes in the pipeline should receive the signal.
-
-This behavior mimics Bash and ensures that Minishell behaves like a real shell.
