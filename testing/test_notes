@@ -1,3 +1,5 @@
 same problem here on school computer :: undefined reference to readline :: even with what I assu;e to be the right libraries since no error on including those at all. will look it up to find more and get back to testing
 
+you need to compile with the "flag" : -lreadline, it should work this way. At least for me it does
+
 point of this testing ground == trying export and unset in a separate, small unit, with our own env variable.
