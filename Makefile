@@ -12,9 +12,13 @@ new_pwd: new_pwd.c
 
 tty_test: tty_test.c
 	$(CC) $(FLAGS) -o tty_test tty_test.c
+
+readliner: readline.c
+	$(CC) $(FLAGS) -o readliner readline.c -lreadline
+
 clean:
-	rm -f see_dir is_dir
+	rm -f see_dir is_dir new_pwd tty_test readliner
 
-all : see_dir is_dir
+all : see_dir is_dir new_pwd tty_test readliner
 
-.PHONY: clean
+.PHONY: clean all

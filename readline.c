@@ -4,7 +4,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-//!!seems my computer doesn't have the required libraries on file, will try to fix that and get back to it.
+//!!this program will appear to leak egregious amounts of memory (still reachable in valgrind) :: it does not, that's just readline being messy and not freeing its pointers before exit. that memory isn't lost, it's freed by the computer (program handler) as soon as the program closes.
 
 //this demo is meant to prompt with "write here > ", then display "message received" unless the line received contains the word "bedazzle", in which case it transforms the line and displays it;
 //if exit is given, the program closes;
@@ -68,7 +68,7 @@ void  print_cap(char *line)
 
 void  bedazzle(char *line)
 {
-  print("\n*.*.*.*.*.*");
+  print("*.*.*.*.*.*");
   print_cap(line);
   print("*.*.*.*.*.*\n");
 }
@@ -82,15 +82,19 @@ int main(void)
   while (!is(line, "exit"))
   {
     if (line && !line[0])
+    {
       free(line);
+      line = NULL;
+    }
     if (line)
     {
       if (has(line, "bedazzle"))
         bedazzle(line);
       else
-        print("message received\n")
+        print("message received\n");
       rl_on_new_line();
       add_history(line);
+      free(line);
       line = readline(prompt);
     }
   }
