@@ -1,0 +1,24 @@
+#include <sys/types.h>
+#include <signal.h>
+
+int kill(pid_t pid, int sig);
+
+pid = pid of the target process (we can send the signal to a group of process, using -pgid but I don't know if we are allowed to use that).
+sig = number of signal to send (ex: SIGINT, SIGKILL)
+
+return value : 0 if success, -1 if failure
+
+The kill() function sends a signal to a specific process or a group of processes, allowing you to terminate, interrupt, or modify their behavior. We will use it in sigaction.
+
+// example 
+
+void handle_sigint(int sig) {
+    (void)sig;
+    if (child_pid != 0) {
+        kill(child_pid, SIGINT);  // kill the child
+    } else {
+        write(1, "\nMinishell> ", 12);  // do not quit the shell
+    }
+}
+
+Note : a big question for me is how we can store the pid so it can be accessed at any moment... The global variable can't be used for that. So I guess we will need to call sigaction or signal everytime we create a child ? still very abstract for me 
