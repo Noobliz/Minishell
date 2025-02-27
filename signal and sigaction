@@ -1,0 +1,61 @@
+ #include <signal.h>
+
+       typedef void (*sighandler_t)(int);
+
+       sighandler_t signal(int signum, sighandler_t handler);
+
+signal() sets the disposition of the signal signum to handler, which is
+       either SIG_IGN (ignore signal), SIG_DFL (default action), or the address of a  programmer-defined  func‐
+       tion (a "signal handler").
+
+# Because the man recommand to not use signal(), let's focus en sigaction instead. (diff :Signal is simpler and sigaction stronger and more malleable)
+
+NAME
+       sigaction, rt_sigaction - examine and change a signal action
+
+SYNOPSIS
+       #include <signal.h>
+
+       int sigaction(int signum, const struct sigaction *act,
+                     struct sigaction *oldact);
+
+ The  sigaction() system call is used to change the action taken by a process on receipt
+       of a specific signal.
+
+       signum specifies the signal and can be any valid signal except SIGKILL and SIGSTOP (because those signals can't be captured).
+
+      act : A pointer to a structure sigaction that dertermines how to handle the signal (and more).
+      oldact : A pointer to an other struct sigaction where the previous behavior (ex: what function is called to handle the signal) was stored
+      
+       If act is non-NULL, the new action for signal signum is installed from act.  If  oldact
+       is non-NULL, the previous action is saved in oldact.
+       
+ The sigaction structure:
+
+           struct sigaction {
+               void     (*sa_handler)(int);
+               void     (*sa_sigaction)(int, siginfo_t *, void *);
+               sigset_t   sa_mask;
+               int        sa_flags;
+               void     (*sa_restorer)(void); # is not intended for application use.
+           };
+
+sa_handler : Function to call when a signal is captured. It's parameter is the signal number.
+sa_sigaction : Alternative to sa_handler, more advanced because allows to take an extra context. #But I don't understand what context exactly
+sa_mask : A mask of signals to block. For example if we want to block specific signal while an other one is being handle.
+sa_flags : To add options #looks important, need to do more research
+#------------------USEFUL SA_FLAGS---------------------------------
+SA_RESTART	restart syscalls that were interrupted by a signal, for example readline interrupted by ctrl+C.
+SA_SIGINFO	Use sa_sigaction instead of sa_handler to get more infos.
+SA_NOCLDWAIT	avoid zombi process (useful for SIGCHLD).
+SA_NODEFER	Allows a signal to be received various times.
+SA_RESETHAND	Reinitialise the behavior of a signal to default after having being handled once.
+SA_NOCLDSTOP	Ignore SIGCHLD when a child process is stopped (instead of being terminated).
+
+limitations:
+avoid using functions like printf or malloc in a signal handler to not create "race conditions". Basically functions that use buffers or shared resources. 
+
+
+
+
+       
