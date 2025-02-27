@@ -215,7 +215,7 @@ int main(int argc, char **argv, char **env)
       echoing(&line[4], new_env);
     else if (is(line, "unset"))
     {
-      if (unset(&line[5], &new_env) == -1)
+      if (unset(&line[6], &new_env) == -1)
         break ;
     }
     else if (is(line, "export"))
