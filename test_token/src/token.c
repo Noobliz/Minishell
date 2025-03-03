@@ -39,6 +39,7 @@ t_token *create_token(char *value, t_type type)
     new->previous = NULL;
 	return(new);
 }
+//HY ft_strdup ? on pourrait free le char ** en gardant les char *pointers, eviter les protections du malloc
 
 // Ici c'est juste la creation du maillon avec un pointeur vers next et un autre vers previous
 void	add_token(t_token **head, char *value, t_type type)
