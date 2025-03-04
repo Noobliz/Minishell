@@ -10,48 +10,60 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include ""
-//parcourt la variable environnement to_parse et cherche la variable donnee to_find
-int	found(char *to_parse, char *to_find)
+#include "libenv.h"
+
+int	len_str(char *str)
 {
 	int	i;
 
 	i = 0;
-	while (to_parse[i] != '=' && is_alphanum(to_find[i]))
+	while (str && str[i])
+		i++;
+	return (i);
+}
+//ok so this one is supposed to take in the string (token->value), the variable (from get_env), and the index of the $, and it returns that same string with the variable substituted (ie for VAR=VALUE we go from "here $VAR" to "here VALUE")
+char	*replace(char *s, char *var, int where)
+{
+	int	i;
+	int	len;
+	char	*newstr;
+
+	while (i < where)
+		i++;
+	len = i;
+	i++;
+	while (is_alphanum(s[i]))
+		i++;
+	while (s[i + len])
+		len++;
+	len += len_str(var);
+	newstr = malloc(len + 1);
+	if (!newstr)
+		return (NULL);
+	i = 0;
+	while (i < where)
 	{
-		if (to_parse[i] != to_find[i])
-			return (0);
+		newstr[i] = s[i];
 		i++;
 	}
-	if (to_parse[i] == '=' && !is_alphanum(to_find[i]))
-		return (1);
-	return (0);
-}
-//recupere une variable donnee (var donnee au debut du nom de la variable, par example $VAR sur le V)
-char	*get_env(char *var, t_env *env)
-{
-	t_env	*current;
-	int	i;
-
-	if (!var[0])
-		return (NULL);
-	if (!is_alphanum(var[0]))
-		return ("$");
-	current = env;
-	i = 0;
-	while (current)
+	len = 0;
+	while (var[len])
 	{
-		if (found(current, var))
-		{
-			while (current[i] != '=')
-				i++;
-			return (current[i + 1]);
-		}
-		current = current->next;
+		newstr[i + len] = var[len];
+		len++;
 	}
-	return (NULL);
+	len += i;
+	while (is_alphanum(s[i]))
+		i++;
+	while (s[i])
+	{
+		newstr[len] = s[i];
+		len++;
+		i++;
+	}
+	newstr[j] = '\0';
+	return (newstr);
 }
-char	*replace(char *s, )
 //celle-ci elle prend en compte si tu veux faire juste la premiere variable rencontree (here != -1)ou toutes les variables (here == -1), et elle remplace le $VAR par sa valeur dans la *str token->value
 int	handle_var(t_token *token, t_env *env, int here)
 {
@@ -65,9 +77,9 @@ int	handle_var(t_token *token, t_env *env, int here)
 		return (0);
 	var = get_env(&token->value[i + 1], env);
 	if (!var)
-		var = replace(token->value, "", i + 1);
+		var = replace(token->value, "", i);
 	else
-		var = replace(token->value, var, i + 1);
+		var = replace(token->value, var, i);
 	if (!var)
 		return (-1);
 	free(token->value);
