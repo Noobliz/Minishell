@@ -1,0 +1,1 @@
+<infile cat | cat > outfile -e # -e is treated as an argument of last cmd
