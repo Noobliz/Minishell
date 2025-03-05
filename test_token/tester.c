@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libenv.h"
+#include "libparsing.h"
+#include <stdio.h>
 
 void	disp_env(t_env *env)
 {
@@ -21,27 +22,18 @@ void	disp_env(t_env *env)
 	}
 }
 
-int main(void)
+int main(int argc, char **argv, char **env)
 {
 	t_env	*n_env;
+	char *str;
 
-	/*n_env = create_env(env);
-	if (!n_env)
+	if (argc > 1 || argv[0][0] == '\0')
 		return (0);
-	disp_env(n_env);
-	free_env(n_env);
-	return (0);*/
-	n_env = env_item("PATH7=value", 0);
-	if (n_env)
+	str = replace("some word here", "other word", 5);
+	if (str)
 	{
-		printf("have an item with var :: %s\n", n_env->var);
-		free(n_env);
-	}
-	n_env->next = env_item("PATH7=value", 0);
-	if (n_env)
-	{
-		printf("have an item with var :: %s\n", n_env->var);
-		free(n_env);
+		printf("here new string :: %s", str);
+		free(str);
 	}
 	return (0);
 }

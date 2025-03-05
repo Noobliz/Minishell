@@ -150,9 +150,7 @@ char	*get_env(char *var, t_env *env)
 	t_env	*current;
 	int	i;
 
-	if (!var[0])
-		return (NULL);
-	if (!is_alphanum(var[0]))
+	if (!var[0] || !is_alphanum(var[0]))
 		return ("$");
 	current = env;
 	i = 0;

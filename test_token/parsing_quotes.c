@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libenv.h"
+#include "libparsing.h"
 
 int	len_str(char *str)
 {
@@ -22,6 +22,7 @@ int	len_str(char *str)
 	return (i);
 }
 //ok so this one is supposed to take in the string (token->value), the variable (from get_env), and the index of the $, and it returns that same string with the variable substituted (ie for VAR=VALUE we go from "here $VAR" to "here VALUE")
+//!!it does not free the inital strings given
 char	*replace(char *s, char *var, int where)
 {
 	int	i;
