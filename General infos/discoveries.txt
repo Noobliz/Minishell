@@ -1,1 +1,2 @@
 <infile cat | cat >outfile -e # '-e' is treated as an option of last cmd
+<infile without space is not handled in token.c and will be treated as 1 token (which is a problem)
