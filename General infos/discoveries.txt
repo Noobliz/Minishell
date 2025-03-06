@@ -1,2 +1,10 @@
 <infile cat | cat >outfile -e # '-e' is treated as an option of last cmd
 <infile without space is not handled in token.c and will be treated as 1 token (which is a problem)
+
+<token.c cat | ls -l ou>tfile
+ls: cannot access 'ou': No such file or directory BUT create the file "tfile"
+
+
+cat | ls -l outf>file1>lol
+ls: cannot access 'outf': No such file or directory
+^C <- bash tourne en boucle après cette liste de cmd, peut être à cause de cat ?
