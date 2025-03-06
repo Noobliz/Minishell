@@ -11,7 +11,6 @@
 typedef enum e_type
 {
     CMD,
-    ARG,
     PIPE,
     DIR,
     REDIR_IN,
@@ -39,7 +38,6 @@ t_token *create_token(char *value, t_type type)
     new->previous = NULL;
 	return(new);
 }
-//HY ft_strdup ? on pourrait free le char ** en gardant les char *pointers, eviter les protections du malloc
 
 // Ici c'est juste la creation du maillon avec un pointeur vers next et un autre vers previous
 void	add_token(t_token **head, char *value, t_type type)
@@ -63,25 +61,19 @@ void	add_token(t_token **head, char *value, t_type type)
 
 t_type get_token_type(char *word, t_token *current)
 {
-    if (!ft_strcmp(word, "|"))
+    if (!strcmp(word, "|"))
         return PIPE;
-    if (!ft_strcmp(word, "<"))
-        return REDIR_IN;
-    if (!ft_strcmp(word, ">"))
+    if (!strcmp(word, ">"))
         return REDIR_OUT;
-    if (!ft_strcmp(word, ">>"))
+    if (!strcmp(word, ">>"))
         return APPEND;
-    if (!ft_strcmp(word, "<<"))
+    if (!strcmp(word, "<"))
+        return REDIR_IN;
+    if (!strcmp(word, "<<"))
         return HEREDOC;
 
-// là on récupère le type de la commande avant word, y'a un décalage entre la liste chainée et word, en gros current->type ca correspond au word -1
-// avec ça on détermine si word est un arg ou un fichier (oui j'ai give up l'anglais sorry)
     if (current)
     {
-        //printf("current value = %s\n word = %s\n", current->value, word);
-        if (current->type == 0 || current->type == ARG)
-            return ARG;
-        
         if (current->type == REDIR_OUT || current->type == REDIR_IN ||
             current->type == APPEND || current->type == HEREDOC)
             return DIR;
@@ -89,17 +81,77 @@ t_type get_token_type(char *word, t_token *current)
 
     return CMD;
 }
+char **split_special_chars(char *input)
+{
+    char **result;
+    int i, j, k, len;
+    char buffer[1024]; // to extract words
+
+
+    i = 0;
+    k = 0;
+    len = ft_strlen(input);
+
+    result = malloc(sizeof(char *) * (len * 2 + 1)); // making a huge malloc but idk how to do otherwise
+    if (!result)
+        return (NULL);
+    while (i < len)
+    {
+        j = 0;
+        while (input[i] && input[i] != ' ' && input[i] != '<' && input[i] != '>' && input[i] != '|')
+        {
+            buffer[j++] = input[i++];
+        }
+        if (j > 0) // if characters were cumulated, we stock them
+        {
+            buffer[j] = '\0';
+            result[k++] = ft_strdup(buffer);
+        }
+
+        if (input[i] == '<' || input[i] == '>' || input[i] == '|')
+        {
+            if (input[i + 1] == input[i]) //  `>>` or `<<` question : if the user write a doble pipe, what should we do ? :'D 
+            {
+                buffer[0] = input[i];
+                buffer[1] = input[i + 1];
+                buffer[2] = '\0';
+                i++;
+            }
+            else
+            {
+                buffer[0] = input[i];
+                buffer[1] = '\0';
+            }
+            result[k++] = ft_strdup(buffer);
+            i++;
+        }
+        else if (input[i] == ' ')
+            i++;
+    }
+
+    result[k] = NULL;
+    return result;
+}
+
+
+
 // building the chained list with the name and the type of input
+
 t_token *parse_input(char *input)
 {
     t_token *tokens = NULL;
     t_token *current = NULL;
-    char **words = ft_split(input, ' ');
+    char **words = split_special_chars(input); 
     int i = 0;
 
     if (!words)
         return (NULL);
-
+    // while(words[i])
+    // {
+    //     printf("words[%d] = %s\n", i, words[i]);
+    //     i++;
+    // }
+    // i = 0;
     while (words[i])
     {
         t_type type = get_token_type(words[i], current);
@@ -116,7 +168,6 @@ t_token *parse_input(char *input)
     
     return tokens;
 }
-
 
 
 void free_tokens(t_token *tokens)
