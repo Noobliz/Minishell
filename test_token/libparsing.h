@@ -15,19 +15,41 @@
 
 # include "libenv.h"
 
-typedef struct	s_token
+typedef enum e_type
 {
-	
-}		t_token;
+    CMD,
+    PIPE,
+    DIR,
+    REDIR_IN,
+    REDIR_OUT,
+    APPEND,
+    HEREDOC
+}   t_type;
 
-int	len_str(char *str);
-char	*replace(char *s, char *var, int where);
-int	handle_var(t_token *token, t_env *env, int here);
-char	**split_once(char *str, int quote);
-t_token *new_token(char *value, t_type type, t_token *prev);
-int	get_quote(char *token, char quote);
-int	split_token(t_token *token, int	quote);
-int	add_up(t_token *beg, t_token *end);
+typedef struct s_token
+{
+    char            *value;   // (ex: "ls", "|", ">", etc.)
+    t_type          type;     // (ex : CMD, ARGS, PIPE etc.)
+    struct s_token *previous;
+    struct s_token *next;
+}   t_token;
 
+int	len_str(char *str); //test not needed, supposedly
+char	*replace(char *s, char *var, int where); //tested, no protection
+int	handle_var(t_token *token, t_env *env, int here); //tested !! no protections for token==NULL, wouldn't get that far in
 
+//careful, check the protection in split_token for quote == end_str
+char	**split_once(char *str, int quote); //tested, not protected
+
+t_token *new_token(char *value, t_type type, t_token *prev); //tested -- this one does not copy, just grabs;
+int	get_quote(char *token, char quote); //tested
+int	split_token(t_token *token, int	quote); //tested
+int	add_up(t_token *beg, t_token *end); //tested, frees all
+
+//utils (to make yet)
+char  *join(char *s, char *s2); //tested
+
+int	handle_sgquotes(t_token *current); //tested, works fine from what I've seen
+int	handle_dbquotes(t_token *current, t_env *env); //tested !! seems good
+int	parsing_pt_2(t_token *tokens, t_env *env); //last sprint
 #endif

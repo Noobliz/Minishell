@@ -21,23 +21,48 @@ int	len_str(char *str)
 		i++;
 	return (i);
 }
+
+char  *join(char *s, char *s2)
+{
+  int len;
+  int i;
+  int j;
+  char  *str;
+
+  len = len_str(s);
+  len = len + len_str(s2);
+  str = malloc(len + 1);
+  if (!str)
+    return (NULL);
+  i = 0;
+  while (s && s[i])
+  {
+    str[i] = s[i];
+    i++;
+  }
+  j = 0;
+  while (s2 && s2[j])
+  {
+    str[i + j] = s2[j];
+    j++;
+  }
+  str[i + j] = '\0';
+  return (str);
+}
 //ok so this one is supposed to take in the string (token->value), the variable (from get_env), and the index of the $, and it returns that same string with the variable substituted (ie for VAR=VALUE we go from "here $VAR" to "here VALUE")
 //!!it does not free the inital strings given
+#include <stdio.h>
 char	*replace(char *s, char *var, int where)
 {
-	int	i;
-	int	len;
+	int	i = 0;
+	int	len = 0;
 	char	*newstr;
 
-	while (i < where)
-		i++;
-	len = i;
-	i++;
-	while (is_alphanum(s[i]))
+	while (i <= where || is_alphanum(s[i]))
 		i++;
 	while (s[i + len])
 		len++;
-	len += len_str(var);
+	len = len + where + len_str(var);
 	newstr = malloc(len + 1);
 	if (!newstr)
 		return (NULL);
@@ -54,7 +79,7 @@ char	*replace(char *s, char *var, int where)
 		len++;
 	}
 	len += i;
-	while (is_alphanum(s[i]))
+	while (i == where || is_alphanum(s[i]))
 		i++;
 	while (s[i])
 	{
@@ -62,7 +87,7 @@ char	*replace(char *s, char *var, int where)
 		len++;
 		i++;
 	}
-	newstr[j] = '\0';
+	newstr[len] = '\0';
 	return (newstr);
 }
 //celle-ci elle prend en compte si tu veux faire juste la premiere variable rencontree (here != -1)ou toutes les variables (here == -1), et elle remplace le $VAR par sa valeur dans la *str token->value
@@ -94,7 +119,6 @@ char	**split_once(char *str, int quote)
 {
 	char	**res;
 	int	i;
-	int	end;
 
 	res = malloc(3 * sizeof(char *));
 	if (!res)
@@ -129,6 +153,7 @@ char	**split_once(char *str, int quote)
 		i++;
 	}
 	res[1][i] = '\0';
+	res[2] = NULL;
 	return (res);
 }
 		
@@ -160,12 +185,10 @@ int	get_quote(char *token, char quote)
 //splits the token at the quote point into two separate tokens (quote excluded of course)
 int	split_token(t_token *token, int	quote)
 {
-	int	i;
 	char	*str;
 	char	**splat;
-	t_token	*item;
+	t_token	*item = NULL;
 
-	i = 0;
 	if (quote == 0)
 	{
 		str = copy(&token->value[1]);
@@ -178,18 +201,23 @@ int	split_token(t_token *token, int	quote)
 	splat = split_once(token->value, quote);
 	if (!splat)
 		return (-1);
-	item = new_token(splat[1], token->type, token);
+	if (splat[1][0])
+		item = new_token(splat[1], token->type, token);
 	free(token->value);
 	token->value = splat[0];
 	str = splat[1];
 	free(splat);
-	if (!item)
+	if (!item && str[0])
 	{
 		free(str);
 		return (-1);
 	}
-	item->next = token->next;
-	token->next->back = item;
+	if (!item)
+		free(str);
+	else
+		item->next = token->next;
+	if (token->next)
+		token->next->previous = item;
 	token->next = item;
 	return (0);
 }
@@ -197,14 +225,21 @@ int	split_token(t_token *token, int	quote)
 int	add_up(t_token *beg, t_token *end)
 {
 	char	*str;
+	char	*str2;
 
-	str = join(beg->value, end->value);
+	str = join(beg->value, " ");
 	if (!str)
+		return (-1);
+	str2 = join(str, end->value);
+	free(str);
+	if (!str2)
 		return (-1);
 	free(beg->value);
 	free(end->value);
+	beg->value = str2;
 	beg->next = end->next;
-	end->next->back = beg;
+	if (end->next)
+		end->next->previous = beg;
 	free(end);
 	return (0);
 }
@@ -217,6 +252,8 @@ int	handle_sgquotes(t_token *current)
 	i = get_quote(current->value, '\'');
 	if (split_token(current, i) == -1)
 		return (-1);
+	if (i)
+	  current = current->next;
 	i = get_quote(current->value, '\'');
 	if (i != -1)
 	{
@@ -224,7 +261,7 @@ int	handle_sgquotes(t_token *current)
 			return (-1);
 		return (0);
 	}
-	end = current;
+	end = current->next;
 	while (end)
 	{
 		i = get_quote(end->value, '\'');
@@ -241,30 +278,33 @@ int	handle_sgquotes(t_token *current)
 		end = current->next;
 	}
 	if (!end)
-		return (-1);
+		return (-2);
 	return (0);
 }
 
 int	handle_dbquotes(t_token *current, t_env *env)
 {
 	int	i;
-	char	*str;
 	t_token	*end;
 
 	i = get_quote(current->value, '\"');
 	if (split_token(current, i) == -1)
 		return (-1);
+	if (i)
+	  current = current->next;
 	i = get_quote(current->value, '\"');
 	if (i != -1)
 	{
 		if (split_token(current, i) == -1)
 			return (-1);
+		if (handle_var(current, env, -1) == -1)
+			return (-1);
 		return (0);
 	}
-	end = current;
+	end = current->next;
 	while (end)
 	{
-		i = get_quote(end->value, '\'');
+		i = get_quote(end->value, '\"');
 		if (i != -1)
 		{
 			if (split_token(end, i) == -1)
@@ -280,14 +320,16 @@ int	handle_dbquotes(t_token *current, t_env *env)
 		end = current->next;
 	}
 	if (!end)
-		return (-1);
+		return (-2);
 	return (0);
+}
 	
 //le parsing !!
 int	parsing_pt_2(t_token *tokens, t_env *env)
 {
 	t_token	*current;
 	int	i;
+	int	res;
 
 	current = tokens;
 	while (current)
@@ -297,14 +339,24 @@ int	parsing_pt_2(t_token *tokens, t_env *env)
 		{
 			if (current->value[i] == '\'')
 			{
-				if (handle_sgquotes(current) == -1)
+				res = handle_sgquotes(current);
+				if (res == -1)
 					return (-1);
+				if (res == -2)
+					return (-2);
+				if (i)
+					current = current->next;
 				break ;
 			}
 			if (current->value[i] == '\"')
 			{
-				if (handle_dbquotes(current, env) == -1)
+				res = handle_dbquotes(current, env);
+				if (res == -1)
 					return (-1);
+				if (res == -2)
+					return (-2);
+				if (i)
+					current = current->next;
 				break ;
 			}
 			if (current->value[i] == '$')

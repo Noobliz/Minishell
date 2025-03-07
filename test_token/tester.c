@@ -13,6 +13,15 @@
 #include "libparsing.h"
 #include <stdio.h>
 
+void  free_tokens(t_token *token)
+{
+  if (!token)
+    return ;
+  free_tokens(token->next);
+  free(token->value);
+  free(token);
+}
+
 void	disp_env(t_env *env)
 {
 	while (env)
@@ -22,18 +31,41 @@ void	disp_env(t_env *env)
 	}
 }
 
-int main(int argc, char **argv, char **env)
+void print_tokens(t_token *tokens)
 {
-	t_env	*n_env;
-	char *str;
+    while (tokens)
+    {
+        printf("Token: [%s] | Type: [%d]\n", tokens->value, tokens->type);
+        // if(tokens && tokens->previous)
+        //     printf("previous token value = %s previous token type = %d\n", tokens->previous->value, tokens->previous->type);
+        tokens = tokens->next;
+    }
+}
 
-	if (argc > 1 || argv[0][0] == '\0')
-		return (0);
-	str = replace("some word here", "other word", 5);
-	if (str)
-	{
-		printf("here new string :: %s", str);
-		free(str);
-	}
+int main(void)
+{
+	t_env	*n_env = env_item("PATH=here", 0);
+	int i = 0;
+	t_token *token = NULL;
+	char  *str = copy("$PATH value \'$PATH and \'more \"$PATH");
+	char *str2 = "PATH=here and here\"";
+
+	//if (argc > 1 || argv[0][0] == '\0')
+		//return (0);
+	if (!str)
+	  return (0);
+	token = new_token(str, CMD, NULL);
+	str = copy(str2);
+	if (!token)
+	  return (0);
+	token->next = new_token(str, HEREDOC, NULL);
+        i = parsing_pt_2(token, n_env);
+	if (i == -1)
+	  printf("malloc error\n");
+	if (i == -2)
+	  printf("only one quote\n");
+        print_tokens(token);
+        free_tokens(token);
+        free(n_env);
 	return (0);
 }
