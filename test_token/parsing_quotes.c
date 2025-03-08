@@ -11,6 +11,62 @@
 /* ************************************************************************** */
 
 #include "libparsing.h"
+#include <stdio.h>
+//getting rid of spaces in the appropriate tokens here (token->type == CMD)
+char	*del_spaces(char *str)
+{
+	char	*s;
+	int	i = 0;
+	int	j;
+	int	len;
+
+	while (str[i] == ' ')
+		i++;
+	j = i;
+	while (str[i + 1])
+		i++;
+	while (i && str[i] == ' ')
+	{
+		i--;
+		j++;
+	}
+	len = len_str(str) - j;
+	s = malloc(len + 1);
+	if (!s)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (str[i] == ' ')
+		i++;
+	while (j < len)
+	{
+		s[j] = str[i + j];
+		j++;
+	}
+	s[j] ='\0';
+	return (s);
+}
+//trimming tokens (if type == CMD, delete surrounding spaces (ex: "     cmd   " becomes "cmd"))
+int	trim_tokens(t_token *token)
+{
+	char 	*value;
+
+	while (token)
+	{
+		if (token->type == CMD)
+		{
+			value = del_spaces(token->value);
+			if (!value)
+				return (-1);
+			free(token->value);
+			token->value = value;
+		}
+		else
+			token->type = CMD;
+		token = token->next;
+	}
+	return (0);
+}
 
 int	len_str(char *str)
 {
@@ -50,8 +106,7 @@ char  *join(char *s, char *s2)
   return (str);
 }
 //ok so this one is supposed to take in the string (token->value), the variable (from get_env), and the index of the $, and it returns that same string with the variable substituted (ie for VAR=VALUE we go from "here $VAR" to "here VALUE")
-//!!it does not free the inital strings given
-#include <stdio.h>
+//!!it does not free the inital strings given, for malloc protection reasons
 char	*replace(char *s, char *var, int where)
 {
 	int	i = 0;
@@ -202,7 +257,7 @@ int	split_token(t_token *token, int	quote)
 	if (!splat)
 		return (-1);
 	if (splat[1][0])
-		item = new_token(splat[1], token->type, token);
+		item = new_token(splat[1], CMD, token);
 	free(token->value);
 	token->value = splat[0];
 	str = splat[1];
@@ -254,6 +309,7 @@ int	handle_sgquotes(t_token *current)
 		return (-1);
 	if (i)
 	  current = current->next;
+	current->type = HEREDOC;
 	i = get_quote(current->value, '\'');
 	if (i != -1)
 	{
@@ -292,6 +348,7 @@ int	handle_dbquotes(t_token *current, t_env *env)
 		return (-1);
 	if (i)
 	  current = current->next;
+	current->type = HEREDOC;
 	i = get_quote(current->value, '\"');
 	if (i != -1)
 	{

@@ -45,27 +45,32 @@ void print_tokens(t_token *tokens)
 int main(void)
 {
 	t_env	*n_env = env_item("PATH=here", 0);
+	n_env->next = env_item("NUM=herealso", 0);
 	int i = 0;
 	t_token *token = NULL;
-	char  *str = copy("$PATH value \'$PATH and \'more \"$PATH");
-	char *str2 = "PATH=here and here\"";
+	char  *str = copy("$PATH value \'$PATH and  $NUM\' more \"   $PATH of $NUM    \" over there $NUM");
 
 	//if (argc > 1 || argv[0][0] == '\0')
 		//return (0);
 	if (!str)
 	  return (0);
 	token = new_token(str, CMD, NULL);
-	str = copy(str2);
 	if (!token)
 	  return (0);
-	token->next = new_token(str, HEREDOC, NULL);
         i = parsing_pt_2(token, n_env);
 	if (i == -1)
 	  printf("malloc error\n");
 	if (i == -2)
 	  printf("only one quote\n");
+	i = trim_tokens(token);
+	if (i == -1)
+	  printf("malloc error\n");
+	token->next->type = REDIR_OUT;
+	token->next->next->next->type = PIPE;
+	cmd_shuffle(token);
         print_tokens(token);
         free_tokens(token);
+        free(n_env->next);
         free(n_env);
 	return (0);
 }
