@@ -61,8 +61,6 @@ int	trim_tokens(t_token *token)
 			free(token->value);
 			token->value = value;
 		}
-		else
-			token->type = CMD;
 		token = token->next;
 	}
 	return (0);
@@ -85,6 +83,8 @@ char  *join(char *s, char *s2)
   int j;
   char  *str;
 
+  if (!s && !s2)
+  	return (NULL);
   len = len_str(s);
   len = len + len_str(s2);
   str = malloc(len + 1);
@@ -276,7 +276,7 @@ int	split_token(t_token *token, int	quote)
 	token->next = item;
 	return (0);
 }
-//joins two tokens into one
+//joins two tokens into one --unused currently
 int	add_up(t_token *beg, t_token *end)
 {
 	char	*str;
@@ -302,14 +302,14 @@ int	add_up(t_token *beg, t_token *end)
 int	handle_sgquotes(t_token *current)
 {
 	int	i;
-	t_token	*end;
+	//t_token	*end;
 
 	i = get_quote(current->value, '\'');
 	if (split_token(current, i) == -1)
 		return (-1);
 	if (i)
 	  current = current->next;
-	current->type = HEREDOC;
+	current->type = IGNORE;
 	i = get_quote(current->value, '\'');
 	if (i != -1)
 	{
@@ -317,7 +317,7 @@ int	handle_sgquotes(t_token *current)
 			return (-1);
 		return (0);
 	}
-	end = current->next;
+	/*end = current->next;
 	while (end)
 	{
 		i = get_quote(end->value, '\'');
@@ -333,22 +333,22 @@ int	handle_sgquotes(t_token *current)
 			return (-1);
 		end = current->next;
 	}
-	if (!end)
-		return (-2);
-	return (0);
+	if (!end)*/
+	return (-2);
+	//return (0);
 }
 
 int	handle_dbquotes(t_token *current, t_env *env)
 {
 	int	i;
-	t_token	*end;
+	//t_token	*end;
 
 	i = get_quote(current->value, '\"');
 	if (split_token(current, i) == -1)
 		return (-1);
 	if (i)
 	  current = current->next;
-	current->type = HEREDOC;
+	current->type = IGNORE;
 	i = get_quote(current->value, '\"');
 	if (i != -1)
 	{
@@ -358,7 +358,7 @@ int	handle_dbquotes(t_token *current, t_env *env)
 			return (-1);
 		return (0);
 	}
-	end = current->next;
+	/*end = current->next;
 	while (end)
 	{
 		i = get_quote(end->value, '\"');
@@ -376,9 +376,9 @@ int	handle_dbquotes(t_token *current, t_env *env)
 			return (-1);
 		end = current->next;
 	}
-	if (!end)
-		return (-2);
-	return (0);
+	if (!end)*/
+	return (-2);
+	//return (0);
 }
 	
 //le parsing !!

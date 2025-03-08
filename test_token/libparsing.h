@@ -23,7 +23,8 @@ typedef enum e_type
     REDIR_IN,
     REDIR_OUT,
     APPEND,
-    HEREDOC
+    HEREDOC,
+    IGNORE
 }   t_type;
 
 typedef struct s_token
@@ -68,5 +69,11 @@ int	trim_tokens(t_token *token); //tested also
 //the shuffle functions so you can have all commands grouped together in order
 void	cmd_shuffle(t_token *head);
 void	shuffle(t_token *token, t_token *where);
+
+//here the type assigning (and splits ofc)
+int	split_type(t_token *token, int type);
+int	get_char(char *str, char *types);
+void	del_token(t_token *token);
+int	assign_types(t_token *token);
 
 #endif

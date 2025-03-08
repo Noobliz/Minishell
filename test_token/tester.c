@@ -18,7 +18,8 @@ void  free_tokens(t_token *token)
   if (!token)
     return ;
   free_tokens(token->next);
-  free(token->value);
+  if (token->value)
+  	free(token->value);
   free(token);
 }
 
@@ -48,10 +49,8 @@ int main(void)
 	n_env->next = env_item("NUM=herealso", 0);
 	int i = 0;
 	t_token *token = NULL;
-	char  *str = copy("$PATH value \'$PATH and  $NUM\' more \"   $PATH of $NUM    \" over there $NUM");
+	char  *str = copy("$PATH>>value \'$PATH \"and\"  < $NUM\' more \"   \'$PATH > \' of $NUM    \" over <there $NUM");
 
-	//if (argc > 1 || argv[0][0] == '\0')
-		//return (0);
 	if (!str)
 	  return (0);
 	token = new_token(str, CMD, NULL);
@@ -68,6 +67,8 @@ int main(void)
 	token->next->type = REDIR_OUT;
 	token->next->next->next->type = PIPE;
 	cmd_shuffle(token);
+	while (token->previous)
+		token = token->previous;
         print_tokens(token);
         free_tokens(token);
         free(n_env->next);
