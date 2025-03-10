@@ -46,10 +46,12 @@ char	*del_spaces(char *str)
 	s[j] ='\0';
 	return (s);
 }
-//trimming tokens (if type == CMD, delete surrounding spaces (ex: "     cmd   " becomes "cmd"))
-int	trim_tokens(t_token *token)
+//trimming tokens (if type != IGNORE, delete surrounding spaces (ex: "     cmd   " becomes "cmd"))
+//splitting tokens (if type != IGNORE, splits tokens according to spaces between them (ex: "cmd    opt" becomes "cmd", "opt"))
+int	trim_split_tokens(t_token *token)
 {
 	char 	*value;
+	int	where;
 
 	while (token)
 	{
@@ -60,6 +62,9 @@ int	trim_tokens(t_token *token)
 				return (-1);
 			free(token->value);
 			token->value = value;
+			where = get_quote(token->value, ' ');
+			if (where != -1 && split_token(token, where) == -1)
+				return (-1);
 		}
 		token = token->next;
 	}

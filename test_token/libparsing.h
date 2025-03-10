@@ -55,16 +55,7 @@ int	handle_dbquotes(t_token *current, t_env *env); //tested !! seems good
 int	parsing_pt_2(t_token *tokens, t_env *env); //last sprint
 
 char	*del_spaces(char *str); //tested
-int	trim_tokens(t_token *token); //tested also
-
-//first part of parsing ready to go, ex ::
-//$PATH value '$PATH and  $NUM' more "   $PATH of $NUM    " over there $NUM
-//becomes
-//Token: [here value] | Type: [0]
-//Token: [$PATH and  $NUM] | Type: [0]
-//Token: [more] | Type: [0]
-//Token: [   here of herealso    ] | Type: [0]
-//Token: [over there herealso] | Type: [0]
+int	trim_split_tokens(t_token *token); //tested also
 
 //the shuffle functions so you can have all commands grouped together in order
 void	cmd_shuffle(t_token *head);
@@ -74,6 +65,11 @@ void	shuffle(t_token *token, t_token *where);
 int	split_type(t_token *token, int type);
 int	get_char(char *str, char *types);
 void	del_token(t_token *token);
-int	assign_types(t_token *token);
+int	assign_types(t_token **token);
+
+//all tested and ready to go !! haven't found an issue, but if you do don't hesitate.
+//in order :: parsing_pt_2 (i'll rename that), trim_split_token, assign_types and cmd_shuffle
+
+//Next up syntax errors !
 
 #endif
