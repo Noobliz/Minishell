@@ -8,3 +8,9 @@ ls: cannot access 'ou': No such file or directory BUT create the file "tfile"
 cat | ls -l outf>file1>lol
 ls: cannot access 'outf': No such file or directory
 ^C <- bash tourne en boucle après cette liste de cmd, peut être à cause de cat ?
+
+<infile cat -e|ls >outfile #works properly in bash
+
+<infile cmd | | cmd >outfile #syntax error unexpected token '|' and nothing seems to be executed at all. Same for "cmd > > outfile"
+
+<Makefile grep NAME | ls >file1>lol #ls output is fd 'lol', 'file1' is created
