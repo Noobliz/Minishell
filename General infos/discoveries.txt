@@ -13,4 +13,4 @@ ls: cannot access 'outf': No such file or directory
 
 <infile cmd | | cmd >outfile #syntax error unexpected token '|' and nothing seems to be executed at all. Same for "cmd > > outfile"
 
-<Makefile grep NAME | ls >file1>lol #ls output is fd 'lol'
+<Makefile grep NAME | ls >file1>lol #ls output is fd 'lol', 'file1' is created
