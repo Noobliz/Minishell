@@ -111,12 +111,18 @@ void	del_token(t_token *token)
 }
 //this one is supposed to assign types (and separate them from the rest of a string if its in it)
 // --careful, i made it so the special tokens have a NULL value (didnt see the point when the type says it all), so that needs to be taken into account when freeing the whole list
-// --also keep in mind you might need to adjust the list's head after this function given i can add tokens before the head given to me (i can fix that by taking a pointer of pointer if that's not comfortable for you)
-int	assign_types(t_token *token)
+/*char **tab_types(void)
+{
+	{"<", ">", "|", "<<", ">>"}*/
+	
+
+int	assign_types(t_token **head)
 {
 	int	type;
 	t_token	*tmp;
+	t_token	*token;
 
+	token = *head;
 	while (token)
 	{
 		if (token->type != IGNORE)
@@ -132,8 +138,9 @@ int	assign_types(t_token *token)
 		}
 		token = token->next;
 	}
-	while (token->previous)
+	while (token && token->previous)
 		token = token->previous;
+	*head = token;
 	while (token)
 	{
 		if (token->type != IGNORE && get_char(token->value, "<|>"))
@@ -150,8 +157,41 @@ int	assign_types(t_token *token)
 			token->type = HEREDOC;
 			del_token(token->next);
 		}
+		if (token->next && token->type == REDIR_IN || ...)
+		{
+			if (token->next->type == CMD)
+				token->next->type = DIR;
+		}
 		token = token->next;
 	}
 	return (0);
 }
-//edit :: i forgot to take out the spaces in the non-ignore tokens :: split it then go, before doing the del_spaces bit
+/*
+"ls" "-l"
+s_all {
+	char	**cmds [0] = "/bin/ls";
+	char 	*cmd = "ls";
+	int	infile = fd = open("");
+	int	outfile = fd;
+}
+
+while (head && head->type != PIPE)
+	head = head->next;
+head = head->next;
+if (!head)
+	return ;
+
+token :: "<", "infile", "out>>>file" (cmd)
+token :: "<" (cmd)
+token :: "infile" (cmd)
+token :: "out" (cmd)
+token :: NULL (REDIR_OUT)
+token :: NULL (REDIR_OUT)
+token :: "file" (cmd)
+
+token :: "<" (REDIR_IN)
+token :: NULL (PIPE)
+token :: NULL (APPEND)
+token :: NULL (REDIR_OUT)
+token :: "file"
+//edit :: i forgot to take out the spaces in the non-ignore tokens :: split it then go, before doing the del_spaces bit*/

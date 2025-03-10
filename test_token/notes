@@ -1,0 +1,29 @@
+s_all {
+	char	**cmds;
+	char 	*cmd;
+	int	infile;
+	int	outfile;
+	//(*f)	built_in;
+}
+
+ex :: <infile ls -l
+
+cmds = {"/bin/ls", "-l"};
+cmd = "ls";      pour (perror(cmd))
+infile = fd = open("infile");
+outfile = -1;
+
+si erreur
+cmds = NULL;
+
+
+
+
+!!touch here | echo see | cat > outfile
+
+{
+	if (!built_in)
+		execve
+	else
+		&built_in
+}

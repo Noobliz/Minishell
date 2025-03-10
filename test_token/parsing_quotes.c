@@ -53,7 +53,7 @@ int	trim_tokens(t_token *token)
 
 	while (token)
 	{
-		if (token->type == CMD)
+		if (token->type != IGNORE)
 		{
 			value = del_spaces(token->value);
 			if (!value)
@@ -237,7 +237,7 @@ int	get_quote(char *token, char quote)
 		return (i);
 	return (-1);
 }
-//splits the token at the quote point into two separate tokens (quote excluded of course)
+//splits the token at the quote index into two separate tokens (quote excluded of course)
 int	split_token(t_token *token, int	quote)
 {
 	char	*str;
@@ -302,7 +302,6 @@ int	add_up(t_token *beg, t_token *end)
 int	handle_sgquotes(t_token *current)
 {
 	int	i;
-	//t_token	*end;
 
 	i = get_quote(current->value, '\'');
 	if (split_token(current, i) == -1)
@@ -317,31 +316,12 @@ int	handle_sgquotes(t_token *current)
 			return (-1);
 		return (0);
 	}
-	/*end = current->next;
-	while (end)
-	{
-		i = get_quote(end->value, '\'');
-		if (i != -1)
-		{
-			if (split_token(end, i) == -1)
-				return (-1);
-			if (add_up(current, current->next) == -1)
-				return (-1);
-			return (0);
-		}
-		if (add_up(current, end) == -1)
-			return (-1);
-		end = current->next;
-	}
-	if (!end)*/
 	return (-2);
-	//return (0);
 }
 
 int	handle_dbquotes(t_token *current, t_env *env)
 {
 	int	i;
-	//t_token	*end;
 
 	i = get_quote(current->value, '\"');
 	if (split_token(current, i) == -1)
@@ -358,29 +338,8 @@ int	handle_dbquotes(t_token *current, t_env *env)
 			return (-1);
 		return (0);
 	}
-	/*end = current->next;
-	while (end)
-	{
-		i = get_quote(end->value, '\"');
-		if (i != -1)
-		{
-			if (split_token(end, i) == -1)
-				return (-1);
-			if (add_up(current, current->next) == -1)
-				return (-1);
-			if (handle_var(current, env, -1) == -1)
-				return (-1);
-			return (0);
-		}
-		if (add_up(current, end) == -1)
-			return (-1);
-		end = current->next;
-	}
-	if (!end)*/
 	return (-2);
-	//return (0);
 }
-	
 //le parsing !!
 int	parsing_pt_2(t_token *tokens, t_env *env)
 {
