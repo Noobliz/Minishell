@@ -50,7 +50,7 @@ int main(void)
 	n_env->next = env_item("NUM=herealso", 0);
 	int i = 0;
 	t_token *token = NULL;
-	char  *str = copy("$PATH>>value \'$PATH \"and\"  < $NUM\' more |  \"   \'$PATH > \' of $NUM    \" over <there $NUM");
+	char  *str = copy("    $PATH>>value \'$PATH \"and\"  <>> $NUM\' more  |  \"   \'${PATH} >| \' of $NUM    \" over <there $NUM");
 
 	if (!str)
 	  return (0);
@@ -66,10 +66,11 @@ int main(void)
 	if (i == -1)
 	  printf("malloc error\n");
         print_tokens(token);
-        if (assign_types(&token) == -1 || !token)
+        /*if (assign_types(&token) == -1 || !token)
           printf("malloc error\n");
         print_tokens(token);
-        cmd_shuffle(token);
+        cmd_shuffle(token);*/
+        spec_check(token);
         print_tokens(token);
         free_tokens(token);
         free(n_env->next);

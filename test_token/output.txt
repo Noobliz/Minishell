@@ -1,0 +1,1 @@
+here some $VAR and more -n

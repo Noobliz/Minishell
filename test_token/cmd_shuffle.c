@@ -101,29 +101,38 @@ int	split_type(t_token *token, int type)
 	return (0);
 }
 //gets the type of character found in the string given
-int	get_char(char *str, char *types)
+int	get_type_char(char *str, char *types)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == types[0])
+	{
+		if (str[i + 1] == types[0])
+			return (HEREDOC);
+		else
+			return (REDIR_IN);
+	}
+	if (str[i] == types[1])
+		return (PIPE);
+	if (str[i] == types[2])
+        {
+        	if (str[i + 1] == types[2])
+			return (APPEND);
+		else
+			return (REDIR_OUT);
+	}
+	return (-1);
+}
+int	get_type(char *str, char *types)
 {
 	int	i;
 
 	i = 0;
 	while (str && str[i])
 	{
-		if (str[i] == types[0])
-		{
-			if (str[i + 1] == types[0])
-				return (HEREDOC);
-			else
-				return (REDIR_IN);
-		}
-		if (str[i] == types[1])
-			return (PIPE);
-		if (str[i] == types[2])
-	        {
-	        	if (str[i + 1] == types[2])
-				return (APPEND);
-			else
-				return (REDIR_OUT);
-		}
+		if (str[i] == types[0] || str[i] == types[1] || str[i] == types[2])
+			return (get_type_char(&str[i], types));
 		i++;
 	}	
 	return (-1);
@@ -149,7 +158,7 @@ int	assign_types(t_token **head)
 	{
 		if (token->type != IGNORE && token->value)
 		{
-			type = get_char(token->value, "<|>");
+			type = get_type(token->value, "<|>");
 			if (type != -1 && token->value[1])
 			{
 				if (split_type(token, type) == -1)
@@ -164,8 +173,8 @@ int	assign_types(t_token **head)
 	*head = token;
 	while (token)
 	{
-		if (token->type != IGNORE && get_char(token->value, "<|>") != -1)
-			token->type = get_char(token->value, "<|>");
+		if (token->type != IGNORE && get_type(token->value, "<|>") != -1)
+			token->type = get_type(token->value, "<|>");
 		if (token->type == IGNORE)
 			token->type = CMD;
 		if (token->next && token->type != DIR && token->type != CMD && token->type != PIPE)
@@ -174,6 +183,10 @@ int	assign_types(t_token **head)
 	}
 	return (0);
 }
+
+//another ex :: pipe at the end prompts a terminal read for the next command, and then execs that ==>that *can* be implemented later during the opening of infiles/outfiles etc., or right before (same for open ${ open accolades);
+//aaaaaaaaaaaaaaaAAAAAAAAAAAHH the variables have a second layer to them with accolades :: unused if {or} outside of env vars, but can be used as such ${VAR} for the same result as $VAR, except it will also do a syntax check within :: is all alphanum, is first num :: err_msg :: "bash: ${1VAR}: bad substitution"
+//another one :: the `` (backticks) ==> unsure whether or not we're meant to handle these ? but they basically get replaced with the result of the command nestled inside; (ex :: "echo `cat -e output.txt` and some more"; writes the content of the file output.txt (untouched, no var or options) and then "and some more");
 /*
 "ls" "-l"
 s_all {

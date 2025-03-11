@@ -110,17 +110,31 @@ char  *join(char *s, char *s2)
   str[i + j] = '\0';
   return (str);
 }
+
+int	is_num(char a)
+{
+	if (a >= '0' && a <= '9')
+		return (1);
+	return (0);
+}
+
+int	is_alpha(char a)
+{
+	if (a >= 'a' && a <= 'z')
+		return (1);
+	if (a >= 'A' && a <= 'Z')
+		return (1);
+	return (0);
+}
 //ok so this one is supposed to take in the string (token->value), the variable (from get_env), and the index of the $, and it returns that same string with the variable substituted (ie for VAR=VALUE we go from "here $VAR" to "here VALUE")
 //!!it does not free the inital strings given, for malloc protection reasons
-char	*replace(char *s, char *var, int where)
+char	*replace(char *s, char *var, int where, int next)
 {
-	int	i = 0;
+	int	i;
 	int	len = 0;
 	char	*newstr;
 
-	while (i <= where || is_alphanum(s[i]))
-		i++;
-	while (s[i + len])
+	while (s[next + len])
 		len++;
 	len = len + where + len_str(var);
 	newstr = malloc(len + 1);
@@ -139,37 +153,80 @@ char	*replace(char *s, char *var, int where)
 		len++;
 	}
 	len += i;
-	while (i == where || is_alphanum(s[i]))
-		i++;
-	while (s[i])
+	while (s[next])
 	{
-		newstr[len] = s[i];
+		newstr[len] = s[next];
 		len++;
-		i++;
+		next++;
 	}
 	newstr[len] = '\0';
 	return (newstr);
+}
+//for the variables given as :: ${VAR}
+int	handle_acc_var(t_token *token, t_env *env, int i)
+{
+	int	j;
+	char	*var;
+
+	j = i;
+	//if (bad_subs(token->value[i]) == -2)
+		//return (-2);
+	while (token->value[j] && token->value[j] != '}')
+		j++;
+	if (!token->value[j])
+		return (missing_quote('}'));
+	var = get_env(&token->value[i + 2], env);
+	if (!var)
+		var = replace(token->value, "", i, j + 1);
+	else
+		var = replace(token->value, var, i, j + 1);
+	if (!var)
+		return (-1);
+	free(token->value);
+	token->value = var;
+	return (0);
+}
+//for the variables given like this :: $VAR
+int	handle_reg_var(t_token *token, t_env *env, int i)
+{
+	int	j;
+	char	*var;
+
+	j = i + 1;
+	while (token->value[j] && is_alphanum(token->value[j]))
+		j++;
+	var = get_env(&token->value[i + 1], env);
+	if (!var)
+		var = replace(token->value, "", i, j);
+	else
+		var = replace(token->value, var, i, j);
+	if (!var)
+		return (-1);
+	free(token->value);
+	token->value = var;
+	return (0);
 }
 //celle-ci elle prend en compte si tu veux faire juste la premiere variable rencontree (here != -1)ou toutes les variables (here == -1), et elle remplace le $VAR par sa valeur dans la *str token->value
 int	handle_var(t_token *token, t_env *env, int here)
 {
 	int	i;
-	char	*var;
 
 	i = 0;
-	while (token->value[i] && token->value[i] != '$')
+	while (token->value[i] && !(token->value[i] == '$'
+		&& (is_alpha(token->value[i + 1]) || token->value[i + 1] == '{')))
 		i++;
 	if (!token->value[i])
 		return (0);
-	var = get_env(&token->value[i + 1], env);
-	if (!var)
-		var = replace(token->value, "", i);
-	else
-		var = replace(token->value, var, i);
-	if (!var)
+	if (token->value[i + 1] == '{')
+	{
+		i = handle_acc_var(token, env, i);
+		if (i == -2 || here > -1)
+			return (i);
+		else
+			return (handle_var(token, env, here));
+	}
+	if (handle_reg_var(token, env, i) == -1)
 		return (-1);
-	free(token->value);
-	token->value = var;
 	if (here == -1)
 		return (handle_var(token, env, here));
 	return (0);
@@ -321,7 +378,7 @@ int	handle_sgquotes(t_token *current)
 			return (-1);
 		return (0);
 	}
-	return (-2);
+	return (missing_quote('\''));
 }
 
 int	handle_dbquotes(t_token *current, t_env *env)
@@ -343,7 +400,7 @@ int	handle_dbquotes(t_token *current, t_env *env)
 			return (-1);
 		return (0);
 	}
-	return (-2);
+	return (missing_quote('\"'));
 }
 //le parsing !!
 int	parsing_pt_2(t_token *tokens, t_env *env)
@@ -361,10 +418,8 @@ int	parsing_pt_2(t_token *tokens, t_env *env)
 			if (current->value[i] == '\'')
 			{
 				res = handle_sgquotes(current);
-				if (res == -1)
-					return (-1);
-				if (res == -2)
-					return (-2);
+				if (res == -1 || res == -2)
+					return (res);
 				if (i)
 					current = current->next;
 				break ;
@@ -372,10 +427,8 @@ int	parsing_pt_2(t_token *tokens, t_env *env)
 			if (current->value[i] == '\"')
 			{
 				res = handle_dbquotes(current, env);
-				if (res == -1)
-					return (-1);
-				if (res == -2)
-					return (-2);
+				if (res == -1 || res == -2)
+					return (res);
 				if (i)
 					current = current->next;
 				break ;

@@ -14,6 +14,7 @@
 # define LIBPARSING_H
 
 # include "libenv.h"
+# include <unistd.h>
 
 typedef enum e_type
 {
@@ -36,8 +37,8 @@ typedef struct s_token
 }   t_token;
 
 int	len_str(char *str); //test not needed, supposedly
-char	*replace(char *s, char *var, int where); //tested, no protection
-int	handle_var(t_token *token, t_env *env, int here); //tested !! no protections for token==NULL, wouldn't get that far in
+char	*replace(char *s, char *var, int where, int next); //tested, no protection
+int	handle_var(t_token *token, t_env *env, int here); //tested !! no protections for token==NULL, wouldn't get that far in //updated for accolades now, works well (possible future syntax errors :])
 
 //careful, check the protection in split_token for quote == end_str
 char	**split_once(char *str, int quote); //tested, not protected
@@ -63,13 +64,20 @@ void	shuffle(t_token *token, t_token *where);
 
 //here the type assigning (and splits ofc)
 int	split_type(t_token *token, int type);
-int	get_char(char *str, char *types);
+int	get_type_char(char *str, char *types);
+int	get_type(char *str, char *types);
 void	del_token(t_token *token);
 int	assign_types(t_token **token);
 
 //all tested and ready to go !! haven't found an issue, but if you do don't hesitate.
 //in order :: parsing_pt_2 (i'll rename that), trim_split_token, assign_types and cmd_shuffle
 
-//Next up syntax errors !
+//Next up syntax errors ! ready to go, will be adjusted on the go if and when necessary !
+void	print(char *str);
+void	print_syntax_err(char *str);
+int	check_src(int type2, char next);
+int	missing_quote(char quote);
+int	forbidden(char a);
+int	spec_check(t_token *token);
 
 #endif
