@@ -66,12 +66,12 @@ int main(void)
 	if (i == -1)
 	  printf("malloc error\n");
         print_tokens(token);
+        spec_check(token);
+        print_tokens(token);
         /*if (assign_types(&token) == -1 || !token)
           printf("malloc error\n");
         print_tokens(token);
         cmd_shuffle(token);*/
-        spec_check(token);
-        print_tokens(token);
         free_tokens(token);
         free(n_env->next);
         free(n_env);

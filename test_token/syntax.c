@@ -1,6 +1,6 @@
 #include "libparsing.h"
 #include <stdio.h>
-
+//print classique
 void	print(char *str)
 {
 	int	i;
@@ -12,14 +12,14 @@ void	print(char *str)
 		i++;
         }
 }
-
+//for printing syntax errors, can change to "minishell" instead of "bash" if necessary
 void	print_syntax_err(char *str)
 {
 	print("bash: syntax error near unexpected token \'");
 	print(str);
 	print("\'\n");
 }
-
+//in this one i check what character i'm supposed to display as the unexpected token (i've checked every possible situation i could think of)
 int	check_src(int type2, char next)
 {
 	if (type2 == PIPE)
@@ -36,7 +36,7 @@ int	check_src(int type2, char next)
 		print_syntax_err(">");
 	return (-2);
 }
-
+//forbidden characters
 int	forbidden(char a)
 {
 	if (a == ';')
@@ -47,7 +47,7 @@ int	forbidden(char a)
 		return (0);
 	return (1);
 }
-
+//error message for a missing matching quote (used in parsing_quotes.c, when checking for sg and db quotes)
 int	missing_quote(char quote)
 {
 	print("bash : missing matching '");
@@ -55,7 +55,7 @@ int	missing_quote(char quote)
 	print("'\n");
 	return (-2);
 }
-
+//this function does every syntax check to do with special characters, both authorized and not. it checks that a REDIR_IN or other has a file given, and that a PIPE is not at the beginning or end of the line;
 int	spec_check(t_token *token)
 {
 	int	type = -1;
