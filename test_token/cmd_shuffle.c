@@ -33,9 +33,11 @@ void	cmd_shuffle(t_token *head)
 	t_token	*last_cmd;
 
 	last_cmd = head;
-	if (!head)
+	while (last_cmd && last_cmd->type != CMD)
+		last_cmd = last_cmd->next;
+	if (!head || !last_cmd)
 		return ;
-	head = head->next;
+	head = last_cmd->next;
 	while (head)
 	{
 		token = head->next;
@@ -77,7 +79,7 @@ int	split_type(t_token *token, int type)
 	if (type == REDIR_OUT || type == APPEND)
 		a = '>';
 	where = get_quote(token->value, a);
-	if ((type == HEREDOC || type == APPEND) && !token->value[where + 1])
+	if ((type == HEREDOC || type == APPEND) && !token->value[where + 2])
 		return (0);
 	if (split_token(token, where) == -1)
 		return (-1);

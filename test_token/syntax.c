@@ -76,7 +76,7 @@ int	spec_check(t_token *token)
 				type2 = get_type_char(&token->value[i], "<|>");
 				if (type2 != -1)
 				{
-					if (type != -1)
+					if (type != -1 && type != PIPE)
 						return (check_src(type2, token->value[i + 1]));
 					type = type2;
 					if (type2 == APPEND || type2 == HEREDOC)

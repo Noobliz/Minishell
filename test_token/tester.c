@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libparsing.h"
+#include "libextract.h"
 #include <stdio.h>
 
 void  free_tokens(t_token *token)
@@ -38,10 +38,30 @@ void print_tokens(t_token *tokens)
     while (tokens)
     {
         printf("Token: [%s] | Type: [%d]\n", tokens->value, tokens->type);
-        // if(tokens && tokens->previous)
-        //     printf("previous token value = %s previous token type = %d\n", tokens->previous->value, tokens->previous->type);
         tokens = tokens->next;
     }
+}
+
+void print_cmds(t_cmd *cmd)
+{
+  int i;
+  while (cmd)
+  {
+    print("\n");
+    printf("cmd :: %s\noptions :: \n", cmd->cmd);
+    i = 0;
+    while (cmd->argv && cmd->argv[i])
+    {
+      printf("%s, ", cmd->argv[i]);
+      i++;
+    }
+    printf("\ninfile : %d, outfile %d\n", cmd->infile, cmd->outfile);
+    if (cmd->built_in)
+      printf("is builtin\n");
+    else
+      printf("is not builtin\n");
+    cmd = cmd->next;
+  }
 }
 
 int main(void)
@@ -50,7 +70,9 @@ int main(void)
 	n_env->next = env_item("NUM=herealso", 0);
 	int i = 0;
 	t_token *token = NULL;
-	char  *str = copy("    $PATH>>value \'$PATH \"and\"  <>> $NUM\' more  |  \"   \'${PATH} >| \' of $NUM    \" over <there $NUM");
+	char  *str = copy("<<here catting -e | echo -n > outfile | <infile wc -l >> file2");
+	t_cmd *head = NULL;
+	char *path = "/home/styx/.local/bin:/home/styx/.local/bin:/home/styx/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin";
 
 	if (!str)
 	  return (0);
@@ -65,15 +87,34 @@ int main(void)
 	i = trim_split_tokens(token);
 	if (i == -1)
 	  printf("malloc error\n");
-        print_tokens(token);
         spec_check(token);
-        print_tokens(token);
-        /*if (assign_types(&token) == -1 || !token)
+        if (assign_types(&token) == -1 || !token)
           printf("malloc error\n");
+        cmd_shuffle(token);
+        extraction(token, &head, path);
         print_tokens(token);
-        cmd_shuffle(token);*/
+        print_cmds(head);
         free_tokens(token);
+        free_cmds(head);
         free(n_env->next);
         free(n_env);
 	return (0);
 }
+
+/*int main (void)
+{
+  t_cmd *head = NULL;
+  t_token *token;
+  char *path = "/home/styx/.local/bin:/home/styx/.local/bin:/home/styx/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin";
+  
+  token = new_token(copy("wc"), CMD, NULL);
+  token->next = new_token(copy("-l"), CMD, token);
+  token->next->next = new_token(NULL, APPEND, token->next);
+  token->next->next->next = new_token(copy("file2"), DIR, token->next->next);
+  extraction(token, &head, path);
+  print_tokens(token);
+  print_cmds(head);
+  free_cmds(head);
+  free_tokens(token);
+  return (0);
+}*/
