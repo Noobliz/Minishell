@@ -122,12 +122,12 @@ void execute_pipeline(t_all *cmds, char **envp)
                 //free_cmds(tmp);
                 exit(0);
             }
-            if (tmp->infile)
+            if (tmp->infile >= 0)
             {
                 dup2(tmp->infile, STDIN_FILENO);
                 close(tmp->infile);
             }
-           if (tmp->outfile)
+           if (tmp->outfile >= 0)
             {
                 dup2(tmp->outfile, STDOUT_FILENO);
                 close(tmp->outfile);
