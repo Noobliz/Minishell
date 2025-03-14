@@ -120,17 +120,13 @@ void execute_pipeline(t_all *cmds, char **envp)
             {
                 printf("infile\n");
                 //free_cmds(tmp);
-                exit(0);
+                exit(1);
             }
-            if (tmp->infile >= 0)
+             if (tmp->outfile == -1)
             {
-                dup2(tmp->infile, STDIN_FILENO);
-                close(tmp->infile);
-            }
-           if (tmp->outfile >= 0)
-            {
-                dup2(tmp->outfile, STDOUT_FILENO);
-                close(tmp->outfile);
+                printf("outffile\n");
+                //free_cmds(tmp);
+                exit(1);
             }
             // first cmd
             if (i == 0 && cmd_count > 1)
@@ -145,14 +141,24 @@ void execute_pipeline(t_all *cmds, char **envp)
             // cmd du milieu
             else if (i > 0 && i < cmd_count -1)
             {
-                //if(tmp->infile == 0)
+                if(tmp->infile == -2)
                     dup2(pipes[i - 1][0], STDIN_FILENO);
-                //if (tmp->outfile == 0)
+                if (tmp->outfile == -2)
                     dup2(pipes[i][1], STDOUT_FILENO);
             }
             // Derniere cmd
             else if (i == cmd_count -1)
                 dup2(pipes[i - 1][0], STDIN_FILENO);
+            if (tmp->infile >= 0)
+            {
+                dup2(tmp->infile, STDIN_FILENO);
+                close(tmp->infile);
+            }
+           if (tmp->outfile >= 0)
+            {
+                dup2(tmp->outfile, STDOUT_FILENO);
+                close(tmp->outfile);
+            }
             create_close_pipes(pipes, cmd_count, tmp, 0);
             // if (cmds->built_in != NULL)
             // {
@@ -203,8 +209,8 @@ void execute_command_or_builtin(t_all *cmds, char **envp)
     
 //     cmd->cmds = args;
 //     cmd->cmd = path;
-//     cmd->infile = 0;
-//     cmd->outfile = 0;
+//     cmd->infile = -2;
+//     cmd->outfile = -2;
 //     if(infile)
 //         cmd->infile = open(infile, O_RDONLY);
 //     if (infile && cmd->infile == -1)
@@ -225,12 +231,12 @@ void execute_command_or_builtin(t_all *cmds, char **envp)
 //     (void)argc;
 //     (void)argv;
 
-//     char *args1[] = {"/bin/cat", NULL};
-//     t_all *cmd1 = create_cmd("/bin/cat", args1, "infile.txt", NULL);
-//     char *args2[] = {"/usr/bin/grep", "mini", NULL};
+//     char *args1[] = {"/bin/ls", NULL};
+//     t_all *cmd1 = create_cmd("/bin/ls", args1, NULL, "infile.txt");
+//     char *args2[] = {"/usr/bin/grep", "outfile.txt", NULL};
 //     t_all *cmd2 = create_cmd("/usr/bin/grep", args2, NULL, NULL);
-//     char *args3[] = {"/usr/bin/wc", "-l", NULL};
-//     t_all *cmd3 = create_cmd("/usr/bin/wc", args3, NULL, "outfile.txt");
+//     char *args3[] = {"/usr/bin/touch", "MDR", NULL};
+//     t_all *cmd3 = create_cmd("/usr/bin/touch", args3, NULL, NULL);
 //     cmd1->next = cmd2;
 //     cmd2->next = cmd3;
 //     // while(cmd1)
