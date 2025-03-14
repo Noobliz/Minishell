@@ -13,11 +13,13 @@
 #include "libenv.h"
 
 //hasty isalphanum
-int	is_alphanum(char a)
+int	is_alphanum(int a)
 {
 	if ((a >= 'a' && a <= 'z')
 		|| (a <= 'Z' && a >= 'A')
 		|| (a <= '9' && a >= '0'))
+		return (1);
+	if (a == '_')
 		return (1);
 	return (0);
 }

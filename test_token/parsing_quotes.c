@@ -118,11 +118,13 @@ int	is_num(char a)
 	return (0);
 }
 
-int	is_alpha(char a)
+int	is_alpha(int a)
 {
 	if (a >= 'a' && a <= 'z')
 		return (1);
 	if (a >= 'A' && a <= 'Z')
+		return (1);
+	if (a == '_')
 		return (1);
 	return (0);
 }

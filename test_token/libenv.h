@@ -21,7 +21,7 @@ typedef struct	s_env
 	struct s_env	*next;
 }			t_env;
 
-int	is_alphanum(char a); //testing not needed
+int	is_alphanum(int a); //testing not needed
 int	found(char *to_parse, char *to_find); //checked, no error that i can see
 char	*copy(char *str); //tested
 t_env	*env_item(char *var, int copy); //tested as well, for both copy and no copy
