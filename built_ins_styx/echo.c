@@ -1,16 +1,4 @@
-#include <unistd.h>
-
-static void  print(char *str)
-{
-  int i;
-
-  i = 0;
-  while (str && str[i])
-  {
-    write(1, &str[i], 1);
-    i++;
-  }
-}
+#include "utils.h"
 
 int check_n(char *str)
 {
