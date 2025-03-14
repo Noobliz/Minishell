@@ -338,7 +338,7 @@ int	get_command(t_token *token, t_cmd *cmd, char *path)
 	if (!is_built_in(token->value, cmd))
 		check = find_command(path, &str);
 	if (check == -2)
-		print_bash_err(token->value, strerror(errno));
+		print_bash_err(token->value, "command not found");
 	if (check == -1 || check == -2)
 	{
 		free(str);

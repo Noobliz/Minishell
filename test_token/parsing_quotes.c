@@ -360,6 +360,29 @@ int	add_up(t_token *beg, t_token *end)
 	free(end);
 	return (0);
 }
+//in case of empty quotes :: "" or ''
+int	empty_quote(t_token *token)
+{
+	char	*str;
+
+	str = copy(&token->value[1]);
+	if (!str)
+		return (-1);
+	free(token->value);
+	token->value = copy("");
+	if (!token->value)
+	{
+		free(str);
+		return (-1);
+	}
+	token->next = new_token(str, CMD, token);
+	if (!token->next)
+	{
+		free(str);
+		return (-1);
+	}
+	return (0);
+}
 //adjusts the tokens to take the single quotes into account, starting from the first quote found
 int	handle_sgquotes(t_token *current)
 {
@@ -374,13 +397,15 @@ int	handle_sgquotes(t_token *current)
 	i = get_quote(current->value, '\'');
 	if (i != -1)
 	{
+		if (i == 0)
+			return (empty_quote(current));
 		if (split_token(current, i) == -1)
 			return (-1);
 		return (0);
 	}
 	return (missing_quote('\''));
 }
-
+//adjusts the tokens to take the double quotes into account, starting from the first quote found
 int	handle_dbquotes(t_token *current, t_env *env)
 {
 	int	i;
@@ -394,6 +419,8 @@ int	handle_dbquotes(t_token *current, t_env *env)
 	i = get_quote(current->value, '\"');
 	if (i != -1)
 	{
+		if (i == 0)
+			return (empty_quote(current));
 		if (split_token(current, i) == -1)
 			return (-1);
 		if (handle_var(current, env, -1) == -1)

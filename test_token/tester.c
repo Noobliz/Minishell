@@ -70,7 +70,7 @@ int main(void)
 	n_env->next = env_item("NUM=herealso", 0);
 	int i = 0;
 	t_token *token = NULL;
-	char  *str = copy("<<here catting -e | echo -n > outfile | <infile wc -l >> file2");
+	char  *str = copy("\"\" output.txt");
 	t_cmd *head = NULL;
 	char *path = "/home/styx/.local/bin:/home/styx/.local/bin:/home/styx/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin";
 
@@ -87,6 +87,7 @@ int main(void)
 	i = trim_split_tokens(token);
 	if (i == -1)
 	  printf("malloc error\n");
+	print_tokens(token);
         spec_check(token);
         if (assign_types(&token) == -1 || !token)
           printf("malloc error\n");
