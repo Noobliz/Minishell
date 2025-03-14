@@ -1,5 +1,25 @@
 #include "libextract.h"
 
+//adding the total_count
+void	add_count_cmds(t_cmd *cmd)
+{
+	int	ct;
+	t_cmd	*tmp;
+
+	tmp = cmd;
+	ct = 0;
+	while (cmd)
+	{
+		ct++;
+		cmd = cmd->next;
+	}
+	while (tmp)
+	{
+		cmd->total = ct;
+		cmd = cmd->next;
+	}
+}
+
 //here the built_ins as return 1
 int echo(char **argv)
 {

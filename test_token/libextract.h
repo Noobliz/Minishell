@@ -10,6 +10,7 @@ typedef struct  s_cmd
 	char	**argv;
 	char	*cmd;
 	int	infile;
+	int	total;
 	int	outfile;
 	int	(*built_in)(char **);
 	struct s_cmd  *previous;
@@ -33,6 +34,7 @@ int	get_command(t_token *token, t_cmd *cmd, char *path); //all good here still
 int	assign_cmds(t_token *token, t_cmd *cmd, char *path); //all good !!
 void	ignore_cmd(t_cmd *cmd);
 int	extraction(t_token *token, t_cmd **prev, char *path); //testing... last step
+void	add_count_cmds(t_cmd *cmd);
 
 //all good !! starting hybrid tests now
 
