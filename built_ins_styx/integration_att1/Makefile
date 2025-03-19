@@ -7,6 +7,7 @@ syntax.c\
 cmd_shuffle.c\
 extraction.c\
 built_ins.c\
+exec_cmds2.c\
 utils.c
 NAME=bi_minishell
 

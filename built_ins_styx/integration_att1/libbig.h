@@ -3,11 +3,14 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+#include <stdio.h>
 # include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <string.h>
 # include <errno.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 typedef struct	s_env
 {
@@ -43,6 +46,7 @@ typedef struct  s_cmd
 	int	total;
 	int	outfile;
 	int	built_in;
+    pid_t   pid;
 	struct s_cmd  *previous;
 	struct s_cmd  *next;
 }             t_cmd;
@@ -128,6 +132,9 @@ int	assign_cmds(t_token *token, t_cmd *cmd, char *path); //all good !!
 void	ignore_cmd(t_cmd *cmd);
 int	extraction(t_token *token, t_cmd **prev, char *path); //testing... last step
 void	add_count_cmds(t_cmd *cmd);
+
+// exec_cmds
+void execute_command_or_builtin(t_cmd *cmds, char **envp);
 
 //from built_ins.c
 int built_in_att1(int func, char **argv, char **envp, t_env *env);
