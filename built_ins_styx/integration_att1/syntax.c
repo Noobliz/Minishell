@@ -77,7 +77,7 @@ int	spec_check(t_token *token)
 		}
 		else
 			type = -1;
-		if (!token->next && type2 != -1)
+		if (!token->next && (type2 != -1 || token->type != CMD))
 			print_syntax_err("newline");
 		token = token->next;
 	}
