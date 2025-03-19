@@ -82,7 +82,8 @@ int	split_inner_spaces(t_token *token)
 		space = get_quote(token->value, ' ');
 		if (space != -1 && split_token(token, space) == -1)
 			return (-1);
-		token = token->next;
+		if (space != -1)
+			token = token->next;
 	}
 	if ((sign == 1 || sign == 3)
 		&& tmp->previous && tmp->previous->type == IGNORE)

@@ -25,7 +25,6 @@ void	free_cmds_new(t_cmd *prev, t_cmd *next);
 //tested, all good
 void	print_bash_err(char *filename, char *err_msg); //err_msg
 int	get_file(t_token *token, t_cmd *cmd);
-//all tests conclude well, no issues so far (good error messages (majs though), opened fds, created files etc.)
 int	is_built_in(char *function, t_cmd *cmd); //all good
 int	find_command(char *paths, char **command); //fixed, added join_path, good now
 char	**fill_argv(char *first, t_token *token, char **tab);
