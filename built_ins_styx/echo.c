@@ -38,11 +38,3 @@ int echo(char **argv)
       print("\n");
   return (0);
 }
-
-/*int main(int argc, char **argv)
-{
-  if (argc == 7)
-    write(1, "yo\n", 3);
-  echo(argv);
-  return (0);
-}*/

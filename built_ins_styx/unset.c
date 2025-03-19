@@ -9,7 +9,8 @@ int unset(char **argv, t_env *env)
   i = 1;
   while (argv[i])
   {
-    del_env(env, argv[i]);
+    if (argv[i][0] != '?')
+      del_env(env, argv[i]);
     i++;
   }
   return (0);

@@ -42,15 +42,3 @@ int exportt(char **argv, t_env *env)
     disp_env(env);
   return (one_line_export(argv, 1, env));
 }
-
-/*int main(int argc, char **argv, char **envp)
-{
-  t_env *env = create_env(envp);
-  if (!env)
-    return (0);
-  if (argc && exportt(argv, env) == -1)
-    return (-1);
-  disp_env(env);
-  free_env(env);
-  return (0);
-}*/

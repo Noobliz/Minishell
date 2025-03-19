@@ -4,7 +4,7 @@ int	pwd(void)
 {
 	char	*str;
 
-	str = get_env("1PWD");
+	str = get_env("PWD");
 	if (!str)
 		return (-1);
 	print(str);
