@@ -15,8 +15,8 @@ void	add_count_cmds(t_cmd *cmd)
 	}
 	while (tmp)
 	{
-		cmd->total = ct;
-		cmd = cmd->next;
+		tmp->total = ct;
+		tmp = tmp->next;
 	}
 }
 
