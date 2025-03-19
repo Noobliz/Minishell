@@ -154,7 +154,7 @@ int	new_outfile(char *file, int type)
 {
 	int	fd;
 
-	fd = open(file, O_CREAT, S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR);
+	fd = open(file, O_CREAT, S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP);
 	if (fd == -1)
 		return (-1);
 	close(fd);
