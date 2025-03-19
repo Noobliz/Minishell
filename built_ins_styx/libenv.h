@@ -29,8 +29,19 @@ t_env	*env_item(char *var, int copy); //tested as well, for both copy and no cop
 //common functions for outside use, env related ::
 t_env	*free_env(t_env *env); //tested
 t_env	*create_env(char **env); //tested
+char	*take_out_plus(char *str, int cut); //testing...
+int	update_var(t_env *env, char *newvar);//coming up
 int	add_env(t_env *env, char *newvar); //tested
 void	del_env(t_env *env, char *del); //tested
 char	*get_env(char *var, t_env *env); //tested
+
+# include <unistd.h>
+//from utils.h
+void  print(char *str);
+int is_alpha(int a);
+int is_alphanum(int a);
+void	disp_env(t_env *env);
+char  *join(char *s, char *s2);
+int len_str(char *str);
 
 #endif

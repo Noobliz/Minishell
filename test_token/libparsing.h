@@ -47,6 +47,7 @@ t_token *new_token(char *value, t_type type, t_token *prev); //tested -- this on
 int	get_quote(char *token, char quote); //tested
 int	split_token(t_token *token, int	quote); //tested
 int	add_up(t_token *beg, t_token *end); //tested, frees all
+void	all_cmd_type(t_token *token);
 
 //utils (to make yet)
 char  *join(char *s, char *s2); //tested
@@ -69,6 +70,9 @@ int	get_type(char *str, char *types);
 void	del_token(t_token *token);
 int	assign_types(t_token **token);
 
+char	last_char(char *str);
+int	split_inner_spaces(t_token *token);
+int	fix_quotes(t_token *token);
 //all tested and ready to go !! haven't found an issue, but if you do don't hesitate.
 //in order :: parsing_pt_2 (i'll rename that), trim_split_token, assign_types and cmd_shuffle
 

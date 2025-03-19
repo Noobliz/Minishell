@@ -70,9 +70,9 @@ int main(void)
 	n_env->next = env_item("NUM=herealso", 0);
 	int i = 0;
 	t_token *token = NULL;
-	char  *str = copy("\"\" output.txt");
-	t_cmd *head = NULL;
-	char *path = "/home/styx/.local/bin:/home/styx/.local/bin:/home/styx/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin";
+	char  *str = copy("<$PATHinfile\"some stuff here     \".txt cat | \"     here too\" grep mini | wc -l\'and this here \'\"and here\">outfile.$NUMtxt");
+	//t_cmd *head = NULL;
+	//char *path = "/home/styx/.local/bin:/home/styx/.local/bin:/home/styx/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin";
 
 	if (!str)
 	  return (0);
@@ -84,19 +84,22 @@ int main(void)
 	  printf("malloc error\n");
 	if (i == -2)
 	  printf("only one quote\n");
-	i = trim_split_tokens(token);
+	print_tokens(token);
+	i = fix_quotes(token);
 	if (i == -1)
 	  printf("malloc error\n");
 	print_tokens(token);
+	all_cmd_type(token);
         spec_check(token);
         if (assign_types(&token) == -1 || !token)
           printf("malloc error\n");
-        cmd_shuffle(token);
-        extraction(token, &head, path);
         print_tokens(token);
-        print_cmds(head);
+        /*cmd_shuffle(token);
+        extraction(token, &head, path);*/
+        print_tokens(token);
+        //print_cmds(head);
         free_tokens(token);
-        free_cmds(head);
+        //free_cmds(head);
         free(n_env->next);
         free(n_env);
 	return (0);

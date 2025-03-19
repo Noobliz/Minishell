@@ -46,13 +46,116 @@ char	*del_spaces(char *str)
 	s[j] ='\0';
 	return (s);
 }
+//getting the last character of a string
+char	last_char(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str[i])
+		return ('\0');
+	while (str[i])
+		i++;
+	return (str[i - 1]);
+}
+//splits all inner spaces of a token
+//maybe we can make every add_up opportunity into a HEREDOC type ? that way, no confusion, all ignores stick together; that's it;
+int	split_inner_spaces(t_token *token)
+{
+	int	sign = 0;
+	int	space;
+	t_token *tmp = token;
+	char	*var;
+
+	if (token->value[0] != ' ')
+		sign = 1;
+	if (last_char(token->value) != ' ')
+		sign = sign + 2;
+	space = get_quote(token->value, ' ');
+	while (space != -1)
+	{
+		var = del_spaces(token->value);
+		if (!var)
+			return (-1);
+		free(token->value);
+		token->value = var;
+		space = get_quote(token->value, ' ');
+		if (space != -1 && split_token(token, space) == -1)
+			return (-1);
+		token = token->next;
+	}
+	if ((sign == 1 || sign == 3)
+		&& tmp->previous && tmp->previous->type == IGNORE)
+		tmp->type = HEREDOC;
+	if ((sign == 2 || sign == 3)
+		&& token->next && token->next->type == IGNORE)
+		token->type = HEREDOC;
+	return (0);
+}
+//resets all tokens to CMD type to avoid later confusion;
+void	all_cmd_type(t_token *token)
+{
+	while (token->previous)
+		token = token->previous;
+	while (token)
+	{
+		token->type = CMD;
+		token = token->next;
+	}
+}
+//first we trim and split the non quotes tokens, turning them into HEREDOC should they be added with the next or previous IGNORE token;
+int	preface_quotes(t_token *token)
+{
+	t_token	*tmp = token;
+
+	while (token)
+	{
+		tmp = token->next;
+		if (token->type != IGNORE && token->type != HEREDOC)
+		{
+			if (split_inner_spaces(token) == -1)
+				return (-1);
+		}
+		token = tmp;
+	}
+	return (0);
+}
+//fix_quotes is our new trim_split, it also adjusts the quotese depending on whether or not they're supposed to be part of a bigger token;
+int	fix_quotes(t_token *token)
+{
+	if (preface_quotes(token) == -1)
+		return (-1);
+	while (token)
+	{
+		if (token->type == IGNORE && token->next)
+		{
+			if (token->next->type == IGNORE || token->next->type == HEREDOC)
+			{
+				if (add_up(token, token->next) == -1)
+					return (-1);
+			}
+		}
+		else if (token->type == HEREDOC && token->next)
+		{
+			if (token->next->type == IGNORE)
+			{
+				if (add_up(token, token->next) == -1)
+					return (-1);
+			}
+		}
+		token = token->next;
+	}
+	return (0);
+}
 //trimming tokens (if type != IGNORE, delete surrounding spaces (ex: "     cmd   " becomes "cmd"))
-//splitting tokens (if type != IGNORE, splits tokens according to spaces between them (ex: "cmd    opt" becomes "cmd", "opt"))
+//splitting tokens (if type != IGNORE, splits tokens according to spaces between them (ex: "cmd    opt" becomes "cmd", "opt")) -- unused now, switched to thhe fix_quotes func;
 int	trim_split_tokens(t_token *token)
 {
 	char 	*value;
 	int	where;
 
+	if (fix_quotes(token) == -1)
+		return (-1);
 	while (token)
 	{
 		if (token->type != IGNORE)
@@ -171,8 +274,6 @@ int	handle_acc_var(t_token *token, t_env *env, int i)
 	char	*var;
 
 	j = i;
-	//if (bad_subs(token->value[i]) == -2)
-		//return (-2);
 	while (token->value[j] && token->value[j] != '}')
 		j++;
 	if (!token->value[j])
@@ -275,8 +376,6 @@ char	**split_once(char *str, int quote)
 	res[2] = NULL;
 	return (res);
 }
-		
-
 //same as your create_tokens, except no strdup and i've added the previous token
 t_token *new_token(char *value, t_type type, t_token *prev)
 {
@@ -344,18 +443,13 @@ int	split_token(t_token *token, int	quote)
 int	add_up(t_token *beg, t_token *end)
 {
 	char	*str;
-	char	*str2;
 
-	str = join(beg->value, " ");
+	str = join(beg->value, end->value);
 	if (!str)
-		return (-1);
-	str2 = join(str, end->value);
-	free(str);
-	if (!str2)
 		return (-1);
 	free(beg->value);
 	free(end->value);
-	beg->value = str2;
+	beg->value = str;
 	beg->next = end->next;
 	if (end->next)
 		end->next->previous = beg;
@@ -405,7 +499,7 @@ int	handle_sgquotes(t_token *current)
 			return (-1);
 		return (0);
 	}
-	return (missing_quote('\''));
+	return (missing_quote('\"'));
 }
 //adjusts the tokens to take the double quotes into account, starting from the first quote found
 int	handle_dbquotes(t_token *current, t_env *env)
@@ -463,8 +557,11 @@ int	parsing_pt_2(t_token *tokens, t_env *env)
 				break ;
 			}
 			if (current->value[i] == '$')
+			{
 				if (handle_var(current, env, i) == -1)
 					return (-1);
+				i--;
+			}
 			i++;
 		}
 		current = current->next;

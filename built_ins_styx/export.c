@@ -21,7 +21,7 @@ int one_line_export(char **argv, int i, t_env *env)
   j = 1;
   while (argv[i][j] && argv[i][j] != '=')
   {
-    if (!is_alphanum(argv[i][j]))
+    if (!is_alphanum(argv[i][j]) && !(argv[i][j] == '+' && argv[i][j +1] == '='))
     {
       print_exp_syntax(argv[i]);
       return (one_line_export(argv, i + 1, env));

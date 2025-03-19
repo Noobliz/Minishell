@@ -43,3 +43,43 @@ void	disp_env(t_env *env)
 		print("\n");
 	}
 }
+
+char  *join(char *s, char *s2)
+{
+  int len;
+  int i;
+  int j;
+  char  *str;
+
+  if (!s && !s2)
+  	return (NULL);
+  len = len_str(s);
+  len = len + len_str(s2);
+  str = malloc(len + 1);
+  if (!str)
+    return (NULL);
+  i = 0;
+  while (s && s[i])
+  {
+    str[i] = s[i];
+    i++;
+  }
+  j = 0;
+  while (s2 && s2[j])
+  {
+    str[i + j] = s2[j];
+    j++;
+  }
+  str[i + j] = '\0';
+  return (str);
+}
+
+int len_str(char *str)
+{
+  int i;
+
+  i = 0;
+  while (str && str[i])
+    i++;
+  return (i);
+}
