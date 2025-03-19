@@ -93,17 +93,35 @@ int	split_inner_spaces(t_token *token)
 		token->type = HEREDOC;
 	return (0);
 }
+void	delete_token(t_token *token)
+{
+	if (!token)
+		return ;
+	if (token->previous)
+		token->previous->next = token->next;
+	if (token->next)
+		token->next->previous = token->previous;
+	if (token->value)
+		free(token->value);
+	free(token);
+}
 //resets all tokens to CMD type to avoid later confusion;
 void	all_cmd_type(t_token *token)
 {
+	t_token	*tmp;
+
 	if (!token)
 		return ;
 	while (token->previous)
 		token = token->previous;
 	while (token)
 	{
-		token->type = CMD;
-		token = token->next;
+		tmp = token->next;
+		if (token->type != IGNORE && token->value && !token->value[0])
+			delete_token(token);
+		else
+			token->type = CMD;
+		token = tmp;
 	}
 }
 //first we trim and split the non quotes tokens, turning them into HEREDOC should they be added with the next or previous IGNORE token;

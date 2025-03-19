@@ -110,6 +110,15 @@ int	pwd(t_env *env)
 	print("\n");
 	return (0);
 }
+//fake cat
+int	cat(void)
+{
+	char	buf;
+
+	while (read(0, &buf, 1))
+		write(1, &buf, 1);
+        return (0);
+}
 //here the function to call, it distributes over to different built_ins and returns their error code (-1 malloc error, 0 success)
 int built_in_att1(int func, char **argv, char **envp, t_env *env)
 {
@@ -129,5 +138,7 @@ int built_in_att1(int func, char **argv, char **envp, t_env *env)
     return (unset(argv, env));
   if (func == 4)
     disp_env(env);
+  if (func == 5)
+    cat();
   return (0);
 }
