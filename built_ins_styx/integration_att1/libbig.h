@@ -46,7 +46,7 @@ typedef struct  s_cmd
 	int	total;
 	int	outfile;
 	int	built_in;
-    pid_t   pid;
+	pid_t   pid;
 	struct s_cmd  *previous;
 	struct s_cmd  *next;
 }             t_cmd;

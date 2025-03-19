@@ -108,7 +108,6 @@ int	pwd(t_env *env)
 		return (-1);
 	print(str);
 	print("\n");
-	free(str);
 	return (0);
 }
 //here the function to call, it distributes over to different built_ins and returns their error code (-1 malloc error, 0 success)

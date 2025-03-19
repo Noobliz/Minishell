@@ -39,7 +39,7 @@ void print_cmds(t_cmd *cmd)
       i++;
     }
     printf("\ninfile : %d, outfile %d\n", cmd->infile, cmd->outfile);
-    if (cmd->built_in)
+    if (cmd->built_in != -1)
       printf("is builtin\n");
     else
       printf("is not builtin\n");
