@@ -161,7 +161,7 @@ int	new_outfile(char *file, int type)
 	if (type == REDIR_OUT)
 		fd = open(file, O_WRONLY);
 	else
-		fd = open(file, O_WRONLY, O_APPEND);
+		fd = open(file, O_WRONLY | O_APPEND);
 	return (fd);
 }
 //closes previously opened infiles and outfiles
@@ -196,7 +196,7 @@ int	get_file(t_token *token, t_cmd *cmd)
 	}
 	if (token->type == APPEND)
 	{
-		cmd->outfile = open(token->next->value, O_WRONLY, O_APPEND);
+		cmd->outfile = open(token->next->value, O_WRONLY | O_APPEND);
 		if (cmd->outfile == -1
 			&& access(token->next->value, F_OK) == -1)
 			cmd->outfile = new_outfile(token->next->value, APPEND);
