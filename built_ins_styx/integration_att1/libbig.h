@@ -134,7 +134,7 @@ int	extraction(t_token *token, t_cmd **prev, char *path); //testing... last step
 void	add_count_cmds(t_cmd *cmd);
 
 // exec_cmds
-void execute_command_or_builtin(t_cmd *cmds, char **envp);
+void execute_command_or_builtin(t_cmd *cmds, t_env *env, char **envp);
 
 //from built_ins.c
 int built_in_att1(int func, char **argv, char **envp, t_env *env);

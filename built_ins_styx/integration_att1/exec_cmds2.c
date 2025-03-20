@@ -61,7 +61,7 @@ void	dup_and_close(t_cmd *tmp, int old_pipe[2], int new_pipe[2], int i)
 		close(new_pipe[1]);
 	}
 }
-void	execute_pipeline(t_cmd *cmds, char **envp)
+void	execute_pipeline(t_cmd *cmds, t_env *env, char **envp)
 {
 	t_cmd	*tmp;
 	int		i;
@@ -91,7 +91,19 @@ void	execute_pipeline(t_cmd *cmds, char **envp)
 		{
 			check_files(tmp);
 			dup_and_close(tmp, old_pipe, new_pipe, i);
-			// if (tmp->is_builtin)
+			if (tmp->built_in >= 0)
+			{
+				if(built_in_att1(tmp->built_in, tmp->argv, envp, env))
+				{
+					//free_all
+					exit(0);
+				}
+				else
+				{
+					//free_all
+					exit(1);
+				}
+			}
 			if (tmp->argv && execve(tmp->argv[0], tmp->argv, envp) == -1)
 			{
 				perror(tmp->cmd);
@@ -116,7 +128,7 @@ void	execute_pipeline(t_cmd *cmds, char **envp)
 	wait_for_kids(cmds);
 }
 
-void	execute_command_or_builtin(t_cmd *cmds, char **envp)
+void	execute_command_or_builtin(t_cmd *cmds, t_env *env, char **envp)
 {
 	t_cmd	*tmp;
 	int		status;
@@ -125,7 +137,7 @@ void	execute_command_or_builtin(t_cmd *cmds, char **envp)
 		return ;
 	tmp = cmds;
 	// only one cmd and not a builtin
-	if (cmds->next == NULL /*&& cmds->built_in == 0*/)
+	if (cmds->next == NULL && cmds->built_in < 0)
 	{
 		tmp->pid = fork();
 		if (tmp->pid == 0)
@@ -148,9 +160,9 @@ void	execute_command_or_builtin(t_cmd *cmds, char **envp)
 		return ;
 	}
 	// if builtin alone
-	// else if (cmds->next == NULL && cmds->built_in != 0)
-	// cmds->built_in(cmds, envp);
+	else if (cmds->next == NULL && cmds->built_in >= 0)
+		built_in_att1(cmds->built_in, cmds->argv, envp, env);
 	// if pipeline
 	else
-		execute_pipeline(cmds, envp);
+		execute_pipeline(cmds, env, envp);
 }

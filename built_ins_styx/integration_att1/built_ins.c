@@ -138,7 +138,5 @@ int built_in_att1(int func, char **argv, char **envp, t_env *env)
     return (unset(argv, env));
   if (func == 4)
     disp_env(env);
-  if (func == 5)
-    cat();
   return (0);
 }

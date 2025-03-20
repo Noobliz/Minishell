@@ -66,7 +66,7 @@ char	*get_prompt(t_env *env)
 	char	*str;
 
 	str = get_env("PWD", env);
-	str = join(str, ">");
+	str = join(str, "> ");
 	if (!str)
 		return (NULL);
 	return (str);
@@ -177,7 +177,7 @@ int	main(int argc, char **argv, char **envp)
 		check = making_tokens(&token, env);
 		if (check == -1)
 			return (free_all_things(env, token, cmd, prompt));
-		print_tokens(token); //print tokens here to check in cas something goes wrong
+		//print_tokens(token); //print tokens here to check in cas something goes wrong
 		//extracting info only if there were no syntax errors during tokenization
 		if (check != -2 && extraction(token, &cmd, get_env("PATH", env)) < 0)
 			return (free_all_things(env, token, cmd, prompt));
@@ -186,8 +186,9 @@ int	main(int argc, char **argv, char **envp)
 		//freeing tokens since they're no longer necessary
 		free_tokens(token);
 		token = NULL; //!!super important to reset the variables to avoid segfault
-		print_cmds(cmd); // printing for error-tracing again
+		//print_cmds(cmd); // printing for error-tracing again
 		//exec here, you can replace with your own
+		execute_command_or_builtin(cmd, env, envp);
 		if (tmp_exec(cmd, env) == -1)
 			return (free_all_things(env, token, cmd, prompt));
 		//same free/assign NULL combo for cmds now that we're not using them anymore
