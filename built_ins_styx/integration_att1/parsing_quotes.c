@@ -119,7 +119,7 @@ void	all_cmd_type(t_token *token)
 		tmp = token->next;
 		if (token->type != IGNORE && token->value && !token->value[0])
 			delete_token(token);
-		else
+		else if (token->type != IGNORE)
 			token->type = CMD;
 		token = tmp;
 	}

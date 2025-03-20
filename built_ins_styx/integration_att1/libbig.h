@@ -92,6 +92,7 @@ int	split_inner_spaces(t_token *token);
 int	add_up(t_token *beg, t_token *end); //tested, frees all
 int	fix_quotes(t_token *token);
 //resets types
+void	delete_token(t_token *token);
 void	all_cmd_type(t_token *token);
 
 //from syntax.c

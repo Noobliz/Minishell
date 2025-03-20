@@ -59,6 +59,8 @@ int	double_types(int where, t_token *token)
 
 	if (where)
 		token = token->next;
+	if (!token->value)
+		return (0);
 	value = copy(&token->value[1]);
 	if (!value)
 		return (-1);
@@ -80,8 +82,6 @@ int	split_type(t_token *token, int type)
 	if (type == REDIR_OUT || type == APPEND)
 		a = '>';
 	where = get_quote(token->value, a);
-	if ((type == HEREDOC || type == APPEND) && !token->value[where + 2])
-		return (0);
 	if (split_token(token, where) == -1)
 		return (-1);
 	if ((type == HEREDOC || type == APPEND) && double_types(where, token) == -1)
@@ -159,10 +159,16 @@ int	assign_types(t_token **head)
 	token = *head;
 	while (token)
 	{
+		if (token->type != IGNORE && token->value && !token->value[0])
+		{
+			token = token->next;
+			delete_token(token->previous);
+		}
 		if (token->type != IGNORE && token->value)
 		{
 			type = get_type(token->value, "<|>");
-			if (type != -1 && token->value[1])
+			if (type != -1 && ((type <= REDIR_OUT && token->value[1])
+				|| (type >= APPEND && token->value[2])))
 			{
 				if (split_type(token, type) == -1)
 					return (-1);
@@ -186,36 +192,3 @@ int	assign_types(t_token **head)
 	}
 	return (0);
 }
-
-//another ex :: pipe at the end prompts a terminal read for the next command, and then execs that ==>that *can* be implemented later during the opening of infiles/outfiles etc., or right before (same for open ${ open accolades);
-//aaaaaaaaaaaaaaaAAAAAAAAAAAHH the variables have a second layer to them with accolades :: unused if {or} outside of env vars, but can be used as such ${VAR} for the same result as $VAR, except it will also do a syntax check within :: is all alphanum, is first num :: err_msg :: "bash: ${1VAR}: bad substitution"
-//another one :: the `` (backticks) ==> unsure whether or not we're meant to handle these ? but they basically get replaced with the result of the command nestled inside; (ex :: "echo `cat -e output.txt` and some more"; writes the content of the file output.txt (untouched, no var or options) and then "and some more");
-/*
-"ls" "-l"
-s_all {
-	char	**cmds [0] = "/bin/ls";
-	char 	*cmd = "ls";
-	int	infile = fd = open("");
-	int	outfile = fd;
-}
-
-while (head && head->type != PIPE)
-	head = head->next;
-head = head->next;
-if (!head)
-	return ;
-
-token :: "<", "infile", "out>>>file" (cmd)
-token :: "<" (cmd)
-token :: "infile" (cmd)
-token :: "out" (cmd)
-token :: NULL (REDIR_OUT)
-token :: NULL (REDIR_OUT)
-token :: "file" (cmd)
-
-token :: "<" (REDIR_IN)
-token :: NULL (PIPE)
-token :: NULL (APPEND)
-token :: NULL (REDIR_OUT)
-token :: "file"
-//edit :: i forgot to take out the spaces in the non-ignore tokens :: split it then go, before doing the del_spaces bit*/
