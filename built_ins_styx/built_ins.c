@@ -1,5 +1,6 @@
-#include "utils.h"
+#include "libbig.h"
 
+//echo's -n check for the newlines print
 int check_n(char *str)
 {
   if (!str)
@@ -12,7 +13,7 @@ int check_n(char *str)
     return (0);
   return (1);
 }
-
+//echo prints everything it has, with or without new_line dependent on above
 int echo(char **argv)
 {
   int new_line;
@@ -38,14 +39,14 @@ int echo(char **argv)
       print("\n");
   return (0);
 }
-
+//export syntax error
 void  print_exp_syntax(char *str)
 {
   print("bash: export: `");
   print(str);
   print("': not a valid identifier\n");
 }
-
+//export but the line by line process
 int one_line_export(char **argv, int i, t_env *env)
 {
   int j;
@@ -72,7 +73,7 @@ int one_line_export(char **argv, int i, t_env *env)
     return (-1);
   return (one_line_export(argv, i + 1, env));
 }
-
+//export, sets new variable unless syntax is poor, in which case prints err message
 int exportt(char **argv, t_env *env)
 {
   if (!argv)
@@ -81,7 +82,7 @@ int exportt(char **argv, t_env *env)
     disp_env(env);
   return (one_line_export(argv, 1, env));
 }
-
+//unsets var
 int unset(char **argv, t_env *env)
 {
   int i;
@@ -97,21 +98,29 @@ int unset(char **argv, t_env *env)
   }
   return (0);
 }
-
-int	pwd(void)
+//prints the pwd variable (later will show the hidden var, or whatever other solution we come up with)
+int	pwd(t_env *env)
 {
 	char	*str;
 
-	str = get_env("PWD");
+	str = get_env("PWD", env);
 	if (!str)
 		return (-1);
 	print(str);
 	print("\n");
-	free(str);
 	return (0);
 }
+//fake cat
+int	cat(void)
+{
+	char	buf;
 
-int built_int_att1(int func, char **argv, char **envp, t_env *env)
+	while (read(0, &buf, 1))
+		write(1, &buf, 1);
+        return (0);
+}
+//here the function to call, it distributes over to different built_ins and returns their error code (-1 malloc error, 0 success)
+int built_in_att1(int func, char **argv, char **envp, t_env *env)
 {
   if (envp && !env)
   {
@@ -122,15 +131,12 @@ int built_int_att1(int func, char **argv, char **envp, t_env *env)
   if (func == 0)
     return (echo(argv));
   if (func == 1)
-    return (pwd());
+    return (pwd(env));
   if (func == 2)
-    return (export(argv, env));
+    return (exportt(argv, env));
   if (func == 3)
     return (unset(argv, env));
   if (func == 4)
-  {
     disp_env(env);
-    return (0);
-  }
   return (0);
 }
