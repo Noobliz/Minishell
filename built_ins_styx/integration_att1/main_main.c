@@ -187,6 +187,7 @@ int	main(int argc, char **argv, char **envp)
 	char	*line;
 	char	*prompt;
 	int	check;
+	char	**env_array;
 
 	//no arguments allowed
 	if (argc > 1 || argv[1])
@@ -225,10 +226,13 @@ int	main(int argc, char **argv, char **envp)
 		token = NULL; //!!super important to reset the variables to avoid segfault
 		//print_cmds(cmd); // printing for error-tracing again
 		//exec here, you can replace with your own
-		execute_command_or_builtin(cmd, env, env_to_array(env));
-		if (tmp_exec(cmd, env) == -1)
-			return (free_all_things(env, token, cmd, prompt));
+		env_array = env_to_array(env);
+		execute_command_or_builtin(cmd, env, env_array);
+		//if (tmp_exec(cmd, env) == -1)
+			//return (free_all_things(env, token, cmd, prompt));
 		//same free/assign NULL combo for cmds now that we're not using them anymore
+		free_tab(env_array);
+		env_array = NULL;
 		free_cmds(cmd);
 		cmd = NULL;
 		//getting next line -- we don't free line because free_tokens already does it
