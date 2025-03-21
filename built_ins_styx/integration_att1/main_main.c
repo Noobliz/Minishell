@@ -141,6 +141,43 @@ int	tmp_exec(t_cmd *cmd, t_env *env)
 	}
 	return (0);
 }
+
+// transform the t_env to char ** for execve
+int	env_size(t_env *env)
+{
+	int	size = 0;
+
+	while (env)
+	{
+		if (env->var)
+			size++;
+		env = env->next;
+	}
+	return (size);
+}
+
+char	**env_to_array(t_env *env)
+{
+	int		i = 0;
+	char	**env_array;
+	int		size;
+	
+	size = env_size(env);
+	env_array = malloc(sizeof(char *) * (size + 1));
+	if (!env_array)
+		return (perror("malloc"), NULL);
+	while (env)
+	{
+		if (env->var)
+		{
+			env_array[i] = env->var;
+			i++;
+		}
+		env = env->next;
+	}
+	env_array[i] = NULL;
+	return (env_array);
+}
 //and my main !! loops through readline with PWD prompt, until you send exit
 int	main(int argc, char **argv, char **envp)
 {
@@ -188,7 +225,7 @@ int	main(int argc, char **argv, char **envp)
 		token = NULL; //!!super important to reset the variables to avoid segfault
 		//print_cmds(cmd); // printing for error-tracing again
 		//exec here, you can replace with your own
-		execute_command_or_builtin(cmd, env, envp);
+		execute_command_or_builtin(cmd, env, env_to_array(env));
 		if (tmp_exec(cmd, env) == -1)
 			return (free_all_things(env, token, cmd, prompt));
 		//same free/assign NULL combo for cmds now that we're not using them anymore
