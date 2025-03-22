@@ -462,7 +462,7 @@ int	handle_sgquotes(t_token *current)
 			return (-1);
 		return (0);
 	}
-	return (missing_quote('\"'));
+	return (missing_quote('\''));
 }
 //adjusts the tokens to take the double quotes into account, starting from the first quote found
 int	handle_dbquotes(t_token *current, t_env *env)

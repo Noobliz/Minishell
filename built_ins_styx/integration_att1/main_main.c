@@ -76,7 +76,7 @@ int	making_tokens(t_token **token, t_env *env)
 {
 	int	check;
 
-	if (!(*token)->value)
+	if (!(*token)->value || !(*token)->value[0])
 		return (-2);
 	check = parsing_pt_2(*token, env);
 	if (check < 0)
