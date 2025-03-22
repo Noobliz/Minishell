@@ -19,12 +19,92 @@ void	add_count_cmds(t_cmd *cmd)
 		tmp = tmp->next;
 	}
 }
-//current heredoc (just reads from terminal stdin for now, will set up a tempdown a pipe for future use);
-int	get_heredoc(char *value)
+
+int	find_char(char *str, char find)
 {
-	if (value)
-		return (0);
-	return (1);
+	int	i;
+
+	i = 0;
+	while (str && str[i])
+	{
+		if (str[i] == find)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*handle_var_str(char *line, t_env *env)
+{
+	int	i;
+	int	j;
+	char	*var = NULL;
+
+	i = 0;
+	while (line && line[i] && !(line[i] == '$' && (is_alphanum(line[i + 1]) || line[i + 1] == '{')))
+		i++;
+	if (!line || !line[i])
+		return (line);
+	j = i + 1;
+	j++;
+	while (is_alphanum(line[j]))
+		j++;
+	if (line[i + 1] == '{' && line[j] != '}')
+		j = i + 1;
+	else if (line[i + 1] == '{')
+		j++;
+	if (j != i + 1)
+	{
+		if (line[i + 1] == '{')
+			i++;
+		var = get_env(&line[i + 1], env);
+		if (line[i] == '{')
+			i--;
+	}
+	if (var)
+		var = replace(line, var, i, j);
+	else
+		var = replace(line, "", i, j);
+	if (!var)
+	{
+		free(line);
+		return (NULL);
+	}
+	free(line);
+	return (handle_var_str(var, env));
+}
+//trying out heredoc, pipe ver.
+//tried the other version, but couldn't rewind so couldnt read what had been written
+//!! will have to add the env so i can take it with me up to here -- added
+int	get_heredoc(char *value, t_env *env)
+{
+	char	*line;
+	char	*var;
+	int	pipefd[2];
+
+	if (pipe(pipefd) == -1)
+		return (-1);
+	line = readline("> ");
+	while (!isis(line, value))
+	{
+		if (find_char(line, '$'))
+		{
+			var = handle_var_str(line, env);
+			if (!var)
+			{
+				perror("malloc err");
+				return (-1);
+			}
+			line = var;
+		}
+		write(pipefd[1], line, len_str(line));
+		write(pipefd[1], "\n", 1);
+		free(line);
+		line = readline("> ");
+	}
+	free(line);
+	close(pipefd[1]);
+	return (pipefd[0]);
 }
 //creates a new command link, all variables set to their untouched versions;
 t_cmd	*new_cmd(t_cmd *prev)
@@ -136,11 +216,11 @@ void	close_previous_fds(int type, t_cmd *cmd)
 }
 //this is the function for testing out any file according to the kind of REDIR is before it in the tokens;
 //on error, prints the error and returns -2 to signal to ignore that function;
-int	get_file(t_token *token, t_cmd *cmd)
+int	get_file(t_token *token, t_cmd *cmd, t_env *env)
 {
 	close_previous_fds(token->type, cmd);
 	if (token->type == HEREDOC)
-		cmd->infile = get_heredoc(token->next->value);
+		cmd->infile = get_heredoc(token->next->value, env);
 	if (token->type == REDIR_IN)
 		cmd->infile = open(token->next->value, O_RDONLY);
 	if (token->type == REDIR_OUT)
@@ -330,7 +410,7 @@ int	get_command(t_token *token, t_cmd *cmd, char *path)
 }
 //extracts all the information from token to the next PIPE (or until the end);
 //-1 malloc error, -2 for "please ignore this one"
-int	assign_cmds(t_token *token, t_cmd *cmd, char *path)
+int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env)
 {
 	int	check;
 
@@ -340,7 +420,7 @@ int	assign_cmds(t_token *token, t_cmd *cmd, char *path)
 			token = token->next;
 		if (token->type == DIR)
 		{
-			check = get_file(token->previous, cmd);
+			check = get_file(token->previous, cmd, env);
 			if (check == -1 || check == -2)
 				return (check);
 			token = token->next;
@@ -366,7 +446,7 @@ void	ignore_cmd(t_cmd *cmd)
 	cmd->argv = NULL;
 }
 //extracts all the info from the tokens, checks the validity of commands and in/outfiles, and creates a cmd link -- then continues to the next if it finds a PIPE;
-int	extraction(t_token *token, t_cmd **prev, char *path)
+int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env)
 {
 	t_cmd	*cmds;
 	int	check;
@@ -378,7 +458,7 @@ int	extraction(t_token *token, t_cmd **prev, char *path)
 	cmds = new_cmd(*prev);
 	if (!cmds)
 		return (-1);
-	check = assign_cmds(token, cmds, path);
+	check = assign_cmds(token, cmds, path, env);
 	if (check == -1)
 		return (-1);
 	if (check == -2)
@@ -389,5 +469,5 @@ int	extraction(t_token *token, t_cmd **prev, char *path)
 		(*prev)->next = cmds;
 	while (token && token->type != PIPE)
 		token = token->next;
-	return (extraction(token, &cmds, path));
+	return (extraction(token, &cmds, path, env));
 }

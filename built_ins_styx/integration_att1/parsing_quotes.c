@@ -279,7 +279,7 @@ int	handle_var(t_token *token, t_env *env, int here)
 
 	i = 0;
 	while (token->value[i] && !(token->value[i] == '$'
-		&& (is_alpha(token->value[i + 1]) || token->value[i + 1] == '{')))
+		&& (is_alphanum(token->value[i + 1]) || token->value[i + 1] == '{')))
 		i++;
 	if (!token->value[i])
 		return (0);
