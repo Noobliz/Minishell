@@ -17,7 +17,7 @@
 
 typedef struct	s_env
 {
-	char	*var;
+	char			*var;
 	struct s_env	*next;
 }			t_env;
 
@@ -43,23 +43,23 @@ typedef struct s_token
 
 typedef struct  s_cmd
 {
-	char	**argv;
-	char	*cmd;
-	int	infile;
-	int	total;
-	int	outfile;
-	int	built_in;
-	pid_t   pid;
+	char			**argv;
+	char			*cmd;
+	int				infile;
+	int				total;
+	int				outfile;
+	int				built_in;
+	pid_t   		pid;
 	struct s_cmd  *previous;
 	struct s_cmd  *next;
 }             t_cmd;
 
 //from utils.c
-void  print(char *str);
-int is_alpha(int a);
-int is_alphanum(int a);
-char  *join(char *s, char *s2);
-int len_str(char *str);
+void	print(char *str);
+int		is_alpha(int a);
+int		is_alphanum(int a);
+char	*join(char *s, char *s2);
+int		len_str(char *str);
 
 //from env/
 
@@ -69,13 +69,13 @@ t_env	*free_env(t_env *env); //tested
 t_env	*create_env(char **env); //tested
 
 //from env_utils.c
-int	found(char *to_parse, char *to_find); //checked, no error that i can see
+int		found(char *to_parse, char *to_find); //checked, no error that i can see
 char	*copy(char *str); //tested
 char	*take_out_plus(char *str, int cut); //tested
-int	update_var(t_env *env, char *newvar); //tested
+int		update_var(t_env *env, char *newvar); //tested
 
 //from env_funcs.c
-int	add_env(t_env *env, char *newvar); //tested
+int		add_env(t_env *env, char *newvar); //tested
 void	del_env(t_env *env, char *del); //tested
 char	*get_env(char *var, t_env *env); //tested
 void	disp_env(t_env *env);
@@ -89,71 +89,78 @@ void	delete_token(t_token *token);
 void	all_cmd_type(t_token *token); //resets types
 
 //from stick_and_split.c
-int	fix_quotes(t_token *token); //fixes previous quote splits if necessary, trims and splits non quotes
+int		fix_quotes(t_token *token); //fixes previous quote splits if necessary, trims and splits non quotes
 
 //from handle_var.c
 char	*replace(char *s, char *var, int where, int next); //tested, no protection
-int	handle_var(t_token *token, t_env *env, int here); //tested !! no protections for token==NULL, wouldn't get that far in //updated for accolades now, works well (possible future syntax errors :])
+int		handle_var(t_token *token, t_env *env, int here); //tested !! no protections for token==NULL, wouldn't get that far in //updated for accolades now, works well (possible future syntax errors :])
 
 //from parsing_utils.c
 t_token *new_token(char *value, t_type type, t_token *prev); //tested -- this one does not copy, just grabs;
 void	free_tokens(t_token *token);
-int	get_quote(char *token, char quote); //tested
-int	empty_quote(t_token *token);
+int		get_quote(char *token, char quote); //tested
+int		empty_quote(t_token *token);
 
 //from split_token.c
 char	**split_once(char *str, int quote); //tested, not protected
-int	split_token(t_token *token, int	quote); //tested
+int		split_token(t_token *token, int	quote); //tested
 
 //from parsing.c
-int	parsing_pt1(t_token *tokens, t_env *env); //last sprint
+int		parsing_pt1(t_token *tokens, t_env *env); //last sprint
 
 //from syntax
 
 //from syntax_utils.c
 void	print_syntax_err(char *str);
-int	check_src(int type2, char next);
-int	missing_quote(char quote);
-int	forbidden(char a);
+int		check_src(int type2, char next);
+int		missing_quote(char quote);
+int		forbidden(char a);
 
 //from syntax.c
-int	spec_check(t_token *token);
+int		spec_check(t_token *token);
 
 //from types
 
 //from split_types.c
-int	split_type(t_token *token, int type);
+int		split_type(t_token *token, int type);
 
 //from types_utils.c
-int	get_type_char(char *str, char *types);
-int	get_type(char *str, char *types);
+int		get_type_char(char *str, char *types);
+int		get_type(char *str, char *types);
 void	del_token(t_token *token);
 void	cmd_shuffle(t_token *head);
 void	shuffle(t_token *token, t_token *where);
 
 //from assign_types.c
-int	assign_types(t_token **token);
+int		assign_types(t_token **token);
 
 //in order :: parsing_pt_2 (i'll rename that), fix_quotes, all_cmd_type, spec_check, assign_types and cmd_shuffle
 
-//from extraction.c
+//from extraction
+
+//from str_utils.c
 t_cmd	*new_cmd(t_cmd *prev);
 void	free_tab(char **tab);
 void	free_cmds(t_cmd *head);
-void	free_cmds_bw(t_cmd *head);
 void	free_cmds_new(t_cmd *prev, t_cmd *next);
-//tested, all good
-void	print_bash_err(char *filename, char *err_msg); //err_msg
-int	get_file(t_token *token, t_cmd *cmd, t_env *env);
-int	is_built_in(char *function, t_cmd *cmd); //all good
-int	find_command(char *paths, char **command); //fixed, added join_path, good now
-char	**fill_argv(char *first, t_token *token, char **tab);
-char	**get_argv(char *first, t_token *token);
+
+//from get_files.c
+int		get_file(t_token *token, t_cmd *cmd, t_env *env);
+//heredoc ?
+int	get_heredoc(char *value, t_env *env);
+
+//from get_commands.c
 int	get_command(t_token *token, t_cmd *cmd, char *path); //all good here still
-int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env); //all good !!
+
+//from extr_utils.c
+void	print_bash_err(char *filename, char *err_msg); //err_msg
+int		is_built_in(char *function, t_cmd *cmd); //all good
 void	ignore_cmd(t_cmd *cmd);
+int		str_len_path(char *str);
+void	add_count_cmds(t_cmd *cmd); //-- unused rn
+
+int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env); //all good !!
 int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env); //testing... last step
-void	add_count_cmds(t_cmd *cmd);
 
 // exec_cmds
 void execute_command_or_builtin(t_cmd *cmds, t_env *env, char **envp);

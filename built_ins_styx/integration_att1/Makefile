@@ -15,6 +15,10 @@ syntax/syntax.c\
 types/split_types.c\
 types/types_utils.c\
 types/assign_types.c\
+extraction/str_utils.c\
+extraction/get_files.c\
+extraction/get_commands.c\
+extraction/extr_utils.c\
 extraction.c\
 built_ins/built_ins.c\
 built_ins/export_unset.c\
