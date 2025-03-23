@@ -1,6 +1,19 @@
-#include "libbig.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   extraction.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/23 17:02:44 by naorakot          #+#    #+#             */
+/*   Updated: 2025/03/23 17:02:47 by naorakot         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-//extracts all the information from token to the next PIPE (or until the end);
+#include "../libbig.h"
+
+//extracts all the information from token
+//up to the next PIPE or until the end;
 //-1 malloc error, -2 for "please ignore this one"
 int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env)
 {
@@ -31,11 +44,13 @@ int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env)
 	return (0);
 }
 
-//extracts all the info from the tokens, checks the validity of commands and in/outfiles, and creates a cmd link -- then continues to the next if it finds a PIPE;
+//extracts all the info from the tokens
+//checks the validity of commands and in/outfiles
+//creates a cmd link -- then moves to end or next PIPE
 int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env)
 {
 	t_cmd	*cmds;
-	int	check;
+	int		check;
 
 	if (!token)
 		return (0);

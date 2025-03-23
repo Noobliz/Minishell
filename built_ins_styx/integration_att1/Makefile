@@ -19,7 +19,8 @@ extraction/str_utils.c\
 extraction/get_files.c\
 extraction/get_commands.c\
 extraction/extr_utils.c\
-extraction.c\
+extraction/heredoc.c\
+extraction/extraction.c\
 built_ins/built_ins.c\
 built_ins/export_unset.c\
 exec_cmds2.c\

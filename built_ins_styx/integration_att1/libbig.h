@@ -37,8 +37,8 @@ typedef struct s_token
 {
     char            *value;   // (ex: "ls", "|", ">", etc.)
     t_type          type;     // (ex : CMD, ARGS, PIPE etc.)
-    struct s_token *previous;
-    struct s_token *next;
+    struct s_token	*previous;
+    struct s_token	*next;
 }   t_token;
 
 typedef struct  s_cmd
@@ -50,8 +50,8 @@ typedef struct  s_cmd
 	int				outfile;
 	int				built_in;
 	pid_t   		pid;
-	struct s_cmd  *previous;
-	struct s_cmd  *next;
+	struct s_cmd	*previous;
+	struct s_cmd	*next;
 }             t_cmd;
 
 //from utils.c
@@ -146,11 +146,12 @@ void	free_cmds_new(t_cmd *prev, t_cmd *next);
 
 //from get_files.c
 int		get_file(t_token *token, t_cmd *cmd, t_env *env);
-//heredoc ?
-int	get_heredoc(char *value, t_env *env);
+
+//from heredoc.c
+int		get_heredoc(char *value, t_env *env);
 
 //from get_commands.c
-int	get_command(t_token *token, t_cmd *cmd, char *path); //all good here still
+int		get_command(t_token *token, t_cmd *cmd, char *path); //all good here still
 
 //from extr_utils.c
 void	print_bash_err(char *filename, char *err_msg); //err_msg
@@ -159,21 +160,24 @@ void	ignore_cmd(t_cmd *cmd);
 int		str_len_path(char *str);
 void	add_count_cmds(t_cmd *cmd); //-- unused rn
 
-int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env); //all good !!
-int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env); //testing... last step
-
-// exec_cmds
-void execute_command_or_builtin(t_cmd *cmds, t_env *env, char **envp);
+//from extraction.c
+int		extraction(t_token *token, t_cmd **prev, char *path, t_env *env); //testing... last step
 
 //from built_ins/
 
 //from export_unset.c
-int	exportt(char **argv, t_env *env);
-int	unset(char **argv, t_env *env);
+int		exportt(char **argv, t_env *env);
+int		unset(char **argv, t_env *env);
 
 //from built_ins.c
-int built_in_att1(int func, char **argv, char **envp, t_env *env);
+int		built_in_att1(int func, char **argv, char **envp, t_env *env);
 
+//!!!
+//everything above this comment is normed
+
+
+// exec_cmds
+void execute_command_or_builtin(t_cmd *cmds, t_env *env, char **envp);
 //from our main_main.c
 int isis(char *cat, char *copy);
 
