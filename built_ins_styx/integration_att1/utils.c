@@ -18,8 +18,6 @@ int is_alpha(int a)
     return (1);
   if (a >= 'A' && a <= 'Z')
     return (1);
-  if (a == '_')
-    return (1);
   return (0);
 }
 
@@ -32,16 +30,6 @@ int is_alphanum(int a)
   if (a == '_')
     return (1);
   return (0);
-}
-
-void	disp_env(t_env *env)
-{
-	while (env)
-	{
-		print(env->var);
-		env = env->next;
-		print("\n");
-	}
 }
 
 char  *join(char *s, char *s2)

@@ -78,7 +78,7 @@ int	making_tokens(t_token **token, t_env *env)
 
 	if (!(*token)->value || !(*token)->value[0])
 		return (-2);
-	check = parsing_pt_2(*token, env);
+	check = parsing_pt1(*token, env);
 	if (check < 0)
 		return (check);
 	check = fix_quotes(*token);
@@ -215,9 +215,9 @@ int	main(int argc, char **argv, char **envp)
 		check = making_tokens(&token, env);
 		if (check == -1)
 			return (free_all_things(env, token, cmd, prompt));
-		//print_tokens(token); //print tokens here to check in cas something goes wrong
+		print_tokens(token); //print tokens here to check in cas something goes wrong
 		//extracting info only if there were no syntax errors during tokenization
-		if (check != -2 && extraction(token, &cmd, get_env("PATH", env)) < 0)
+		if (check != -2 && extraction(token, &cmd, get_env("PATH", env), env) < 0)
 			return (free_all_things(env, token, cmd, prompt));
 		//adding total number of cmds to every cmd (can delete this if unnecessary)
 		add_count_cmds(cmd);
@@ -227,11 +227,12 @@ int	main(int argc, char **argv, char **envp)
 		//print_cmds(cmd); // printing for error-tracing again
 		//exec here, you can replace with your own
 		env_array = env_to_array(env);
-		execute_command_or_builtin(cmd, env, env_array);
+		if (cmd && (cmd->argv || cmd->next))
+			execute_command_or_builtin(cmd, env, env_array);
 		//if (tmp_exec(cmd, env) == -1)
 			//return (free_all_things(env, token, cmd, prompt));
 		//same free/assign NULL combo for cmds now that we're not using them anymore
-		free_tab(env_array);
+		free(env_array);
 		env_array = NULL;
 		free_cmds(cmd);
 		cmd = NULL;
