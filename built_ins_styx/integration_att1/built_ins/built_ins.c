@@ -15,13 +15,16 @@
 //echo's -n check for the newlines print
 int	check_n(char *str)
 {
+	int	i;
+
 	if (!str)
 		return (0);
 	if (str[0] != '-')
 		return (0);
-	if (str[1] != 'n')
-		return (0);
-	if (str[2] != '\0')
+	i = 1;
+	while (str[i] && str[i] == 'n')
+		i++;
+	if (str[i] = '\0')
 		return (0);
 	return (1);
 }
