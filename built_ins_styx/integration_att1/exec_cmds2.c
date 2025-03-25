@@ -249,6 +249,12 @@ void	execute_pipeline(t_cmd *cmds, t_env *env, char **envp)
 			close(old_pipe[1]);
 		}
 		update_pipe(tmp, old_pipe, new_pipe);
+		if (tmp->next)
+{
+	close(new_pipe[1]);
+	close(new_pipe[0]);
+}
+
 		tmp = tmp->next;
 		i++;
 	}
