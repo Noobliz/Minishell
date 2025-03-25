@@ -1,6 +1,8 @@
 leak when cmd not found : lol cat >out | ls -l
 
-----------# redirection sans espace après pipe, cmd est catégorisé type 2 et génère des leaks :-------------------
+----------# redirection sans espace après pipe, cmd est catégorisé type 2 :-------------------
+NOTE : en fait il y a tous ces leaks car je ne peux pas encore free le history, prompt, char **env, t_env depuis mes enfants. 
+Je crois qu'il est temps qu'on fasse la big structure avec tout dedans :')
 
 ls -l | cat >>outfile |<Makefile ls
 Token: [ls] | Type: [0]
