@@ -1,3 +1,71 @@
 leak when cmd not found : lol cat >out | ls -l
 
 2 fd still open in case of redirection before a pipe, don't know if it's pipe or files
+
+
+
+----------# redirection sans espace après pipe, cmd est catégorisé type 2 et génère des leaks :-------------------
+
+ls -l | cat >>outfile |<Makefile ls
+Token: [ls] | Type: [0]
+Token: [-l] | Type: [0]
+Token: [|] | Type: [1]
+Token: [cat] | Type: [0]
+Token: [(null)] | Type: [5]
+Token: [outfile] | Type: [2]
+Token: [(null)] | Type: [1]
+Token: [<Makefile] | Type: [3]
+Token: [ls] | Type: [2]
+bash : ls : No such file or directory
+
+16 bytes in 1 blocks are still reachable in loss record 13 of 91
+==10592==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==10592==    by 0x10A04B: env_item (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x10A13C: create_env (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x109AA4: main (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592== 
+==10592== 24 bytes in 1 blocks are still reachable in loss record 18 of 91
+==10592==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==10592==    by 0x48A50EC: xmalloc (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.2)
+==10592==    by 0x489BC7E: alloc_history_entry (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.2)
+==10592==    by 0x489E5AF: add_history (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.2) // WTF ?
+==10592==    by 0x109B0F: main (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592== 
+==10592== 32 bytes in 1 blocks are still reachable in loss record 22 of 91
+==10592==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==10592==    by 0x109E01: copy (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x10A06F: env_item (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x10A13C: create_env (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x109AA4: main (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592== 
+==10592== 36 bytes in 1 blocks are still reachable in loss record 23 of 91
+==10592==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==10592==    by 0x48A50EC: xmalloc (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.2)
+==10592==    by 0x489BC9A: alloc_history_entry (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.2)
+==10592==    by 0x489E5AF: add_history (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.2)
+==10592==    by 0x109B0F: main (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592== 
+==10592== 63 bytes in 1 blocks are still reachable in loss record 28 of 91
+==10592==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==10592==    by 0x10EAE0: join (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x1096CA: get_prompt (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x109AC5: main (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592== 
+==10592== 424 bytes in 1 blocks are still reachable in loss record 40 of 91
+==10592==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==10592==    by 0x1099B7: env_to_array (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x109C26: main (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592== 
+==10592== 816 bytes in 51 blocks are still reachable in loss record 44 of 91
+==10592==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==10592==    by 0x10A04B: env_item (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x10A186: create_env (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x109AA4: main (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592== 
+==10592== 3,895 bytes in 51 blocks are still reachable in loss record 60 of 91
+==10592==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==10592==    by 0x109E01: copy (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x10A06F: env_item (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x10A186: create_env (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+==10592==    by 0x109AA4: main (in /home/lisux/C/minishell/mini/built_ins_styx/integration_att1/bi_minishell)
+------------------------------------------------------------------------------------------------------------------------------------------------------
