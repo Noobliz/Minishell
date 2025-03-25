@@ -1,9 +1,5 @@
 leak when cmd not found : lol cat >out | ls -l
 
-2 fd still open in case of redirection before a pipe, don't know if it's pipe or files
-
-
-
 ----------# redirection sans espace après pipe, cmd est catégorisé type 2 et génère des leaks :-------------------
 
 ls -l | cat >>outfile |<Makefile ls
