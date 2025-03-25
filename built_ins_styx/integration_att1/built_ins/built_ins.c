@@ -24,7 +24,7 @@ int	check_n(char *str)
 	i = 1;
 	while (str[i] && str[i] == 'n')
 		i++;
-	if (str[i] = '\0')
+	if (str[i] != '\0')
 		return (0);
 	return (1);
 }
