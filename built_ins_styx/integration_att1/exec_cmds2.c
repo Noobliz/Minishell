@@ -55,7 +55,7 @@ void	wait_for_kids(t_cmd *cmds)
 		tmp = tmp->next;
 	}
 }
-void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2])
+void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2], t_env *env)
 {
 	if (current->infile == -1)
 	{
@@ -69,6 +69,7 @@ void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2])
 			close(new_pipe[0]);
 			close(new_pipe[1]);
 		}
+		free_env(env);
 		free_cmds_new(current, current->next);
 		exit(1);
 	}
@@ -84,6 +85,7 @@ void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2])
 			close(new_pipe[0]);
 			close(new_pipe[1]);
 		}
+		free_env(env);
 		free_cmds_new(current, current->next);
 		exit(1);
 	}
@@ -108,16 +110,27 @@ void	dup_and_close(t_cmd *tmp, int old_pipe[2], int new_pipe[2], int i)
 			free_cmds_new(tmp, tmp->next);
 			exit(1);
 		}
+		// if(old_pipe[0])
+		// 	close(old_pipe[0]);
+		if (i > 0)
+		{
+			close(old_pipe[0]);
+			close(old_pipe[1]);
+		}
 		close(tmp->infile);
 	}
 	else if (i > 0)
 	{
-		if (dup2(old_pipe[0], STDIN_FILENO) == -1)
+		printf("i = %d\n", i);
+		if(old_pipe[0]>= 0)
 		{
-			perror("dup2");
+			if (dup2(old_pipe[0], STDIN_FILENO) == -1)
+			{
+			perror(tmp->argv[0]);
 			close(old_pipe[1]);
 			free_cmds_new(tmp, tmp->next);
 			exit(1);
+			}
 		}
 		close(old_pipe[0]);
 		close(old_pipe[1]);
@@ -130,16 +143,22 @@ void	dup_and_close(t_cmd *tmp, int old_pipe[2], int new_pipe[2], int i)
 			free_cmds_new(tmp, tmp->next);
 			exit(1);
 		}
+
+		close(new_pipe[0]);
+		close(new_pipe[1]);
 		close(tmp->outfile);
 	}
 	else if (tmp->next)
 	{
+		if(new_pipe[1] >= 0)
+		{
 		if (dup2(new_pipe[1], STDOUT_FILENO) == -1)
 		{
 			perror("dup2");
 			close(new_pipe[0]);
 			free_cmds_new(tmp, tmp->next);
 			exit(1);
+		}
 		}
 		close(new_pipe[0]);
 		close(new_pipe[1]);
@@ -220,7 +239,7 @@ void	execute_pipeline(t_cmd *cmds, t_env *env, char **envp)
 		}
 		if (tmp->pid == 0)
 		{
-			check_files(tmp, old_pipe, new_pipe);
+			check_files(tmp, old_pipe, new_pipe, env);
 			dup_and_close(tmp, old_pipe, new_pipe, i);
 			if (tmp->built_in >= 0)
 			{
@@ -249,15 +268,15 @@ void	execute_pipeline(t_cmd *cmds, t_env *env, char **envp)
 			close(old_pipe[1]);
 		}
 		update_pipe(tmp, old_pipe, new_pipe);
-		if (tmp->next)
-{
-	close(new_pipe[1]);
-	close(new_pipe[0]);
-}
-
+		// if (tmp->next)
+		// {
+		// 	close(new_pipe[1]);
+		// 	close(new_pipe[0]);
+		// }
 		tmp = tmp->next;
 		i++;
 	}
+
 	if (cmds->next)
 	{
 		close(old_pipe[0]);
