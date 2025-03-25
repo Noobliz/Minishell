@@ -34,6 +34,7 @@ static int	assign_types_splits(t_token *token)
 			{
 				if (split_type(token, type) == -1)
 					return (-1);
+				token = token->previous;
 			}
 		}
 		token = token->next;
