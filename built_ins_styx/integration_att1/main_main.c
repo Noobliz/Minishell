@@ -1,5 +1,7 @@
 #include "libbig.h"
 
+int g_err_code;
+
 //used to be is() function, but it existed somewhere else, didn't want to go looking for it
 //checks if the str cat and copy are the same
 int isis(char *cat, char *copy)
@@ -179,7 +181,6 @@ char	**env_to_array(t_env *env)
 	return (env_array);
 }
 
-int g_err_code;
 
 void	sig_handler(int code)
 {
@@ -231,7 +232,7 @@ int	main(int argc, char **argv, char **envp)
 		return (free_all_things(env, token, cmd, NULL));
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &sig_handler);
-	line = readline("Shell_yeah!> ");
+	line = readline(prompt);
 	if (g_err_code == 130)
 	{
 		// last_exit_code = g_err_code; --> l'idee c'est de mettre a jour pour $?
@@ -285,7 +286,7 @@ int	main(int argc, char **argv, char **envp)
 		//getting next line -- we don't free line because free_tokens already does it
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, &sig_handler);
-		line = readline("Shell_yeah!> ");
+		line = readline(prompt);
 		if (g_err_code == 130)
 		{
 			// last_exit_code = g_err_code; --> l'idee c'est de mettre a jour pour $?
