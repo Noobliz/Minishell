@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_ins.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:41:11 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/22 19:41:16 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/03/25 15:19:12 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int	pwd(t_env *env)
 //here the function to call,
 //it distributes over to different built_ins
 //returns their error code (-1 malloc error, 0 success)
-int	built_in_att1(int func, char **argv, char **envp, t_env *env)
+int	built_in_att1(int func, char **argv, char **envp, t_env *env, t_cmd *cmds)
 {
 	if (envp && !env)
 	{
@@ -91,5 +91,9 @@ int	built_in_att1(int func, char **argv, char **envp, t_env *env)
 		return (unset(argv, env));
 	if (func == 4)
 		disp_env(env);
+	if (func == 5)
+		ft_exit(argv, cmds);
+	if (func == 6)
+		cd(argv, env);
 	return (0);
 }
