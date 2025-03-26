@@ -1,6 +1,6 @@
 
 
-#include "libbig.h"
+#include "../libbig.h"
 
 
 // need to replace all libc func by libft func
