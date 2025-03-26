@@ -121,7 +121,7 @@ int	tmp_exec(t_cmd *cmd, t_env *env)
 			if (dup2(cmd->outfile, 1) == -1)
 				return (-1);
 		}
-		if (built_in_att1(cmd->built_in, cmd->argv, NULL, env) == -1)
+		if (built_in_att1(cmd->built_in, cmd->argv, NULL, env, cmd) == -1)
 			return (-1);
 		if (cmd->infile > 0)
 		{
@@ -178,6 +178,34 @@ char	**env_to_array(t_env *env)
 	env_array[i] = NULL;
 	return (env_array);
 }
+
+int g_err_code;
+
+void	sig_handler(int code)
+{
+	(void)code;
+	write(1, "\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
+
+	g_err_code = 130;
+}
+
+void	sig_handler_heredoc(int code)
+{
+	(void)code;
+	write(1, "\n", 1);
+	g_err_code = 130;
+	close(0);
+}
+
+void	sig_do_nothing(int code)
+{
+	(void)code;
+	write(1, "\n", 1);
+}
+
 //and my main !! loops through readline with PWD prompt, until you send exit
 int	main(int argc, char **argv, char **envp)
 {
@@ -189,6 +217,7 @@ int	main(int argc, char **argv, char **envp)
 	int	check;
 	char	**env_array;
 
+	g_err_code = 0;
 	//no arguments allowed
 	if (argc > 1 || argv[1])
 		return (0);
@@ -200,8 +229,18 @@ int	main(int argc, char **argv, char **envp)
 	prompt = get_prompt(env);
 	if (!prompt)
 		return (free_all_things(env, token, cmd, NULL));
-	line = readline(prompt);
-	while (!isis(line, "exit"))
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, &sig_handler);
+	line = readline("Shell_yeah!> ");
+	if (g_err_code == 130)
+	{
+		// last_exit_code = g_err_code; --> l'idee c'est de mettre a jour pour $?
+		g_err_code = 0;
+	}
+	signal(SIGQUIT, &sig_do_nothing);
+	signal(SIGINT, &sig_do_nothing);
+	// if !line??? > pour ctrl D
+	while (line)
 	{
 		add_history(line);
 		//creates first token based on the line read
@@ -215,7 +254,7 @@ int	main(int argc, char **argv, char **envp)
 		check = making_tokens(&token, env);
 		if (check == -1)
 			return (free_all_things(env, token, cmd, prompt));
-		print_tokens(token); //print tokens here to check in cas something goes wrong
+		//print_tokens(token); //print tokens here to check in cas something goes wrong
 		//extracting info only if there were no syntax errors during tokenization
 		if (check != -2 && extraction(token, &cmd, get_env("PATH", env), env) < 0)
 			return (free_all_things(env, token, cmd, prompt));
@@ -227,8 +266,15 @@ int	main(int argc, char **argv, char **envp)
 		//print_cmds(cmd); // printing for error-tracing again
 		//exec here, you can replace with your own
 		env_array = env_to_array(env);
-		if (cmd && (cmd->argv || cmd->next))
-			execute_command_or_builtin(cmd, env, env_array);
+		if (g_err_code != 130)
+		{
+			if (cmd && (cmd->argv || cmd->next))
+				execute_command_or_builtin(cmd, env, env_array);
+		}
+		else
+			g_err_code = 0;	
+			//reinit g_err_code a chaque fois pcq sinon y a plus rien qui marche
+			
 		//if (tmp_exec(cmd, env) == -1)
 			//return (free_all_things(env, token, cmd, prompt));
 		//same free/assign NULL combo for cmds now that we're not using them anymore
@@ -237,7 +283,16 @@ int	main(int argc, char **argv, char **envp)
 		free_cmds(cmd);
 		cmd = NULL;
 		//getting next line -- we don't free line because free_tokens already does it
-		line = readline(prompt);
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, &sig_handler);
+		line = readline("Shell_yeah!> ");
+		if (g_err_code == 130)
+		{
+			// last_exit_code = g_err_code; --> l'idee c'est de mettre a jour pour $?
+			g_err_code = 0;
+		}
+		signal(SIGINT, &sig_do_nothing);
+		signal(SIGQUIT, &sig_do_nothing);
 	}
 	//free last line which hasn't gone into tokens, then free everything !
 	free(line);
