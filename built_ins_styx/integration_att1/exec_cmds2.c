@@ -43,6 +43,19 @@ void	close_fd_new(t_cmd *prev, t_cmd *next)
 	close_fd_bw(prev);
 }
 
+// void	wait_for_kids(t_cmd *cmds)
+// {
+// 	t_cmd	*tmp;
+// 	int		status;
+
+// 	tmp = cmds;
+// 	while (tmp)
+// 	{
+// 		waitpid(tmp->pid, &status, 0);
+// 		tmp = tmp->next;
+// 	}
+// }
+
 void	wait_for_kids(t_cmd *cmds)
 {
 	t_cmd	*tmp;
@@ -52,10 +65,19 @@ void	wait_for_kids(t_cmd *cmds)
 	while (tmp)
 	{
 		waitpid(tmp->pid, &status, 0);
+		if (!tmp->next)
+		{
+			if (WIFEXITED(status))
+				cmds->last_exit_code = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				cmds->last_exit_code = 128 + WTERMSIG(status);
+		}
 		tmp = tmp->next;
 	}
 }
-void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2], t_env *env)
+
+void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2],
+		t_env *env)
 {
 	if (current->infile == -1)
 	{
@@ -110,8 +132,6 @@ void	dup_and_close(t_cmd *tmp, int old_pipe[2], int new_pipe[2], int i)
 			free_cmds_new(tmp, tmp->next);
 			exit(1);
 		}
-		// if(old_pipe[0])
-		// 	close(old_pipe[0]);
 		if (i > 0)
 		{
 			close(old_pipe[0]);
@@ -122,14 +142,14 @@ void	dup_and_close(t_cmd *tmp, int old_pipe[2], int new_pipe[2], int i)
 	else if (i > 0)
 	{
 		printf("i = %d\n", i);
-		if(old_pipe[0]>= 0)
+		if (old_pipe[0] >= 0)
 		{
 			if (dup2(old_pipe[0], STDIN_FILENO) == -1)
 			{
-			perror(tmp->argv[0]);
-			close(old_pipe[1]);
-			free_cmds_new(tmp, tmp->next);
-			exit(1);
+				perror(tmp->argv[0]);
+				close(old_pipe[1]);
+				free_cmds_new(tmp, tmp->next);
+				exit(1);
 			}
 		}
 		close(old_pipe[0]);
@@ -143,22 +163,21 @@ void	dup_and_close(t_cmd *tmp, int old_pipe[2], int new_pipe[2], int i)
 			free_cmds_new(tmp, tmp->next);
 			exit(1);
 		}
-
 		close(new_pipe[0]);
 		close(new_pipe[1]);
 		close(tmp->outfile);
 	}
 	else if (tmp->next)
 	{
-		if(new_pipe[1] >= 0)
+		if (new_pipe[1] >= 0)
 		{
-		if (dup2(new_pipe[1], STDOUT_FILENO) == -1)
-		{
-			perror("dup2");
-			close(new_pipe[0]);
-			free_cmds_new(tmp, tmp->next);
-			exit(1);
-		}
+			if (dup2(new_pipe[1], STDOUT_FILENO) == -1)
+			{
+				perror("dup2");
+				close(new_pipe[0]);
+				free_cmds_new(tmp, tmp->next);
+				exit(1);
+			}
 		}
 		close(new_pipe[0]);
 		close(new_pipe[1]);
@@ -178,7 +197,6 @@ int	exec_builtins(t_cmd *tmp, char **envp, t_env *env)
 		close(0);
 		if (dup2(tmp->infile, STDIN_FILENO) == -1)
 			return (-1);
-		// close(tmp->infile);
 	}
 	if (tmp->outfile >= 0)
 	{
@@ -189,24 +207,25 @@ int	exec_builtins(t_cmd *tmp, char **envp, t_env *env)
 		close(1);
 		if (dup2(tmp->outfile, STDOUT_FILENO) == -1)
 			return (-1);
-		// close(tmp->outfile);
 	}
-	if (built_in_att1(tmp->built_in, tmp->argv, envp, env) == -1)
+	if (built_in_att1(tmp->built_in, tmp->argv, envp, env, tmp) == -1)
+	{
+		tmp->last_exit_code = 1;
 		return (-1);
+	}
 	if (tmp->infile >= 0)
 	{
 		close(0);
 		if (dup2(infile, 0) == -1) // restauration de stdin
 			perror("dup2");
-		// close(infile);
 	}
 	if (tmp->outfile >= 0)
 	{
 		close(1);
 		if (dup2(outfile, 1) == -1)
 			perror("dup2");
-		// close(outfile);
 	}
+	tmp->last_exit_code = 0;
 	return (0);
 }
 
@@ -234,7 +253,6 @@ void	execute_pipeline(t_cmd *cmds, t_env *env, char **envp)
 		if (tmp->pid == -1)
 		{
 			perror("fork");
-			// free_cmds_new(tmp, tmp->next);
 			return ;
 		}
 		if (tmp->pid == 0)
@@ -243,7 +261,8 @@ void	execute_pipeline(t_cmd *cmds, t_env *env, char **envp)
 			dup_and_close(tmp, old_pipe, new_pipe, i);
 			if (tmp->built_in >= 0)
 			{
-				if (built_in_att1(tmp->built_in, tmp->argv, envp, env) == -1)
+				if (built_in_att1(tmp->built_in, tmp->argv, envp, env, cmds) ==
+					-1)
 				{
 					free_cmds_new(tmp, tmp->next);
 					exit(1);
@@ -268,15 +287,9 @@ void	execute_pipeline(t_cmd *cmds, t_env *env, char **envp)
 			close(old_pipe[1]);
 		}
 		update_pipe(tmp, old_pipe, new_pipe);
-		// if (tmp->next)
-		// {
-		// 	close(new_pipe[1]);
-		// 	close(new_pipe[0]);
-		// }
 		tmp = tmp->next;
 		i++;
 	}
-
 	if (cmds->next)
 	{
 		close(old_pipe[0]);
@@ -306,7 +319,6 @@ void	execute_command_or_builtin(t_cmd *cmds, t_env *env, char **envp)
 		if (tmp->pid == -1)
 		{
 			perror("fork");
-			// free_cmds_new(tmp, tmp->next);
 			return ;
 		}
 		if (tmp->pid == 0)
@@ -340,6 +352,10 @@ void	execute_command_or_builtin(t_cmd *cmds, t_env *env, char **envp)
 			}
 		}
 		waitpid(tmp->pid, &status, 0);
+		if (WIFEXITED(status))
+			cmds->last_exit_code = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			cmds->last_exit_code = 128 + WTERMSIG(status);
 		return ;
 	}
 	// if pipeline
