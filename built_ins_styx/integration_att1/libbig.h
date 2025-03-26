@@ -1,3 +1,4 @@
+
 #ifndef LIBBIG_H
 # define LIBBIG_H
 
@@ -11,9 +12,10 @@
 # include <errno.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-
-
 # include <fcntl.h>
+
+//variable globale
+extern int g_err_code;
 
 typedef struct	s_env
 {
@@ -50,6 +52,7 @@ typedef struct  s_cmd
 	int				outfile;
 	int				built_in;
 	pid_t   		pid;
+    int             last_exit_code;
 	struct s_cmd	*previous;
 	struct s_cmd	*next;
 }             t_cmd;
@@ -98,6 +101,8 @@ int		handle_var(t_token *token, t_env *env, int here); //tested !! no protection
 //from parsing_utils.c
 t_token *new_token(char *value, t_type type, t_token *prev); //tested -- this one does not copy, just grabs;
 void	free_tokens(t_token *token);
+
+// I protected 'token' in get quote (i got a segfault without it)
 int		get_quote(char *token, char quote); //tested
 int		empty_quote(t_token *token);
 
@@ -148,6 +153,9 @@ void	free_cmds_new(t_cmd *prev, t_cmd *next);
 int		get_file(t_token *token, t_cmd *cmd, t_env *env);
 
 //from heredoc.c
+
+// pas mal de chgmts ici, creation d'un fork, gestion des signaux et de la var globale
+// du coup yaura pas mal de trucs a free en plus je pense, need to check les close aussi
 int		get_heredoc(char *value, t_env *env);
 
 //from get_commands.c
@@ -161,6 +169,7 @@ int		str_len_path(char *str);
 void	add_count_cmds(t_cmd *cmd); //-- unused rn
 
 //from extraction.c
+// assign_cmds is a bit modified to behave accordling to the global var
 int		extraction(t_token *token, t_cmd **prev, char *path, t_env *env); //testing... last step
 
 //from built_ins/
@@ -170,15 +179,23 @@ int		exportt(char **argv, t_env *env);
 int		unset(char **argv, t_env *env);
 
 //from built_ins.c
-int		built_in_att1(int func, char **argv, char **envp, t_env *env);
+// jai rajoute le t_cmd en param pour exit mais on changera quand on aura la grosse struc
+int		built_in_att1(int func, char **argv, char **envp, t_env *env, t_cmd *cmds);
 
 //!!!
 //everything above this comment is normed
 
-
+// cd and exit
+int	ft_exit(char **argv, t_cmd *cmds);
+int cd(char **args, t_env *env);
 // exec_cmds
 void execute_command_or_builtin(t_cmd *cmds, t_env *env, char **envp);
 //from our main_main.c
 int isis(char *cat, char *copy);
+
+//from autman
+void	sig_handler(int code);
+void	sig_handler_heredoc(int code);
+void	sig_do_nothing(int code);
 
 #endif

@@ -1,5 +1,5 @@
 CC=cc
-FLAGS=-Wall -Werror -Wextra
+FLAGS=-Wall -Werror -Wextra -g
 SRC=main_main.c\
 env/env_utils.c\
 env/create_env.c\
@@ -23,6 +23,8 @@ extraction/heredoc.c\
 extraction/extraction.c\
 built_ins/built_ins.c\
 built_ins/export_unset.c\
+built_ins/ft_exit.c\
+built_ins/cd.c\
 exec_cmds2.c\
 utils.c
 NAME=bi_minishell
