@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 16:02:06 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/23 16:02:22 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/03/26 17:40:20 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,17 +100,60 @@ int	get_heredoc(char *value, t_env *env)
 {
 	char	*line;
 	int		pipefd[2];
+	int		pid;
 
 	if (pipe(pipefd) == -1)
 		return (-1);
-	line = readline("> ");
-	while (!isis(line, value))
+	pid = fork();
+	if (pid == 0)
 	{
-		if (get_heredoc_inloop(line, env, pipefd) == -1)
-			return (-1);
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, &sig_handler_heredoc);
 		line = readline("> ");
+		signal(SIGQUIT, &sig_do_nothing);
+		signal(SIGINT, &sig_do_nothing);
+		if (g_err_code == 130)
+		{
+			// remarques-tu la petite ligne vide qui s'ajoute quand tu ctrl C dans un heredoc?
+			free(line);
+			close(pipefd[1]);
+			exit(21);
+			//return (pipefd[0]);
+		}
+		while (line && !isis(line, value))
+		{
+			if (get_heredoc_inloop(line, env, pipefd) == -1)
+				return (-1);
+			signal(SIGQUIT, SIG_IGN);
+			signal(SIGINT, &sig_handler_heredoc);
+			line = readline("> ");
+			signal(SIGQUIT, &sig_do_nothing);
+			signal(SIGINT, &sig_do_nothing);
+			if (g_err_code == 130)
+			{
+				free(line);
+				close(pipefd[1]);
+				//printf("%d\n", g_err_code);
+				exit(21);
+				//return (pipefd[0]);
+			}
+		}
+		free(line);
+		exit (0);
 	}
-	free(line);
+	int status = 0;
+
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+	{
+		if (WEXITSTATUS(status) == 21)
+		{
+			g_err_code = 130;
+			//sert a mettre a jour le g err code dans le parent
+			//ne pas oublier de mettre a jour last exit code
+			// attention, ne pas reinitialiser g err code ici, pcq ca empeche l exec apres
+		}
+	}
 	close(pipefd[1]);
 	return (pipefd[0]);
 }
