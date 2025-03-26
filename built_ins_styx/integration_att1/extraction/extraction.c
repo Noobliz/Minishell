@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extraction.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 17:02:44 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/23 17:02:47 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/03/26 17:11:48 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env)
 			token = token->next;
 		if (token->type == DIR)
 		{
-			check = get_file(token->previous, cmd, env);
+			if (g_err_code != 130)
+				check = get_file(token->previous, cmd, env);
+			else
+				return (-2);
 			if (check == -1 || check == -2)
 				return (check);
 			token = token->next;
