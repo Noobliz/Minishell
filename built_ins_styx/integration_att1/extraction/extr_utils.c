@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extr_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 15:49:02 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/23 15:49:14 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/03/25 15:18:16 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	is_built_in(char *function, t_cmd *cmd)
 	if (isis(function, "echo"))
 		cmd->built_in = 0;
 	else if (isis(function, "cd"))
-		cmd->built_in = 5;
+		cmd->built_in = 6;
 	else if (isis(function, "pwd"))
 		cmd->built_in = 1;
 	else if (isis(function, "export"))
