@@ -49,19 +49,56 @@ void print_cmds(t_cmd *cmd)
   }
 }
 //frees every single possible thing :] including the prompt (for me, because I malloc it, but you can easily get rid of that or send it NULL instead)
-int	free_all_things(t_env *env, t_token *token, t_cmd *cmd, char *prompt)
+// int	free_all_things(t_env *env, t_token *token, t_cmd *cmd, char *prompt)
+// {
+// 	if (env)
+// 		free_env(env);
+// 	if (token)
+// 		free_tokens(token);
+// 	if (cmd)
+// 		free_cmds_new(cmd, cmd->next);
+// 	if (prompt)
+// 		free(prompt);
+// 	rl_clear_history();
+// 	return (0);
+// }
+// new version qui remet les pointeurs à nul et prend line et clear history
+int	free_all_things(t_data *data)
 {
-	if (env)
-		free_env(env);
-	if (token)
-		free_tokens(token);
-	if (cmd)
-		free_cmds_new(cmd, cmd->next);
-	if (prompt)
-		free(prompt);
+	if (data->env_array)
+	{
+		free(data->env_array);
+		data->env_array = NULL;
+	}
+	if (data->env)
+	{
+		free_env(data->env);
+		data->env = NULL;
+	}
+	if (data->token)
+	{
+		free_tokens(data->token);
+		data->token = NULL;
+	}
+	if (data->cmds)
+	{
+		free_cmds_new(data->cmds, data->cmds->next);
+		data->cmds = NULL;
+	}
+	if (data->prompt)
+	{
+		free(data->prompt);
+		data->prompt = NULL;
+	}
+	// if (data->line)
+	// {
+	// 	free(data->line);
+	// 	data->line = NULL;
+	// }
 	rl_clear_history();
 	return (0);
 }
+
 //gets the current path from the environment and adds a '>' for clarity, can change this anytime
 char	*get_prompt(t_env *env)
 {
@@ -98,51 +135,51 @@ int	making_tokens(t_token **token, t_env *env)
 }
 //my exec, change this to what you're doing, mine just calls my built_ins with no fork :]
 //feel free to steal my infile/outfile workaround, I stole it myself like a true dev from some guy online
-int	tmp_exec(t_cmd *cmd, t_env *env)
-{
-	int	infile;
-	int	outfile;
+// int	tmp_exec(t_cmd *cmd, t_env *env)
+// {
+// 	int	infile;
+// 	int	outfile;
 
-	while (cmd)
-	{
-		if (cmd->infile > 0)
-		{
-			infile = dup(0);
-			if (infile == -1)
-				return (-1);
-			close(0);
-			if (dup2(cmd->infile, 0) == -1)
-				return (-1);
-		}
-		if (cmd->outfile > 0)
-		{
-			outfile = dup(1);
-			if (outfile == -1)
-				return (-1);
-			close(1);
-			if (dup2(cmd->outfile, 1) == -1)
-				return (-1);
-		}
-		if (built_in_att1(cmd->built_in, cmd->argv, NULL, env, cmd) == -1)
-			return (-1);
-		if (cmd->infile > 0)
-		{
-			close(0);
-			if (dup2(infile, 0) == -1)
-				return (-1);
-			close(infile);
-		}
-		if (cmd->outfile > 0)
-		{
-			close(1);
-			if (dup2(outfile, 1) == -1)
-				return (-1);
-			close(outfile);
-		}
-		cmd = cmd->next;
-	}
-	return (0);
-}
+// 	while (cmd)
+// 	{
+// 		if (cmd->infile > 0)
+// 		{
+// 			infile = dup(0);
+// 			if (infile == -1)
+// 				return (-1);
+// 			close(0);
+// 			if (dup2(cmd->infile, 0) == -1)
+// 				return (-1);
+// 		}
+// 		if (cmd->outfile > 0)
+// 		{
+// 			outfile = dup(1);
+// 			if (outfile == -1)
+// 				return (-1);
+// 			close(1);
+// 			if (dup2(cmd->outfile, 1) == -1)
+// 				return (-1);
+// 		}
+// 		if (built_in_att1(cmd->built_in, cmd->argv, NULL, env, cmd) == -1)
+// 			return (-1);
+// 		if (cmd->infile > 0)
+// 		{
+// 			close(0);
+// 			if (dup2(infile, 0) == -1)
+// 				return (-1);
+// 			close(infile);
+// 		}
+// 		if (cmd->outfile > 0)
+// 		{
+// 			close(1);
+// 			if (dup2(outfile, 1) == -1)
+// 				return (-1);
+// 			close(outfile);
+// 		}
+// 		cmd = cmd->next;
+// 	}
+// 	return (0);
+// }
 
 // transform the t_env to char ** for execve
 int	env_size(t_env *env)
@@ -207,95 +244,170 @@ void	sig_do_nothing(int code)
 	write(1, "\n", 1);
 }
 
-//and my main !! loops through readline with PWD prompt, until you send exit
 int	main(int argc, char **argv, char **envp)
 {
-	t_env	*env = NULL;
-	t_token	*token = NULL;
-	t_cmd	*cmd = NULL;
-	char	*line;
-	char	*prompt;
-	int	check;
-	char	**env_array;
+	t_data	data;
+	int		check;
 
-	g_err_code = 0;
-	//no arguments allowed
+	//to be replaced by ft_bzero
+	ft_bzero(&data, sizeof(t_data));
 	if (argc > 1 || argv[1])
 		return (0);
-	//create the environment
-	env = create_env(envp);
-	if (!env)
+
+	data.env = create_env(envp);
+	if (!data.env)
 		return (0);
-	//getting prompt for readline (here PWD env variable)
-	prompt = get_prompt(env);
-	if (!prompt)
-		return (free_all_things(env, token, cmd, NULL));
+
+	data.prompt = get_prompt(data.env);
+	if (!data.prompt)
+		return (free_all_things(&data));
+
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &sig_handler);
-	line = readline(prompt);
+	data.line = readline(data.prompt);
+	data.env_array = NULL;
 	if (g_err_code == 130)
-	{
-		// last_exit_code = g_err_code; --> l'idee c'est de mettre a jour pour $?
 		g_err_code = 0;
-	}
+
 	signal(SIGQUIT, &sig_do_nothing);
 	signal(SIGINT, &sig_do_nothing);
-	// if !line??? > pour ctrl D
-	while (line)
+
+	while (data.line)
 	{
-		add_history(line);
-		//creates first token based on the line read
-		token = new_token(line, CMD, NULL);
-		if (!token)
-		{
-			free(line);
-			return (free_all_things(env, token, cmd, prompt));
-		}
-		//goes into the parsing for tokens, assigning types etc.
-		check = making_tokens(&token, env);
+		add_history(data.line);
+
+		data.token = new_token(data.line, CMD, NULL);
+		if (!data.token)
+			return (free_all_things(&data));
+
+		check = making_tokens(&data.token, data.env);
 		if (check == -1)
-			return (free_all_things(env, token, cmd, prompt));
-		//print_tokens(token); //print tokens here to check in cas something goes wrong
-		//extracting info only if there were no syntax errors during tokenization
-		if (check != -2 && extraction(token, &cmd, get_env("PATH", env), env) < 0)
-			return (free_all_things(env, token, cmd, prompt));
-		//adding total number of cmds to every cmd (can delete this if unnecessary)
-		add_count_cmds(cmd);
-		//freeing tokens since they're no longer necessary
-		free_tokens(token);
-		token = NULL; //!!super important to reset the variables to avoid segfault
-		//print_cmds(cmd); // printing for error-tracing again
-		//exec here, you can replace with your own
-		env_array = env_to_array(env);
+			return (free_all_things(&data));
+
+		if (check != -2 && extraction(data.token, &data.cmds, get_env("PATH", data.env), data.env, &data) < 0)
+			return (free_all_things(&data));
+
+		add_count_cmds(data.cmds);
+		free_tokens(data.token);
+		data.token = NULL;
+
+		data.env_array = env_to_array(data.env);
+
 		if (g_err_code != 130)
 		{
-			if (cmd && (cmd->argv || cmd->next))
-				execute_command_or_builtin(cmd, env, env_array);
+			execute_command_or_builtin(&data);
 		}
 		else
-			g_err_code = 0;	
-			//reinit g_err_code a chaque fois pcq sinon y a plus rien qui marche
-			
-		//if (tmp_exec(cmd, env) == -1)
-			//return (free_all_things(env, token, cmd, prompt));
-		//same free/assign NULL combo for cmds now that we're not using them anymore
-		free(env_array);
-		env_array = NULL;
-		free_cmds(cmd);
-		cmd = NULL;
-		//getting next line -- we don't free line because free_tokens already does it
+			g_err_code = 0;
+
+		free(data.env_array);
+		data.env_array = NULL;
+		free_cmds_new(data.cmds, data.cmds->next);
+		data.cmds = NULL;
+
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, &sig_handler);
-		line = readline(prompt);
+		data.line = readline(data.prompt);
+
 		if (g_err_code == 130)
-		{
-			// last_exit_code = g_err_code; --> l'idee c'est de mettre a jour pour $?
 			g_err_code = 0;
-		}
+
 		signal(SIGINT, &sig_do_nothing);
 		signal(SIGQUIT, &sig_do_nothing);
 	}
-	//free last line which hasn't gone into tokens, then free everything !
-	free(line);
-	return (free_all_things(env, token, cmd, prompt));
+	//free(data.line);
+	return (free_all_things(&data));
 }
+
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	t_env	*env = NULL;
+// 	t_token	*token = NULL;
+// 	t_cmd	*cmd = NULL;
+// 	char	*line;
+// 	char	*prompt;
+// 	int	check;
+// 	char	**env_array;
+
+// 	g_err_code = 0;
+// 	//no arguments allowed
+// 	if (argc > 1 || argv[1])
+// 		return (0);
+// 	//create the environment
+// 	env = create_env(envp);
+// 	if (!env)
+// 		return (0);
+// 	//getting prompt for readline (here PWD env variable)
+// 	prompt = get_prompt(env);
+// 	if (!prompt)
+// 		return (free_all_things(env, token, cmd, NULL));
+// 	signal(SIGQUIT, SIG_IGN);
+// 	signal(SIGINT, &sig_handler);
+// 	line = readline(prompt);
+// 	if (g_err_code == 130)
+// 	{
+// 		// last_exit_code = g_err_code; --> l'idee c'est de mettre a jour pour $?
+// 		g_err_code = 0;
+// 	}
+// 	signal(SIGQUIT, &sig_do_nothing);
+// 	signal(SIGINT, &sig_do_nothing);
+// 	// if !line??? > pour ctrl D
+// 	while (line)
+// 	{
+// 		add_history(line);
+// 		//creates first token based on the line read
+// 		token = new_token(line, CMD, NULL);
+// 		if (!token)
+// 		{
+// 			free(line);
+// 			return (free_all_things(env, token, cmd, prompt));
+// 		}
+// 		//goes into the parsing for tokens, assigning types etc.
+// 		check = making_tokens(&token, env);
+// 		if (check == -1)
+// 			return (free_all_things(env, token, cmd, prompt));
+// 		//print_tokens(token); //print tokens here to check in cas something goes wrong
+// 		//extracting info only if there were no syntax errors during tokenization
+// 		if (check != -2 && extraction(token, &cmd, get_env("PATH", env), env) < 0)
+// 			return (free_all_things(env, token, cmd, prompt));
+// 		//adding total number of cmds to every cmd (can delete this if unnecessary)
+// 		add_count_cmds(cmd);
+// 		//freeing tokens since they're no longer necessary
+// 		free_tokens(token);
+// 		token = NULL; //!!super important to reset the variables to avoid segfault
+// 		//print_cmds(cmd); // printing for error-tracing again
+// 		//exec here, you can replace with your own
+// 		env_array = env_to_array(env);
+// 		if (g_err_code != 130)
+// 		{
+// 			if (cmd && (cmd->argv || cmd->next))
+// 				execute_command_or_builtin(cmd, env, env_array);
+// 		}
+// 		else
+// 			g_err_code = 0;	
+// 			//reinit g_err_code a chaque fois pcq sinon y a plus rien qui marche
+			
+// 		//if (tmp_exec(cmd, env) == -1)
+// 			//return (free_all_things(env, token, cmd, prompt));
+// 		//same free/assign NULL combo for cmds now that we're not using them anymore
+// 		free(env_array);
+// 		env_array = NULL;
+// 		free_cmds(cmd);
+// 		cmd = NULL;
+// 		//getting next line -- we don't free line because free_tokens already does it
+// 		signal(SIGQUIT, SIG_IGN);
+// 		signal(SIGINT, &sig_handler);
+// 		line = readline(prompt);
+// 		if (g_err_code == 130)
+// 		{
+// 			// last_exit_code = g_err_code; --> l'idee c'est de mettre a jour pour $?
+// 			g_err_code = 0;
+// 		}
+// 		signal(SIGINT, &sig_do_nothing);
+// 		signal(SIGQUIT, &sig_do_nothing);
+// 	}
+// 	//free last line which hasn't gone into tokens, then free everything !
+// 	free(line);
+// 	return (free_all_things(env, token, cmd, prompt));
+// }
+

@@ -26,7 +26,8 @@ built_ins/export_unset.c\
 built_ins/ft_exit.c\
 built_ins/cd.c\
 exec_cmds2.c\
-utils.c
+utils.c \
+libft_utils.c
 NAME=bi_minishell
 
 all: $(NAME)

@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:41:11 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/25 15:19:12 by lisux            ###   ########.fr       */
+/*   Updated: 2025/03/27 12:01:22 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,27 +73,27 @@ int	pwd(t_env *env)
 //here the function to call,
 //it distributes over to different built_ins
 //returns their error code (-1 malloc error, 0 success)
-int	built_in_att1(int func, char **argv, char **envp, t_env *env, t_cmd *cmds)
+int	built_in_att1(int func, char **argv, char **envp, t_data *data)
 {
-	if (envp && !env)
+	if (envp && !data->env)
 	{
-		env = create_env(envp);
-		if (!env)
+		data->env = create_env(envp);
+		if (!data->env)
 			return (-1);
 	}
 	if (func == 0)
 		return (echo(argv));
 	if (func == 1)
-		return (pwd(env));
+		return (pwd(data->env));
 	if (func == 2)
-		return (exportt(argv, env));
+		return (exportt(argv, data->env));
 	if (func == 3)
-		return (unset(argv, env));
+		return (unset(argv, data->env));
 	if (func == 4)
-		disp_env(env);
+		disp_env(data->env);
 	if (func == 5)
-		ft_exit(argv, cmds);
+		ft_exit(data);
 	if (func == 6)
-		cd(argv, env);
+		cd(argv, data->env);
 	return (0);
 }

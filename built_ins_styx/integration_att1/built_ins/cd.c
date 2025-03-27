@@ -3,38 +3,37 @@
 #include "../libbig.h"
 
 
-// need to replace all libc func by libft func
-
-char *get_env_value(t_env *env, const char *name)
+char *get_env_value(t_env *env, char *name)
 {
-	size_t len = strlen(name);
+	size_t len = len_str(name);
 
 	while (env)
 	{
-		if (strncmp(env->var, name, len) == 0 && env->var[len] == '=')
+		if (ft_strncmp(env->var, name, len) == 0 && env->var[len] == '=')
 			return (env->var + len + 1);
 		env = env->next;
 	}
 	return (NULL);
 }
 
-int set_env_var(t_env *env, const char *name, const char *value)
+int set_env_var(t_env *env, char *name, char *value)
 {
-	t_env *tmp = env;
-	size_t len = strlen(name);
+	t_env *tmp;
+	size_t len;
 	char *new_var;
+	t_env	*new;
 	
-	new_var = malloc(len + strlen(value) + 2); // name=value + '\0'
+	tmp = env;
+	len = len_str(name);
+	new_var = malloc(len + len_str(value) + 2);
 	if (!new_var)
 		return (-1);
-	strcpy(new_var, name);
-	strcat(new_var, "=");
-	strcat(new_var, value);
-
-
+	ft_strcpy(new_var, name);
+	ft_strcat(new_var, "=");
+	ft_strcat(new_var, value);
 	while (tmp)
 	{
-		if (strncmp(tmp->var, name, len) == 0 && tmp->var[len] == '=')
+		if (ft_strncmp(tmp->var, name, len) == 0 && tmp->var[len] == '=')
 		{
 			free(tmp->var);
 			tmp->var = new_var;
@@ -42,7 +41,7 @@ int set_env_var(t_env *env, const char *name, const char *value)
 		}
 		tmp = tmp->next;
 	}
-	t_env *new = malloc(sizeof(t_env));
+	new = malloc(sizeof(t_env));
 	if (!new)
 	{
 		free(new_var);

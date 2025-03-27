@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extraction.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 17:02:44 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/26 17:11:48 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/03/27 14:45:12 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 //extracts all the information from token
 //up to the next PIPE or until the end;
 //-1 malloc error, -2 for "please ignore this one"
-int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env)
+int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env, t_data *data)
 {
 	int	check;
 
@@ -26,7 +26,7 @@ int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env)
 		if (token->type == DIR)
 		{
 			if (g_err_code != 130)
-				check = get_file(token->previous, cmd, env);
+				check = get_file(token->previous, cmd, env, data);
 			else
 				return (-2);
 			if (check == -1 || check == -2)
@@ -50,7 +50,7 @@ int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env)
 //extracts all the info from the tokens
 //checks the validity of commands and in/outfiles
 //creates a cmd link -- then moves to end or next PIPE
-int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env)
+int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env, t_data *data)
 {
 	t_cmd	*cmds;
 	int		check;
@@ -62,7 +62,7 @@ int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env)
 	cmds = new_cmd(*prev);
 	if (!cmds)
 		return (-1);
-	check = assign_cmds(token, cmds, path, env);
+	check = assign_cmds(token, cmds, path, env, data);
 	if (check == -1)
 		return (-1);
 	if (check == -2)
@@ -73,5 +73,5 @@ int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env)
 		(*prev)->next = cmds;
 	while (token && token->type != PIPE)
 		token = token->next;
-	return (extraction(token, &cmds, path, env));
+	return (extraction(token, &cmds, path, env, data));
 }

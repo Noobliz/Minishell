@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_files.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 15:28:59 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/23 15:29:16 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/03/27 14:43:54 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ void	close_previous_fds(int type, t_cmd *cmd)
 //based on the REDIR before it in the tokens;
 //on error, prints the error and returns -2
 //(to signal to ignore that function);
-int	get_file(t_token *token, t_cmd *cmd, t_env *env)
+int	get_file(t_token *token, t_cmd *cmd, t_env *env, t_data *data)
 {
 	close_previous_fds(token->type, cmd);
 	if (token->type == HEREDOC)
-		cmd->infile = get_heredoc(token->next->value, env);
+		cmd->infile = get_heredoc(token->next->value, env, data);
 	if (token->type == REDIR_IN)
 		cmd->infile = open(token->next->value, O_RDONLY);
 	if (token->type == REDIR_OUT)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 16:02:06 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/26 17:40:20 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/03/27 15:09:30 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,15 +96,25 @@ static int	get_heredoc_inloop(char *line, t_env *env, int pipefd[2])
 //trying out heredoc, pipe ver.
 //tried the other version, but couldn't rewind
 //!! will have to add the env so i can take it with me up to here -- added
-int	get_heredoc(char *value, t_env *env)
+int	get_heredoc(char *value, t_env *env, t_data *data)
 {
 	char	*line;
 	int		pipefd[2];
 	int		pid;
 
 	if (pipe(pipefd) == -1)
+	{
+		perror("pipe");
+		data->last_exit_code = -1;
 		return (-1);
+	}
 	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		data->last_exit_code = -1;
+		return (-1);
+	}
 	if (pid == 0)
 	{
 		signal(SIGQUIT, SIG_IGN);
@@ -117,6 +127,8 @@ int	get_heredoc(char *value, t_env *env)
 			// remarques-tu la petite ligne vide qui s'ajoute quand tu ctrl C dans un heredoc?
 			free(line);
 			close(pipefd[1]);
+			close(pipefd[0]);
+			free_all_things(data);
 			exit(21);
 			//return (pipefd[0]);
 		}
@@ -133,12 +145,17 @@ int	get_heredoc(char *value, t_env *env)
 			{
 				free(line);
 				close(pipefd[1]);
+				close(pipefd[0]);
+				free_all_things(data);
 				//printf("%d\n", g_err_code);
 				exit(21);
 				//return (pipefd[0]);
 			}
 		}
 		free(line);
+		free_all_things(data);
+		close(pipefd[1]);
+		close(pipefd[0]);
 		exit (0);
 	}
 	int status = 0;

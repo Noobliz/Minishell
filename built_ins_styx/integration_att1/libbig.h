@@ -17,6 +17,20 @@
 //variable globale
 extern int g_err_code;
 
+// big structure
+
+typedef struct s_data
+{
+    char    *line;
+    char    *prompt;
+    char    **env_array;
+    int last_exit_code;
+    struct s_cmd    *cmds;
+    struct s_env    *env;
+    struct s_token  *token;
+}   t_data;
+
+//adding the **env
 typedef struct	s_env
 {
 	char			*var;
@@ -150,13 +164,13 @@ void	free_cmds(t_cmd *head);
 void	free_cmds_new(t_cmd *prev, t_cmd *next);
 
 //from get_files.c
-int		get_file(t_token *token, t_cmd *cmd, t_env *env);
+int		get_file(t_token *token, t_cmd *cmd, t_env *env, t_data *data);
 
 //from heredoc.c
 
 // pas mal de chgmts ici, creation d'un fork, gestion des signaux et de la var globale
 // du coup yaura pas mal de trucs a free en plus je pense, need to check les close aussi
-int		get_heredoc(char *value, t_env *env);
+int		get_heredoc(char *value, t_env *env, t_data *data);
 
 //from get_commands.c
 int		get_command(t_token *token, t_cmd *cmd, char *path); //all good here still
@@ -170,7 +184,7 @@ void	add_count_cmds(t_cmd *cmd); //-- unused rn
 
 //from extraction.c
 // assign_cmds is a bit modified to behave accordling to the global var
-int		extraction(t_token *token, t_cmd **prev, char *path, t_env *env); //testing... last step
+int		extraction(t_token *token, t_cmd **prev, char *path, t_env *env, t_data *data); //testing... last step
 
 //from built_ins/
 
@@ -179,23 +193,30 @@ int		exportt(char **argv, t_env *env);
 int		unset(char **argv, t_env *env);
 
 //from built_ins.c
-// jai rajoute le t_cmd en param pour exit mais on changera quand on aura la grosse struc
-int		built_in_att1(int func, char **argv, char **envp, t_env *env, t_cmd *cmds);
+
+int		built_in_att1(int func, char **argv, char **envp, t_data *data);
 
 //!!!
 //everything above this comment is normed
 
+// created from yours but added line + clear_history and reset pointers to null
+int	free_all_things(t_data *data);
 // cd and exit
-int	ft_exit(char **argv, t_cmd *cmds);
+int	ft_exit(t_data *data);
 int cd(char **args, t_env *env);
 // exec_cmds
-void execute_command_or_builtin(t_cmd *cmds, t_env *env, char **envp);
+void execute_command_or_builtin(t_data *data);
 //from our main_main.c
 int isis(char *cat, char *copy);
 
-//from autman
+//from autman (signals)
 void	sig_handler(int code);
 void	sig_handler_heredoc(int code);
 void	sig_do_nothing(int code);
 
+// libft utils
+void	ft_bzero(void *s, size_t n);
+char	*ft_strcat(char *dest, const char *src);
+int     ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_strcpy(char *dest, const char *src);
 #endif
