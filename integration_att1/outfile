@@ -1,0 +1,31 @@
+leak when cmd not found : lol cat >out | ls -l
+
+<<A<<B<<C
+bash : A : command not found
+
+------redirection sans espace après pipe, cmd est catégorisé type 2 :-------------------
+
+ls -l | cat >>outfile |<Makefile ls
+Token: [ls] | Type: [0]
+Token: [-l] | Type: [0]
+Token: [|] | Type: [1]
+Token: [cat] | Type: [0]
+Token: [(null)] | Type: [5]
+Token: [outfile] | Type: [2]
+Token: [(null)] | Type: [1]
+Token: [<Makefile] | Type: [3]
+Token: [ls] | Type: [2]
+bash : ls : No such file or directory
+
+-----------------------------------------
+
+CTRL+C dans heredoc, il reste un leak :
+
+==13384== 56 bytes in 1 blocks are still reachable in loss record 19 of 75
+==13384==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==13384==    by 0x10C82F: new_cmd (str_utils.c:66)
+==13384==    by 0x10DA3E: extraction (extraction.c:62)
+==13384==    by 0x109D40: main (main_main.c:290)
+
+
+Quand heredoc se termine normalement (eof), 1 leak aussi, le même
