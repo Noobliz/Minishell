@@ -14,6 +14,14 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 
+# define RESET   "\033[0m"
+# define RED     "\033[31m"
+# define GREEN   "\033[32m"
+# define YELLOW  "\033[33m"
+# define BLUE    "\033[34m"
+# define MAGENTA "\033[35m"
+# define CYAN    "\033[36m"
+# define GRAY    "\033[90m"
 //variable globale
 extern int g_err_code;
 
@@ -204,8 +212,10 @@ int	free_all_things(t_data *data);
 // cd and exit
 int	ft_exit(t_data *data);
 int cd(char **args, t_env *env);
-// exec_cmds
+// exec_cmds and exec_builtin alone
 void execute_command_or_builtin(t_data *data);
+int	exec_builtins(t_cmd *tmp, t_data *data);
+int	check_perm(t_data *data);
 //from our main_main.c
 int isis(char *cat, char *copy);
 
@@ -213,6 +223,11 @@ int isis(char *cat, char *copy);
 void	sig_handler(int code);
 void	sig_handler_heredoc(int code);
 void	sig_do_nothing(int code);
+
+// from exec_free_close_utils
+void	close_all_pipes(int pipe[2]);
+void	free_exit(t_data *data, int exit_code);
+void	close_fd_new(t_cmd *prev, t_cmd *next);
 
 // libft utils
 void	ft_bzero(void *s, size_t n);

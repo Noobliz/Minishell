@@ -264,7 +264,7 @@ int	main(int argc, char **argv, char **envp)
 
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &sig_handler);
-	data.line = readline(data.prompt);
+	data.line = readline("\e[0;94mMinishell> \e[0;94m\x1b[0m\033[0m");
 	data.env_array = NULL;
 	if (g_err_code == 130)
 		g_err_code = 0;
@@ -307,7 +307,7 @@ int	main(int argc, char **argv, char **envp)
 
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, &sig_handler);
-		data.line = readline(data.prompt);
+		data.line = readline("\e[0;94mMinishell> \e[0;94m\x1b[0m\033[0m");
 
 		if (g_err_code == 130)
 			g_err_code = 0;

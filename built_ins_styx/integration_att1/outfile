@@ -1,3 +1,23 @@
+
+quand builtin en debut de pipeline
+pwd | <Makefile ls 
+
+--> many leakkss + segfault
+
+Process terminating with default action of signal 13 (SIGPIPE)
+==793327==    at 0x49DE887: write (write.c:26)
+==793327==    by 0x407351: print (utils.c:22)
+==793327==    by 0x406502: pwd (built_ins.c:68)
+==793327==    by 0x4065C6: built_in_att1 (built_ins.c:87)
+==793327==    by 0x4080FC: builtin_in_fork (exec_cmds2.c:138)
+==793327==    by 0x40821A: execute_pipeline (exec_cmds2.c:169)
+==793327==    by 0x408523: execute_command_or_builtin (exec_cmds2.c:245)
+==793327==    by 0x401B91: main (main_main.c:298)
+
+
+
+
+
 heufhuieh << EOF
 mauvaise cmd avant heredoc ne lance pas heredoc (alors que dans bash si)
 

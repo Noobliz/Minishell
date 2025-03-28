@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   built_ins.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:41:11 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/27 12:01:22 by lisux            ###   ########.fr       */
+/*   Updated: 2025/03/28 16:59:10 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libbig.h"
 
-//echo's -n check for the newlines print
+// echo's -n check for the newlines print
 int	check_n(char *str)
 {
 	int	i;
@@ -29,7 +29,7 @@ int	check_n(char *str)
 	return (1);
 }
 
-//echo prints everything it has, with or without new_line dependent on above
+// echo prints everything it has, with or without new_line dependent on above
 int	echo(char **argv)
 {
 	int	new_line;
@@ -56,7 +56,7 @@ int	echo(char **argv)
 	return (0);
 }
 
-//prints the pwd variable
+// prints the pwd variable
 //(later will show the hidden var)
 int	pwd(t_env *env)
 {
@@ -70,9 +70,9 @@ int	pwd(t_env *env)
 	return (0);
 }
 
-//here the function to call,
-//it distributes over to different built_ins
-//returns their error code (-1 malloc error, 0 success)
+// here the function to call,
+// it distributes over to different built_ins
+// returns their error code (-1 malloc error, 0 success)
 int	built_in_att1(int func, char **argv, char **envp, t_data *data)
 {
 	if (envp && !data->env)

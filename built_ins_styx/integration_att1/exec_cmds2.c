@@ -1,60 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_cmds2.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/28 15:40:39 by lguiet            #+#    #+#             */
+/*   Updated: 2025/03/28 17:08:36 by lguiet           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "libbig.h"
 
-void	close_fd(t_cmd *head)
+void	msg_error(t_data *data, char *str, int code)
 {
-	if (head == NULL)
-		return ;
-	close_fd(head->next);
-	if (head->infile > 0)
-	{
-		close(head->infile);
-		head->infile = -2;
-	}
-	if (head->outfile > 0)
-	{
-		close(head->outfile);
-		head->outfile = -2;
-	}
+	perror(str);
+	data->last_exit_code = code;
 }
-
-static void	close_fd_bw(t_cmd *head)
-{
-	if (head == NULL)
-		return ;
-	close_fd_bw(head->previous);
-	if (head->infile > 0)
-	{
-		close(head->infile);
-		head->infile = -2;
-	}
-	if (head->outfile > 0)
-	{
-		close(head->outfile);
-		head->outfile = -2;
-	}
-}
-
-void	close_fd_new(t_cmd *prev, t_cmd *next)
-{
-	if (!prev && !next)
-		return ;
-	close_fd(next);
-	close_fd_bw(prev);
-}
-
-// void	wait_for_kids(t_cmd *cmds)
-// {
-// 	t_cmd	*tmp;
-// 	int		status;
-
-// 	tmp = cmds;
-// 	while (tmp)
-// 	{
-// 		waitpid(tmp->pid, &status, 0);
-// 		tmp = tmp->next;
-// 	}
-// }
 
 void	wait_for_kids(t_cmd *cmds)
 {
@@ -82,32 +44,18 @@ void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2],
 	if (current->infile == -1)
 	{
 		if (current->previous)
-		{
-			close(old_pipe[0]);
-			close(old_pipe[1]);
-		}
+			close_all_pipes(old_pipe);
 		if (current->next)
-		{
-			close(new_pipe[0]);
-			close(new_pipe[1]);
-		}
-		free_all_things(data);
-		exit(1);
+			close_all_pipes(new_pipe);
+		free_exit(data, 1);
 	}
 	if (current->outfile == -1)
 	{
 		if (current->previous)
-		{
-			close(old_pipe[0]);
-			close(old_pipe[1]);
-		}
+			close_all_pipes(old_pipe);
 		if (current->next)
-		{
-			close(new_pipe[0]);
-			close(new_pipe[1]);
-		}
-		free_all_things(data);
-		exit(1);
+			close_all_pipes(new_pipe);
+		free_exit(data, 1);
 	}
 }
 
@@ -120,49 +68,44 @@ void	update_pipe(t_cmd *current, int old_pipe[2], int new_pipe[2])
 	}
 }
 
-void	dup_and_close(t_cmd *tmp, int old_pipe[2], int new_pipe[2], int i)
+void	dup_in(t_cmd *tmp, t_data *data, int old_pipe[2])
 {
 	if (tmp->infile >= 0)
 	{
 		if (dup2(tmp->infile, STDIN_FILENO) == -1)
 		{
 			perror("dup2");
-			free_cmds_new(tmp, tmp->next);
-			exit(1);
+			free_exit(data, 1);
 		}
-		if (i > 0)
-		{
-			close(old_pipe[0]);
-			close(old_pipe[1]);
-		}
+		if (tmp->previous)
+			close_all_pipes(old_pipe);
 		close(tmp->infile);
 	}
-	else if (i > 0)
+	else if (tmp->previous)
 	{
-		printf("i = %d\n", i);
 		if (old_pipe[0] >= 0)
 		{
 			if (dup2(old_pipe[0], STDIN_FILENO) == -1)
 			{
 				perror(tmp->argv[0]);
 				close(old_pipe[1]);
-				free_cmds_new(tmp, tmp->next);
-				exit(1);
+				free_exit(data, 1);
 			}
 		}
-		close(old_pipe[0]);
-		close(old_pipe[1]);
+		close_all_pipes(old_pipe);
 	}
+}
+
+void	dup_out(t_cmd *tmp, t_data *data, int new_pipe[2])
+{
 	if (tmp->outfile >= 0)
 	{
 		if (dup2(tmp->outfile, STDOUT_FILENO) == -1)
 		{
 			perror("dup2");
-			free_cmds_new(tmp, tmp->next);
-			exit(1);
+			free_exit(data, 1);
 		}
-		close(new_pipe[0]);
-		close(new_pipe[1]);
+		close_all_pipes(new_pipe);
 		close(tmp->outfile);
 	}
 	else if (tmp->next)
@@ -173,76 +116,42 @@ void	dup_and_close(t_cmd *tmp, int old_pipe[2], int new_pipe[2], int i)
 			{
 				perror("dup2");
 				close(new_pipe[0]);
-				free_cmds_new(tmp, tmp->next);
-				exit(1);
+				free_exit(data, 1);
 			}
 		}
-		close(new_pipe[0]);
-		close(new_pipe[1]);
+		close_all_pipes(new_pipe);
 	}
 }
-int	exec_builtins(t_cmd *tmp, t_data *data)
-{
-	int	infile;
-	int	outfile;
 
-	if (tmp->infile >= 0)
+void	dup_and_close(t_cmd *tmp, int old_pipe[2], int new_pipe[2],
+		t_data *data)
+{
+	dup_in(tmp, data, old_pipe);
+	dup_out(tmp, data, new_pipe);
+}
+
+void	builtin_in_fork(t_cmd *tmp, t_data *data)
+{
+	if (tmp->built_in >= 0)
 	{
-		printf("infile");
-		infile = dup(0);
-		if (infile == -1)
-			return (-1);
-		close(0);
-		if (dup2(tmp->infile, STDIN_FILENO) == -1)
+		if (built_in_att1(tmp->built_in, tmp->argv, data->env_array, data) ==
+			-1)
 		{
-			perror("dup2");
-			return (-1);
+			close_fd_new(tmp, tmp->next);
+			free_exit(data, 1);
 		}
+		close_fd_new(tmp, tmp->next);
+		free_exit(data, 0);
 	}
-	if (tmp->outfile >= 0)
-	{
-		outfile = dup(1);
-		if (outfile == -1)
-			return (-1);
-		close(1);
-		if (dup2(tmp->outfile, STDOUT_FILENO) == -1)
-		{
-			perror("dup2");
-			return (-1);
-		}
-	}
-	if (built_in_att1(tmp->built_in, tmp->argv, data->env_array, data) == -1)
-	{
-		return (-1);
-	}
-	if (tmp->infile >= 0)
-	{
-		close(0);
-		if (dup2(infile, 0) == -1)
-		{
-			perror("dup2");
-			return (-1);
-		}
-	}
-	if (tmp->outfile >= 0)
-	{
-		close(1);
-		if (dup2(outfile, 1) == -1)
-		{
-			perror("dup2");
-			return (-1);
-		}
-	}
-	return (0);
 }
 
 void	execute_pipeline(t_data *data)
 {
 	t_cmd	*tmp;
 	int		i;
+	int		old_pipe[2];
+	int		new_pipe[2];
 
-	int old_pipe[2]; // Stocke le pipe précédent
-	int new_pipe[2]; // Stocke le pipe actuel
 	tmp = data->cmds;
 	i = 0;
 	while (tmp)
@@ -250,135 +159,90 @@ void	execute_pipeline(t_data *data)
 		if (tmp->next)
 		{
 			if (pipe(new_pipe) == -1)
-			{
-				perror("pipe");
-				data->last_exit_code = -1;
-				return ;
-			}
+				return (msg_error(data, "pipe", -1));
 		}
 		tmp->pid = fork();
 		if (tmp->pid == -1)
-		{
-			perror("fork");
-			data->last_exit_code = -1;
-			return ;
-		}
+			return (msg_error(data, "fork", -1));
 		if (tmp->pid == 0)
 		{
 			check_files(tmp, old_pipe, new_pipe, data);
-			dup_and_close(tmp, old_pipe, new_pipe, i);
-			if (tmp->built_in >= 0)
-			{
-				if (built_in_att1(tmp->built_in, tmp->argv, data->env_array, data) ==
-					-1)
-				{
-					free_all_things(data);
-					exit(1);
-				}
-				else
-				{
-					free_all_things(data);
-					exit(0);
-				}
-			}
+			dup_and_close(tmp, old_pipe, new_pipe, data);
+			builtin_in_fork(tmp, data);
 			close_fd_new(tmp, tmp->next);
-			if(!tmp->argv)
-			{
-				free_all_things(data);
-				exit(127);
-			}
-			if (tmp->argv && execve(tmp->argv[0], tmp->argv, data->env_array) == -1)
+			if (!tmp->argv)
+				free_exit(data, 127);
+			if (tmp->argv && execve(tmp->argv[0], tmp->argv, data->env_array) ==
+				-1)
 			{
 				perror(tmp->cmd);
-				free_all_things(data);
-				exit(127);
+				free_exit(data, 127);
 			}
 		}
 		if (i > 0)
-		{
-			close(old_pipe[0]);
-			close(old_pipe[1]);
-		}
+			close_all_pipes(old_pipe);
 		update_pipe(tmp, old_pipe, new_pipe);
 		tmp = tmp->next;
 		i++;
 	}
-	if (data->cmds->next)
-	{
-		close(old_pipe[0]);
-		close(old_pipe[1]);
-	}
+	close_all_pipes(old_pipe);
 	wait_for_kids(data->cmds);
+}
+
+void	dup_files(t_cmd *tmp, t_data *data)
+{
+	if (tmp->infile >= 0)
+	{
+		if (dup2(tmp->infile, STDIN_FILENO) == -1)
+		{
+			perror("dup2");
+			close_fd_new(tmp, tmp->next);
+			free_exit(data, 1);
+		}
+	}
+	if (tmp->outfile >= 0)
+	{
+		if (dup2(tmp->outfile, STDOUT_FILENO) == -1)
+		{
+			perror("dup2");
+			close_fd_new(tmp, tmp->next);
+			free_exit(data, 1);
+		}
+	}
 }
 
 void	execute_command_or_builtin(t_data *data)
 {
 	t_cmd	*tmp;
-	int		status;
 
 	if (!data->cmds)
 		return ;
 	tmp = data->cmds;
 	if (data->cmds->next == NULL)
 	{
-		if (!(data->cmds && (data->cmds->argv)))
-		{
-			if(data->cmds->infile == -1 || data->cmds->outfile == -1)
-				data->last_exit_code = 1;
-			else
-				data->last_exit_code = 127;
+		if (check_perm(data) == -1)
 			return ;
-		}
 		if (data->cmds->built_in >= 0)
-		{
 			data->last_exit_code = exec_builtins(tmp, data);
-			return ;
-		}
-		tmp->pid = fork();
-		if (tmp->pid == -1)
+		else
 		{
-			data->last_exit_code = -1;
-			perror("fork");
-			return ;
-		}
-		if (tmp->pid == 0)
-		{
-			if (tmp->infile >= 0)
+			tmp->pid = fork();
+			if (tmp->pid == -1)
+				return (msg_error(data, "fork", -1));
+			if (tmp->pid == 0)
 			{
-				if (dup2(tmp->infile, STDIN_FILENO) == -1)
+				dup_files(tmp, data);
+				close_fd_new(tmp, tmp->next);
+				if (tmp->argv && execve(tmp->argv[0], tmp->argv,
+						data->env_array) == -1)
 				{
-					perror("dup2");
-					close_fd_new(tmp, tmp->next);
-					free_all_things(data);
-					exit(1);
+					perror(tmp->cmd);
+					free_exit(data, 127);
 				}
 			}
-			if (tmp->outfile >= 0)
-			{
-				if (dup2(tmp->outfile, STDOUT_FILENO) == -1)
-				{
-					perror("dup2");
-					close_fd_new(tmp, tmp->next);
-					free_all_things(data);
-					exit(1);
-				}
-			}
-			close_fd_new(tmp, tmp->next);
-			if (tmp->argv && execve(tmp->argv[0], tmp->argv, data->env_array) == -1)
-			{
-				perror(tmp->cmd);
-				free_all_things(data);
-				exit(127);
-			}
+			wait_for_kids(tmp);
 		}
-		waitpid(tmp->pid, &status, 0);
-		if (WIFEXITED(status))
-			data->last_exit_code = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			data->last_exit_code = 128 + WTERMSIG(status);
-		return ;
 	}
-	// if pipeline
 	else
 		execute_pipeline(data);
 }
