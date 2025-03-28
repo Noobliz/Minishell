@@ -1,3 +1,5 @@
+heufhuieh << EOF
+mauvaise cmd avant heredoc ne lance pas heredoc (alors que dans bash si)
 
 CTRL+C dans heredoc, il reste un leak :
 
