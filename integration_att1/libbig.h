@@ -14,6 +14,14 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 
+# define RESET   "\033[0m"
+# define RED     "\033[31m"
+# define GREEN   "\033[32m"
+# define YELLOW  "\033[33m"
+# define BLUE    "\033[34m"
+# define MAGENTA "\033[35m"
+# define CYAN    "\033[36m"
+# define GRAY    "\033[90m"
 //variable globale
 extern int g_err_code;
 
@@ -24,7 +32,7 @@ typedef struct s_data
     char    *line;
     char    *prompt;
     char    **env_array;
-    int     last_exit_code;
+    int last_exit_code;
     struct s_cmd    *cmds;
     struct s_env    *env;
     struct s_token  *token;
@@ -51,8 +59,8 @@ typedef enum e_type
 
 typedef struct s_token
 {
-    char            *value;
-    t_type          type;
+    char            *value;   // (ex: "ls", "|", ">", etc.)
+    t_type          type;     // (ex : CMD, ARGS, PIPE etc.)
     struct s_token	*previous;
     struct s_token	*next;
 }   t_token;
@@ -184,7 +192,7 @@ void	add_count_cmds(t_cmd *cmd); //-- unused rn
 
 //from extraction.c
 // assign_cmds is a bit modified to behave accordling to the global var
-int		extraction(t_token *token, t_cmd **prev, char *path, t_data *data); //testing... last step
+int		extraction(t_token *token, t_cmd **prev, char *path, t_env *env, t_data *data); //testing... last step
 
 //from built_ins/
 
@@ -199,20 +207,27 @@ int		built_in_att1(int func, char **argv, char **envp, t_data *data);
 //!!!
 //everything above this comment is normed
 
-// created from yours but added clear_history **env and reset pointers to null
+// created from yours but added line + clear_history and reset pointers to null
 int	free_all_things(t_data *data);
-// from builtins
+// cd and exit
 int	ft_exit(t_data *data);
 int cd(char **args, t_env *env);
-// exec_cmds
+// exec_cmds and exec_builtin alone
 void execute_command_or_builtin(t_data *data);
+int	exec_builtins(t_cmd *tmp, t_data *data);
+int	check_perm(t_data *data);
 //from our main_main.c
 int isis(char *cat, char *copy);
 
-//from autman (in main for now)
+//from autman (signals)
 void	sig_handler(int code);
 void	sig_handler_heredoc(int code);
 void	sig_do_nothing(int code);
+
+// from exec_free_close_utils
+void	close_all_pipes(int pipe[2]);
+void	free_exit(t_data *data, int exit_code);
+void	close_fd_new(t_cmd *prev, t_cmd *next);
 
 // libft utils
 void	ft_bzero(void *s, size_t n);

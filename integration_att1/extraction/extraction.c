@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 17:02:44 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/27 15:53:34 by lisux            ###   ########.fr       */
+/*   Updated: 2025/03/27 14:45:12 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env, t_data *data
 //extracts all the info from the tokens
 //checks the validity of commands and in/outfiles
 //creates a cmd link -- then moves to end or next PIPE
-int	extraction(t_token *token, t_cmd **prev, char *path, t_data *data)
+int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env, t_data *data)
 {
 	t_cmd	*cmds;
 	int		check;
@@ -62,7 +62,7 @@ int	extraction(t_token *token, t_cmd **prev, char *path, t_data *data)
 	cmds = new_cmd(*prev);
 	if (!cmds)
 		return (-1);
-	check = assign_cmds(token, cmds, path, data->env, data);
+	check = assign_cmds(token, cmds, path, env, data);
 	if (check == -1)
 		return (-1);
 	if (check == -2)
@@ -73,5 +73,5 @@ int	extraction(t_token *token, t_cmd **prev, char *path, t_data *data)
 		(*prev)->next = cmds;
 	while (token && token->type != PIPE)
 		token = token->next;
-	return (extraction(token, &cmds, path, data));
+	return (extraction(token, &cmds, path, env, data));
 }

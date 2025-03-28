@@ -90,6 +90,11 @@ int	free_all_things(t_data *data)
 		free(data->prompt);
 		data->prompt = NULL;
 	}
+	// if (data->line)
+	// {
+	// 	free(data->line);
+	// 	data->line = NULL;
+	// }
 	rl_clear_history();
 	return (0);
 }
@@ -259,7 +264,7 @@ int	main(int argc, char **argv, char **envp)
 
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &sig_handler);
-	data.line = readline(data.prompt);
+	data.line = readline("\e[0;94mMinishell> \e[0;94m\x1b[0m\033[0m");
 	data.env_array = NULL;
 	if (g_err_code == 130)
 		g_err_code = 0;
@@ -279,7 +284,7 @@ int	main(int argc, char **argv, char **envp)
 		if (check == -1)
 			return (free_all_things(&data));
 
-		if (check != -2 && extraction(data.token, &data.cmds, get_env("PATH", data.env), &data) < 0)
+		if (check != -2 && extraction(data.token, &data.cmds, get_env("PATH", data.env), data.env, &data) < 0)
 			return (free_all_things(&data));
 
 		add_count_cmds(data.cmds);
@@ -302,7 +307,7 @@ int	main(int argc, char **argv, char **envp)
 
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, &sig_handler);
-		data.line = readline(data.prompt);
+		data.line = readline("\e[0;94mMinishell> \e[0;94m\x1b[0m\033[0m");
 
 		if (g_err_code == 130)
 			g_err_code = 0;
