@@ -62,15 +62,15 @@ int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env, t_data *dat
 	cmds = new_cmd(*prev);
 	if (!cmds)
 		return (-1);
+	if (!*prev)
+		*prev = cmds;
+	else
+		(*prev)->next = cmds;
 	check = assign_cmds(token, cmds, path, env, data);
 	if (check == -1)
 		return (-1);
 	if (check == -2)
 		ignore_cmd(cmds);
-	if (!*prev)
-		*prev = cmds;
-	else
-		(*prev)->next = cmds;
 	while (token && token->type != PIPE)
 		token = token->next;
 	return (extraction(token, &cmds, path, env, data));
