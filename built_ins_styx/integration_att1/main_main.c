@@ -243,7 +243,7 @@ int	main(int argc, char **argv, char **envp)
 
 		data.env_array = env_to_array(data.env);
 
-		if (g_err_code != 130)
+		if (check != -2 && g_err_code != 130)
 		{
 			execute_command_or_builtin(&data);
 		}
@@ -252,7 +252,8 @@ int	main(int argc, char **argv, char **envp)
 		g_err_code = 0;
 		free(data.env_array);
 		data.env_array = NULL;
-		free_cmds_new(data.cmds, data.cmds->next);
+		if (data.cmds)
+			free_cmds_new(data.cmds, data.cmds->next);
 		data.cmds = NULL;
 
 		signal(SIGQUIT, SIG_IGN);
