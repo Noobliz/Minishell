@@ -6,12 +6,11 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:22:30 by lguiet            #+#    #+#             */
-/*   Updated: 2025/03/28 16:27:29 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/03/31 15:32:34 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libbig.h"
-
 
 int	check_perm(t_data *data)
 {
@@ -36,6 +35,7 @@ int	restore_in_out(t_cmd *tmp, int infile, int outfile)
 			perror("dup2");
 			return (-1);
 		}
+		close(infile);
 	}
 	if (tmp->outfile >= 0)
 	{
@@ -45,6 +45,7 @@ int	restore_in_out(t_cmd *tmp, int infile, int outfile)
 			perror("dup2");
 			return (-1);
 		}
+		close(outfile);
 	}
 	return (0);
 }

@@ -62,7 +62,6 @@ void print_cmds(t_cmd *cmd)
 // 	rl_clear_history();
 // 	return (0);
 // }
-// new version qui remet les pointeurs à nul et prend line et clear history
 int	free_all_things(t_data *data)
 {
 	if (data->env_array)
@@ -90,11 +89,6 @@ int	free_all_things(t_data *data)
 		free(data->prompt);
 		data->prompt = NULL;
 	}
-	// if (data->line)
-	// {
-	// 	free(data->line);
-	// 	data->line = NULL;
-	// }
 	rl_clear_history();
 	return (0);
 }
@@ -133,53 +127,6 @@ int	making_tokens(t_token **token, t_env *env)
 	cmd_shuffle(*token);
 	return (0);
 }
-//my exec, change this to what you're doing, mine just calls my built_ins with no fork :]
-//feel free to steal my infile/outfile workaround, I stole it myself like a true dev from some guy online
-// int	tmp_exec(t_cmd *cmd, t_env *env)
-// {
-// 	int	infile;
-// 	int	outfile;
-
-// 	while (cmd)
-// 	{
-// 		if (cmd->infile > 0)
-// 		{
-// 			infile = dup(0);
-// 			if (infile == -1)
-// 				return (-1);
-// 			close(0);
-// 			if (dup2(cmd->infile, 0) == -1)
-// 				return (-1);
-// 		}
-// 		if (cmd->outfile > 0)
-// 		{
-// 			outfile = dup(1);
-// 			if (outfile == -1)
-// 				return (-1);
-// 			close(1);
-// 			if (dup2(cmd->outfile, 1) == -1)
-// 				return (-1);
-// 		}
-// 		if (built_in_att1(cmd->built_in, cmd->argv, NULL, env, cmd) == -1)
-// 			return (-1);
-// 		if (cmd->infile > 0)
-// 		{
-// 			close(0);
-// 			if (dup2(infile, 0) == -1)
-// 				return (-1);
-// 			close(infile);
-// 		}
-// 		if (cmd->outfile > 0)
-// 		{
-// 			close(1);
-// 			if (dup2(outfile, 1) == -1)
-// 				return (-1);
-// 			close(outfile);
-// 		}
-// 		cmd = cmd->next;
-// 	}
-// 	return (0);
-// }
 
 // transform the t_env to char ** for execve
 int	env_size(t_env *env)
@@ -237,6 +184,11 @@ void	sig_handler_heredoc(int code)
 	g_err_code = 130;
 	close(0);
 }
+void	sig_handler_sigpipe(int code)
+{
+	(void)code;
+	g_err_code = 13;
+}
 
 void	sig_do_nothing(int code)
 {
@@ -249,7 +201,6 @@ int	main(int argc, char **argv, char **envp)
 	t_data	data;
 	int		check;
 
-	//to be replaced by ft_bzero
 	ft_bzero(&data, sizeof(t_data));
 	if (argc > 1 || argv[1])
 		return (0);
@@ -261,14 +212,13 @@ int	main(int argc, char **argv, char **envp)
 	data.prompt = get_prompt(data.env);
 	if (!data.prompt)
 		return (free_all_things(&data));
-
+	signal(SIGPIPE, &sig_handler_sigpipe);
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &sig_handler);
 	data.line = readline("\e[0;94mMinishell> \e[0;94m\x1b[0m\033[0m");
 	data.env_array = NULL;
 	if (g_err_code == 130)
 		g_err_code = 0;
-
 	signal(SIGQUIT, &sig_do_nothing);
 	signal(SIGINT, &sig_do_nothing);
 
@@ -297,9 +247,9 @@ int	main(int argc, char **argv, char **envp)
 		{
 			execute_command_or_builtin(&data);
 		}
-		else
-			g_err_code = 0;
-
+		if (g_err_code == 13)
+			free_all_things(&data);
+		g_err_code = 0;
 		free(data.env_array);
 		data.env_array = NULL;
 		free_cmds_new(data.cmds, data.cmds->next);
@@ -308,10 +258,8 @@ int	main(int argc, char **argv, char **envp)
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, &sig_handler);
 		data.line = readline("\e[0;94mMinishell> \e[0;94m\x1b[0m\033[0m");
-
 		if (g_err_code == 130)
 			g_err_code = 0;
-
 		signal(SIGINT, &sig_do_nothing);
 		signal(SIGQUIT, &sig_do_nothing);
 	}

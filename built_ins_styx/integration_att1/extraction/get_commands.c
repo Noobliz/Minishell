@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_commands.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 15:38:37 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/23 15:38:54 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/03/31 13:32:09 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libbig.h"
 
-//modded join for the specific path needs
+// modded join for the specific path needs
 static char	*join_path(char *s, char *s2)
 {
 	int		len;
@@ -42,15 +42,15 @@ static char	*join_path(char *s, char *s2)
 	return (str);
 }
 
-//finds the command if it's not a built_in
-//through PATH
+// finds the command if it's not a built_in
+// through PATH
 static int	find_command(char *paths, char **command)
 {
 	int		i;
 	char	*com;
 
 	i = -1;
-	while (paths[i + 1])
+	while (paths && paths[i + 1])
 	{
 		if (i == -1 || paths[i] == ':')
 		{
@@ -72,7 +72,7 @@ static int	find_command(char *paths, char **command)
 	return (0);
 }
 
-//fills the argv with copies of all the command's options
+// fills the argv with copies of all the command's options
 static char	**fill_argv(char *first, t_token *token, char **tab)
 {
 	int	i;
@@ -95,8 +95,8 @@ static char	**fill_argv(char *first, t_token *token, char **tab)
 	return (tab);
 }
 
-//creates the argv variable by counting the amount of options
-//then fills it with above function;
+// creates the argv variable by counting the amount of options
+// then fills it with above function;
 static char	**get_argv(char *first, t_token *token)
 {
 	int		ct;
@@ -117,9 +117,9 @@ static char	**get_argv(char *first, t_token *token)
 	return (tab);
 }
 
-//sets the variables cmd->cmd, cmd->argv
+// sets the variables cmd->cmd, cmd->argv
 //(cmd->built_in if built_in)
-//returns -1 on malloc issues, -2 if the cmd should be ignored
+// returns -1 on malloc issues, -2 if the cmd should be ignored
 int	get_command(t_token *token, t_cmd *cmd, char *path)
 {
 	char	*str;
