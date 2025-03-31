@@ -12,12 +12,12 @@
 
 #include "../libbig.h"
 
-//extracts all the information from token
-//up to the next PIPE or until the end;
-//-1 malloc error, -2 for "please ignore this one"
-int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env, t_data *data)
+//alright, so plan is we separate this one into two functions :: one checks files(first, and if issue return immediately)
+//one checks commands (second), and so same;
+
+static int	checking_files(t_token *token, t_cmd *cmd, t_data *data)
 {
-	int	check;
+	int check;
 
 	while (token)
 	{
@@ -26,13 +26,25 @@ int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env, t_data *data
 		if (token->type == DIR)
 		{
 			if (g_err_code != 130)
-				check = get_file(token->previous, cmd, env, data);
+				check = get_file(token->previous, cmd, data->env, data);
 			else
 				return (-2);
 			if (check == -1 || check == -2)
 				return (check);
-			token = token->next;
 		}
+		token = token->next;
+		if (!token || token->type == PIPE)
+			break ;
+	}
+	return (0);
+}
+
+static int	checking_cmd(t_token *token, t_cmd *cmd, char *path)
+{
+	int	check;
+
+	while (token)
+	{
 		if (token && token->type == CMD)
 		{
 			check = get_command(token, cmd, path);
@@ -42,15 +54,31 @@ int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_env *env, t_data *data
 				token = token->next;
 		}
 		if (!token || token->type == PIPE)
-			return (0);
+			break ;
 	}
+	return (0);
+}
+
+//extracts all the information from token
+//up to the next PIPE or until the end;
+//-1 malloc error, -2 for "please ignore this one"
+static int	assign_cmds(t_token *token, t_cmd *cmd, char *path, t_data *data)
+{
+	int	check;
+
+	check = checking_files(token, cmd, data);
+	if (check < 0)
+		return (check);
+	check = checking_cmd(token, cmd, path);
+	if (check < 0)
+		return (check);
 	return (0);
 }
 
 //extracts all the info from the tokens
 //checks the validity of commands and in/outfiles
 //creates a cmd link -- then moves to end or next PIPE
-int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env, t_data *data)
+int	extraction(t_token *token, t_cmd **prev, char *path, t_data *data)
 {
 	t_cmd	*cmds;
 	int		check;
@@ -66,12 +94,12 @@ int	extraction(t_token *token, t_cmd **prev, char *path, t_env *env, t_data *dat
 		*prev = cmds;
 	else
 		(*prev)->next = cmds;
-	check = assign_cmds(token, cmds, path, env, data);
+	check = assign_cmds(token, cmds, path, data);
 	if (check == -1)
 		return (-1);
 	if (check == -2)
 		ignore_cmd(cmds);
 	while (token && token->type != PIPE)
 		token = token->next;
-	return (extraction(token, &cmds, path, env, data));
+	return (extraction(token, &cmds, path, data));
 }

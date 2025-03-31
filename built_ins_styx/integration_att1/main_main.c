@@ -104,14 +104,49 @@ char	*get_prompt(t_env *env)
 		return (NULL);
 	return (str);
 }
+
+//hasty itoa (for the err_code)
+char	*num_str(int code)
+{
+	char	*lec;
+	int	len;
+	int	tens;
+
+	len = 0;
+	tens = 1;
+	while (code / tens > 0)
+	{
+		len++;
+		tens = tens * 10;
+	}
+	if (code == 0)
+		len = 1;
+	lec = malloc(len + 1);
+	if (!lec)
+		return (NULL);
+	lec[len] = '\0';
+	while (len > 0)
+	{
+		lec[len -1] = code % 10 + '0';
+		len--;
+		code = code / 10;
+	}
+	return (lec);
+}
+
 //does all of the token related tasks and returns error if error there is (-2 syntax error, -1 malloc error, 0 success), protected for line == NULL
-int	making_tokens(t_token **token, t_env *env)
+int	making_tokens(t_token **token, t_env *env, int code)
 {
 	int	check;
+	char	*lec;
 
 	if (!(*token)->value || !(*token)->value[0])
 		return (-2);
-	check = parsing_pt1(*token, env);
+	lec = num_str(code);
+	if (!lec)
+		return (-1);
+	check = parsing_pt1(*token, env, lec);
+	free(lec);
 	if (check < 0)
 		return (check);
 	check = fix_quotes(*token);
@@ -230,15 +265,16 @@ int	main(int argc, char **argv, char **envp)
 		if (!data.token)
 			return (free_all_things(&data));
 
-		check = making_tokens(&data.token, data.env);
+		check = making_tokens(&data.token, data.env, data.last_exit_code);
 		if (check == -1)
 			return (free_all_things(&data));
 
-		if (check != -2 && extraction(data.token, &data.cmds, get_env("PATH", data.env), data.env, &data) < 0)
+		if (check != -2 && extraction(data.token, &data.cmds, get_env("PATH", data.env), &data) < 0)
 			return (free_all_things(&data));
 
 		add_count_cmds(data.cmds);
 		free_tokens(data.token);
+		print_cmds(data.cmds);
 		data.token = NULL;
 
 		data.env_array = env_to_array(data.env);

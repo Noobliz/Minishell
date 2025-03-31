@@ -107,32 +107,46 @@ static int	handle_reg_var(t_token *token, t_env *env, int i)
 	return (0);
 }
 
+static int handle_lec(t_token *token, char *lec, int i)
+{
+	char	*str;
+
+	str = replace(token->value, lec, i, i + 2);
+	if (!str)
+		return (-1);
+	free(token->value);
+	token->value = str;
+	return (0);
+}
+
 //celle-ci prend soit juste la premiere variable (here != -1)
 //soit toutes les variables (here == -1)
 //et elle remplace le $VAR par sa valeur dans la token->value
-int	handle_var(t_token *token, t_env *env, int here)
+int	handle_var(t_token *token, t_env *env, int here, char *lec)
 {
 	int	i;
 
 	i = 0;
 	while (token->value[i] && !(token->value[i] == '$'
 			&& (is_alphanum(token->value[i + 1])
-				|| token->value[i + 1] == '{')))
+				|| token->value[i + 1] == '{' || token->value[i + 1] == '?')))
 		i++;
 	if (!token->value[i])
 		return (0);
 	if (token->value[i + 1] == '{')
 	{
 		i = handle_acc_var(token, env, i);
-		if (i == -2 || here > -1)
+		if (i < 0 || here > -1)
 			return (i);
 		else
-			return (handle_var(token, env, here));
+			return (handle_var(token, env, here, lec));
 	}
 	if (is_alphanum(token->value[i + 1])
 		&& handle_reg_var(token, env, i) == -1)
 		return (-1);
+	if (token->value[i + 1] == '?' && handle_lec(token, lec, i) == -1)
+		return (-1);
 	if (here == -1)
-		return (handle_var(token, env, here));
+		return (handle_var(token, env, here, lec));
 	return (0);
 }

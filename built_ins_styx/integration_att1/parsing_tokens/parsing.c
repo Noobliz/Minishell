@@ -36,7 +36,7 @@ static int	handle_sgquotes(t_token *current)
 }
 
 //adjusts the tokens to take the double quotes into account
-static int	handle_dbquotes(t_token *current, t_env *env)
+static int	handle_dbquotes(t_token *current, t_env *env, char *lec)
 {
 	int	i;
 
@@ -53,7 +53,7 @@ static int	handle_dbquotes(t_token *current, t_env *env)
 			return (empty_quote(current));
 		if (split_token(current, i) == -1)
 			return (-1);
-		if (handle_var(current, env, -1) == -1)
+		if (handle_var(current, env, -1, lec) == -1)
 			return (-1);
 		return (0);
 	}
@@ -61,19 +61,19 @@ static int	handle_dbquotes(t_token *current, t_env *env)
 }
 
 //distribution station :: var or quotes
-static int	distribute_parsing(t_token *current, int i, t_env *env)
+static int	distribute_parsing(t_token *current, int i, t_env *env, char *lec)
 {
 	if (current->value[i] == '\'')
 		return (handle_sgquotes(current));
 	if (current->value[i] == '\"')
-		return (handle_dbquotes(current, env));
+		return (handle_dbquotes(current, env, lec));
 	if (current->value[i] == '$')
-		return (handle_var(current, env, i));
+		return (handle_var(current, env, i, lec));
 	return (0);
 }
 
 //parsing per token
-static int	parsing_inloop(t_token *current, t_env *env)
+static int	parsing_inloop(t_token *current, t_env *env, char *lec)
 {
 	int	i;
 	int	res;
@@ -84,7 +84,7 @@ static int	parsing_inloop(t_token *current, t_env *env)
 		if (current->value[i] == '\'' || current->value[i] == '\"'
 			|| current->value[i] == '$')
 		{
-			res = distribute_parsing(current, i, env);
+			res = distribute_parsing(current, i, env, lec);
 			if (res == -1 || res == -2)
 				return (res);
 			if (current->value[i] == '\'' || current->value[i] == '\"')
@@ -101,8 +101,9 @@ static int	parsing_inloop(t_token *current, t_env *env)
 	return (0);
 }
 
+//here, and then in double / handle_var and then same switch in heredoc. take in char * already created, use it like a get_env would return;
 //full quotes and vars parsing
-int	parsing_pt1(t_token *tokens, t_env *env)
+int	parsing_pt1(t_token *tokens, t_env *env, char *lec)
 {
 	t_token	*current;
 	int		res;
@@ -110,7 +111,7 @@ int	parsing_pt1(t_token *tokens, t_env *env)
 	current = tokens;
 	while (current)
 	{
-		res = parsing_inloop(current, env);
+		res = parsing_inloop(current, env, lec);
 		if (res == -1 || res == -2)
 			return (res);
 		current = current->next;

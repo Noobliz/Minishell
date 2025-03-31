@@ -118,7 +118,7 @@ int		fix_quotes(t_token *token); //fixes previous quote splits if necessary, tri
 
 //from handle_var.c
 char	*replace(char *s, char *var, int where, int next); //tested, no protection
-int		handle_var(t_token *token, t_env *env, int here); //tested !! no protections for token==NULL, wouldn't get that far in //updated for accolades now, works well (possible future syntax errors :])
+int		handle_var(t_token *token, t_env *env, int here, char *lec); //tested !! no protections for token==NULL, wouldn't get that far in //updated for accolades now, works well (possible future syntax errors :])
 
 //from parsing_utils.c
 t_token *new_token(char *value, t_type type, t_token *prev); //tested -- this one does not copy, just grabs;
@@ -133,7 +133,7 @@ char	**split_once(char *str, int quote); //tested, not protected
 int		split_token(t_token *token, int	quote); //tested
 
 //from parsing.c
-int		parsing_pt1(t_token *tokens, t_env *env); //last sprint
+int		parsing_pt1(t_token *tokens, t_env *env, char *lec); //last sprint
 
 //from syntax
 
@@ -192,7 +192,7 @@ void	add_count_cmds(t_cmd *cmd); //-- unused rn
 
 //from extraction.c
 // assign_cmds is a bit modified to behave accordling to the global var
-int		extraction(t_token *token, t_cmd **prev, char *path, t_env *env, t_data *data); //testing... last step
+int		extraction(t_token *token, t_cmd **prev, char *path, t_data *data); //testing... last step
 
 //from built_ins/
 
