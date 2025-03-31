@@ -274,7 +274,6 @@ int	main(int argc, char **argv, char **envp)
 
 		add_count_cmds(data.cmds);
 		free_tokens(data.token);
-		print_cmds(data.cmds);
 		data.token = NULL;
 
 		data.env_array = env_to_array(data.env);
