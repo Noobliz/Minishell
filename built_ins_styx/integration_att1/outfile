@@ -1,33 +1,6 @@
 
-quand builtin en debut de pipeline
-pwd | <Makefile ls 
 
---> many leakkss + segfault
-
-Process terminating with default action of signal 13 (SIGPIPE)
-==793327==    at 0x49DE887: write (write.c:26)
-==793327==    by 0x407351: print (utils.c:22)
-==793327==    by 0x406502: pwd (built_ins.c:68)
-==793327==    by 0x4065C6: built_in_att1 (built_ins.c:87)
-==793327==    by 0x4080FC: builtin_in_fork (exec_cmds2.c:138)
-==793327==    by 0x40821A: execute_pipeline (exec_cmds2.c:169)
-==793327==    by 0x408523: execute_command_or_builtin (exec_cmds2.c:245)
-==793327==    by 0x401B91: main (main_main.c:298)
-
-
-
-
-
-heufhuieh << EOF
+-- heufhuieh << EOF
 mauvaise cmd avant heredoc ne lance pas heredoc (alors que dans bash si)
 
-CTRL+C dans heredoc, il reste un leak :
-
-==13384== 56 bytes in 1 blocks are still reachable in loss record 19 of 75
-==13384==    at 0x4846828: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==13384==    by 0x10C82F: new_cmd (str_utils.c:66)
-==13384==    by 0x10DA3E: extraction (extraction.c:62)
-==13384==    by 0x109D40: main (main_main.c:290)
-
-
-Quand heredoc se termine normalement (eof), 1 leak aussi, le même
+-- pressing enter or syntax error = break the shell
