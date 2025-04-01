@@ -106,6 +106,7 @@ int cd(char **args, t_env *env)
 	{
 		set_env_var(tmp, "OLDPWD", oldpwd);
 		set_env_var(tmp, "PWD", newpwd);
+		set_env_var(tmp, "1PWD", newpwd);
 		free(newpwd);
 	}
 	free(oldpwd);
