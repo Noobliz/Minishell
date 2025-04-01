@@ -216,8 +216,10 @@ int cd(char **args, t_env *env);
 void execute_command_or_builtin(t_data *data);
 int	exec_builtins(t_cmd *tmp, t_data *data);
 int	check_perm(t_data *data);
+
 //from our main_main.c
 int isis(char *cat, char *copy);
+char	*num_str(int code);
 
 //from autman (signals)
 void	sig_handler(int code);
