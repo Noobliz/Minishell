@@ -19,6 +19,7 @@ extraction/str_utils.c\
 extraction/get_files.c\
 extraction/get_commands.c\
 extraction/extr_utils.c\
+extraction/heredoc_inloop.c\
 extraction/heredoc.c\
 extraction/extraction.c\
 built_ins/built_ins.c\

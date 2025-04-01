@@ -282,7 +282,6 @@ int	main(int argc, char **argv, char **envp)
 		{
 			execute_command_or_builtin(&data);
 		}
-		write(1, "here3\n", 6);
 		if (g_err_code == 130)
 			free_all_things(&data);
 		g_err_code = 0;

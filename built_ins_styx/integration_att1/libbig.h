@@ -178,6 +178,7 @@ int		get_file(t_token *token, t_cmd *cmd, t_env *env, t_data *data);
 
 // pas mal de chgmts ici, creation d'un fork, gestion des signaux et de la var globale
 // du coup yaura pas mal de trucs a free en plus je pense, need to check les close aussi
+int	get_heredoc_inloop(char *line, t_env *env, int pipefd[2], int code);
 int		get_heredoc(char *value, t_env *env, t_data *data);
 
 //from get_commands.c

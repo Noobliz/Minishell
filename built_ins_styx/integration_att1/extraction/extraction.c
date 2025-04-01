@@ -30,9 +30,9 @@ static int	checking_files(t_token *token, t_cmd *cmd, t_data *data)
 			if (check == -1 || check == -2)
 				return (check);
 		}
-		token = token->next;
 		if (!token || token->type == PIPE)
 			break ;
+		token = token->next;
 	}
 	return (0);
 }
@@ -51,10 +51,9 @@ static int	checking_cmd(t_token *token, t_cmd *cmd, char *path)
 			while (token && token->type == CMD)
 				token = token->next;
 		}
-		if (token)
-			token = token->next;
 		if (!token || token->type == PIPE)
 			break ;
+		token = token->next;
 	}
 	return (0);
 }
