@@ -21,8 +21,6 @@ static int	checking_files(t_token *token, t_cmd *cmd, t_data *data)
 
 	while (token)
 	{
-		if (token->next && token->next->type == DIR)
-			token = token->next;
 		if (token->type == DIR)
 		{
 			if (g_err_code != 130)
@@ -53,6 +51,8 @@ static int	checking_cmd(t_token *token, t_cmd *cmd, char *path)
 			while (token && token->type == CMD)
 				token = token->next;
 		}
+		if (token)
+			token = token->next;
 		if (!token || token->type == PIPE)
 			break ;
 	}
