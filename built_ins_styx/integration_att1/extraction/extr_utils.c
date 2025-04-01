@@ -15,7 +15,7 @@
 //prints out the error message like so :: "bash : filename : error_msg\n"
 void	print_bash_err(char *filename, char *err_msg)
 {
-	print("bash : ");
+	print("Shell_no! : ");
 	print(filename);
 	print(" : ");
 	print(err_msg);
