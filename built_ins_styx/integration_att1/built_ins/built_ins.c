@@ -62,7 +62,7 @@ int	pwd(t_env *env)
 {
 	char	*str;
 
-	str = get_env("PWD", env);
+	str = get_env("1PWD", env);
 	if (!str)
 		return (-1);
 	print(str);

@@ -30,6 +30,8 @@ int	is_alpha(int a)
 		return (1);
 	if (a >= 'A' && a <= 'Z')
 		return (1);
+	if (a == '_')
+		return (1);
 	return (0);
 }
 

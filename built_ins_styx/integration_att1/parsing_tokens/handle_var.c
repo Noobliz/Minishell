@@ -128,25 +128,20 @@ int	handle_var(t_token *token, t_env *env, int here, char *lec)
 
 	i = 0;
 	while (token->value[i] && !(token->value[i] == '$'
-			&& (is_alphanum(token->value[i + 1])
+			&& (is_alpha(token->value[i + 1])
 				|| token->value[i + 1] == '{' || token->value[i + 1] == '?')))
 		i++;
 	if (!token->value[i])
 		return (0);
 	if (token->value[i + 1] == '{')
-	{
 		i = handle_acc_var(token, env, i);
-		if (i < 0 || here > -1)
-			return (i);
-		else
-			return (handle_var(token, env, here, lec));
-	}
-	if (is_alphanum(token->value[i + 1])
-		&& handle_reg_var(token, env, i) == -1)
-		return (-1);
-	if (token->value[i + 1] == '?' && handle_lec(token, lec, i) == -1)
-		return (-1);
-	if (here == -1)
+	else if (is_alpha(token->value[i + 1]))
+		i = handle_reg_var(token, env, i);
+	else if (token->value[i + 1] == '?')
+		i = handle_lec(token, lec, i);
+	if (i < 0 || here > -1)
+		return (i);
+	else
 		return (handle_var(token, env, here, lec));
 	return (0);
 }

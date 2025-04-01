@@ -80,6 +80,8 @@ void	del_env(t_env *env, char *del)
 {
 	t_env	*tmp;
 
+	if (!del || !is_alpha(del[0]))
+		return ;
 	while (env->next)
 	{
 		if (found(env->next->var, del))
@@ -104,8 +106,6 @@ char	*get_env(char *var, t_env *env)
 
 	if (!var[0])
 		return ("$");
-	if (!is_alpha(var[0]))
-		return (NULL);
 	current = env;
 	i = 0;
 	while (current)

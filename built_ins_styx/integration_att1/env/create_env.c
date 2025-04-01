@@ -12,6 +12,32 @@
 
 #include "../libbig.h"
 
+int	update_lst_cmd(t_env *env, t_cmd *cmd)
+{
+	char	*res;
+	int	here;
+
+	if (!cmd)
+		return (0);
+	while (cmd->next)
+		cmd = cmd->next;
+	while (cmd)
+	{
+		if (cmd->argv)
+			break ;
+		cmd = cmd->previous;
+	}
+	if (!cmd)
+		return (0);
+	res = join("_=", cmd->argv[0]);
+	if (!res)
+		return (-1);
+	del_env(env, "_");
+	here = add_env(env, res);
+	free(res);
+	return (here);
+}
+
 //cree une nouvelle structure env et la renvoie
 t_env	*env_item(char *var, int cpy)
 {
@@ -46,6 +72,25 @@ t_env	*free_env(t_env *env)
 	return (res);
 }
 
+static t_env	*get_inv_path(void)
+{
+	char	*path;
+	char	*var;
+	t_env	*res;
+
+	path = getcwd(NULL, 0);
+	if (!path)
+		return (NULL);
+	var = join("1PWD=", path);
+	free(path);
+	if (!var)
+		return (NULL);
+	res = env_item(var, 0);
+	if (!res)
+		return (NULL);
+	return (res);
+}
+
 //cree le nouvel environnement a partir de celui donne
 t_env	*create_env(char **env)
 {
@@ -55,12 +100,12 @@ t_env	*create_env(char **env)
 
 	if (!env)
 		return (NULL);
-	head = env_item(env[0], 1);
+	head = get_inv_path();
 	if (!head)
 		return (NULL);
-	i = 1;
+	i = 0;
 	current = head;
-	while (env[i])
+	while (env && env[i])
 	{
 		current->next = env_item(env[i], 1);
 		if (!current->next)

@@ -287,6 +287,8 @@ int	main(int argc, char **argv, char **envp)
 		g_err_code = 0;
 		free(data.env_array);
 		data.env_array = NULL;
+		if (update_lst_cmd(data.env, data.cmds) == -1)
+			return (free_all_things(&data));
 		if (data.cmds)
 			free_cmds_new(data.cmds, data.cmds->next);
 		data.cmds = NULL;

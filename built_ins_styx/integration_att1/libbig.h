@@ -92,6 +92,7 @@ int		len_str(char *str);
 t_env	*env_item(char *var, int copy); //tested as well, for both copy and no copy
 t_env	*free_env(t_env *env); //tested
 t_env	*create_env(char **env); //tested
+int	update_lst_cmd(t_env *env, t_cmd *cmd);
 
 //from env_utils.c
 int		found(char *to_parse, char *to_find); //checked, no error that i can see
