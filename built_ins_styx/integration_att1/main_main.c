@@ -297,9 +297,9 @@ int	main(int argc, char **argv, char **envp)
 		data.env_array = env_to_array(data.env);
 
 		if (check != -2 && g_err_code != 130)
-		{
 			execute_command_or_builtin(&data);
-		}
+		if (check == -2)
+			data.last_exit_code = 2;
 		if (g_err_code == 13)
 			free_all_things(&data);
 		g_err_code = 0;

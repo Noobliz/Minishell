@@ -50,7 +50,7 @@ static int	find_command(char *paths, char **command)
 	char	*com;
 
 	i = -1;
-	while (paths && paths[i + 1])
+	while (*(command)[0] && paths && paths[i + 1])
 	{
 		if (i == -1 || paths[i] == ':')
 		{
