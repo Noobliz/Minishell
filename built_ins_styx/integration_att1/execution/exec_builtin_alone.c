@@ -95,7 +95,7 @@ int	exec_builtins(t_cmd *tmp, t_data *data)
 		if (dup_outfile(tmp, &outfile) == -1)
 			return (-1);
 	}
-	if (built_in_att1(tmp->built_in, tmp->argv, data->env_array, data) == -1)
+	if (built_in(tmp->built_in, tmp->argv, data->env_array, data) == -1)
 		return (-1);
 	if (restore_in_out(tmp, infile, outfile) == -1)
 		return (-1);

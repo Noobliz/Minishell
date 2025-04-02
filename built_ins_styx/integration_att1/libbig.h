@@ -70,7 +70,6 @@ typedef struct  s_cmd
 	char			**argv;
 	char			*cmd;
 	int				infile;
-	int				total;
 	int				outfile;
 	int				built_in;
 	pid_t   		pid;
@@ -190,7 +189,6 @@ void	print_bash_err(char *filename, char *err_msg); //err_msg
 int		is_built_in(char *function, t_cmd *cmd); //all good
 void	ignore_cmd(t_cmd *cmd);
 int		str_len_path(char *str);
-void	add_count_cmds(t_cmd *cmd); //-- unused rn
 
 //from extraction.c
 // assign_cmds is a bit modified to behave accordling to the global var
@@ -204,13 +202,7 @@ int		unset(char **argv, t_env *env);
 
 //from built_ins.c
 
-int		built_in_att1(int func, char **argv, char **envp, t_data *data);
-
-//!!!
-//everything above this comment is normed
-
-// created from yours but added line + clear_history and reset pointers to null
-int	free_all_things(t_data *data);
+int		built_in(int func, char **argv, char **envp, t_data *data);
 
 // cd and exit
 int	ft_exit(t_data *data);
@@ -242,15 +234,31 @@ void	create_pipe(int new_pipe[2], t_cmd *tmp, t_data *data);
 void	update_pipe(t_cmd *current, int old_pipe[2], int new_pipe[2]);
 void	builtin_in_fork(t_cmd *tmp, t_data *data);
 
-//from our main_main.c
-int isis(char *cat, char *copy);
-char	*num_str(int code);
+//from main_utils/
 
-//from autman (signals)
+//from aux.c
+int		isis(char *cat, char *copy);
+char	*num_str(int code);
+char	**env_to_array(t_env *env);
+int		free_all_things(t_data *data);
+
+//from init_exec.c
+char	*get_prompt(t_env *env);
+int	making_tokens(t_token **token, t_env *env, int code);
+int	data_init(t_data *data, char **envp);
+int	reset_readline(t_data *data);
+int	exec_and_co(t_data *data, int check);
+
+//from signal_utils.c [autman (signals)]
 void	sig_handler(int code);
 void	sig_handler_heredoc(int code);
 void	sig_do_nothing(int code);
+void	sig_handler_sigpipe(int code);
 
+
+//from dead_utils.c
+void print_tokens(t_token *tokens);
+void print_cmds(t_cmd *cmd);
 
 // libft utils
 void	msg_error(t_data *data, char *str, int code);
@@ -258,4 +266,5 @@ void	ft_bzero(void *s, size_t n);
 char	*ft_strcat(char *dest, const char *src);
 int     ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strcpy(char *dest, const char *src);
+
 #endif

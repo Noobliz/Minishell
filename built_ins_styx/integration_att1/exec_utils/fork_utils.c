@@ -63,7 +63,7 @@ void	builtin_in_fork(t_cmd *tmp, t_data *data)
 {
 	if (tmp->built_in >= 0)
 	{
-		if (built_in_att1(tmp->built_in, tmp->argv, data->env_array, data) ==
+		if (built_in(tmp->built_in, tmp->argv, data->env_array, data) ==
 			-1)
 		{
 			close_fd_new(tmp, tmp->next);

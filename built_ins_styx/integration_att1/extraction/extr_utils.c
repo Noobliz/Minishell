@@ -53,26 +53,6 @@ void	ignore_cmd(t_cmd *cmd)
 	cmd->argv = NULL;
 }
 
-//adding the total_count --unused rn
-void	add_count_cmds(t_cmd *cmd)
-{
-	int		ct;
-	t_cmd	*tmp;
-
-	tmp = cmd;
-	ct = 0;
-	while (cmd)
-	{
-		ct++;
-		cmd = cmd->next;
-	}
-	while (tmp)
-	{
-		tmp->total = ct;
-		tmp = tmp->next;
-	}
-}
-
 //modded len_str for the join_path
 int	str_len_path(char *str)
 {

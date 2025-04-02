@@ -73,7 +73,7 @@ int	pwd(t_env *env)
 // here the function to call,
 // it distributes over to different built_ins
 // returns their error code (-1 malloc error, 0 success)
-int	built_in_att1(int func, char **argv, char **envp, t_data *data)
+int	built_in(int func, char **argv, char **envp, t_data *data)
 {
 	if (envp && !data->env)
 	{
