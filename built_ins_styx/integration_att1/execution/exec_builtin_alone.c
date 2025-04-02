@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:22:30 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/02 12:54:18 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/02 16:53:17 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ int	exec_builtins(t_cmd *tmp, t_data *data)
 {
 	int infile;
 	int outfile;
+	int	exit_code;
 
 	if (tmp->infile >= 0)
 	{
@@ -95,8 +96,11 @@ int	exec_builtins(t_cmd *tmp, t_data *data)
 		if (dup_outfile(tmp, &outfile) == -1)
 			return (-1);
 	}
-	if (built_in(tmp->built_in, tmp->argv, data->env_array, data) == -1)
+	exit_code = built_in(tmp->built_in, tmp->argv, data->env_array, data);
+	if (exit_code == -1)
 		return (-1);
+	else if (exit_code == 1)
+		return (1);
 	if (restore_in_out(tmp, infile, outfile) == -1)
 		return (-1);
 	return (0);

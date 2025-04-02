@@ -79,7 +79,7 @@ int	ft_exit(t_data *data)
 		return (1);
 	}
 	free_exit_code(data, code, "exit\n");
-	return (0);
+	return (1);
 }
 
 

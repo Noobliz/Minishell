@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:41:11 by naorakot          #+#    #+#             */
-/*   Updated: 2025/04/02 16:17:08 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/02 16:54:09 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,8 @@ int	built_in(int func, char **argv, char **envp, t_data *data)
 	if (func == 4)
 		disp_env(data->env);
 	if (func == 5)
-		ft_exit(data);
+		return (ft_exit(data));
 	if (func == 6)
-		cd(argv, &data->env);
+		return (cd(argv, &data->env));
 	return (0);
 }
