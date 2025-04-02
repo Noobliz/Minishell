@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 16:02:06 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/27 15:09:30 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/02 10:08:37 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ static int	heredoc_child(int pipefd[2], t_env *env, t_data *data, char *value)
 	char	*line;
 
 	line = get_heredoc_line();
-	// remarques-tu la petite ligne vide qui s'ajoute quand tu ctrl C dans un heredoc?
 	if (g_err_code == 130)
 		return(done_heredoc(line, pipefd, data, 21));
 	while (line && !isis(line, value))
@@ -91,10 +90,10 @@ int	get_heredoc(char *value, t_env *env, t_data *data)
 	status = 0;
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status) && WEXITSTATUS(status) == 21)
+	{
+		data->last_exit_code = 130;
 		g_err_code = 130;
-	//sert a mettre a jour le g err code dans le parent
-	//ne pas oublier de mettre a jour last exit code
-	// attention, ne pas reinitialiser g err code ici, pcq ca empeche l exec apres
+	}
 	close(pipefd[1]);
 	return (pipefd[0]);
 }

@@ -268,7 +268,10 @@ int	main(int argc, char **argv, char **envp)
 	data.line = readline(data.prompt);
 	data.env_array = NULL;
 	if (g_err_code == 130)
+	{
+		data.last_exit_code = 130;
 		g_err_code = 0;
+	}
 	signal(SIGQUIT, &sig_do_nothing);
 	signal(SIGINT, &sig_do_nothing);
 
@@ -297,7 +300,7 @@ int	main(int argc, char **argv, char **envp)
 		{
 			execute_command_or_builtin(&data);
 		}
-		if (g_err_code == 130)
+		if (g_err_code == 13)
 			free_all_things(&data);
 		g_err_code = 0;
 		free(data.env_array);
@@ -317,7 +320,10 @@ int	main(int argc, char **argv, char **envp)
 		signal(SIGINT, &sig_handler);
 		data.line = readline(data.prompt);
 		if (g_err_code == 130)
+		{
+			data.last_exit_code = 130;
 			g_err_code = 0;
+		}
 		signal(SIGINT, &sig_do_nothing);
 		signal(SIGQUIT, &sig_do_nothing);
 	}

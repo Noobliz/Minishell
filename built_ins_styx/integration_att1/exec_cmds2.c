@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmds2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 15:40:39 by lguiet            #+#    #+#             */
-/*   Updated: 2025/03/28 17:08:36 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/02 09:50:13 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	msg_error(t_data *data, char *str, int code)
 	data->last_exit_code = code;
 }
 
-void	wait_for_kids(t_cmd *cmds)
+void	wait_for_kids(t_cmd *cmds, t_data *data)
 {
 	t_cmd	*tmp;
 	int		status;
@@ -30,9 +30,9 @@ void	wait_for_kids(t_cmd *cmds)
 		if (!tmp->next)
 		{
 			if (WIFEXITED(status))
-				cmds->last_exit_code = WEXITSTATUS(status);
+				data->last_exit_code = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
-				cmds->last_exit_code = 128 + WTERMSIG(status);
+				data->last_exit_code = 128 + WTERMSIG(status);
 		}
 		tmp = tmp->next;
 	}
@@ -186,7 +186,7 @@ void	execute_pipeline(t_data *data)
 		i++;
 	}
 	close_all_pipes(old_pipe);
-	wait_for_kids(data->cmds);
+	wait_for_kids(data->cmds, data);
 }
 
 void	dup_files(t_cmd *tmp, t_data *data)
@@ -240,7 +240,7 @@ void	execute_command_or_builtin(t_data *data)
 					free_exit(data, 127);
 				}
 			}
-			wait_for_kids(tmp);
+			wait_for_kids(tmp, data);
 		}
 	}
 	else
