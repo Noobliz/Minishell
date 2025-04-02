@@ -43,7 +43,7 @@ NAME=minishell
 
 all: $(NAME)
 
-$(NAME): $(SRC)
+$(NAME): $(SRC) libbig.h
 	$(CC) $(FLAGS) -o $(NAME) $(SRC) -lreadline
 
 clean:

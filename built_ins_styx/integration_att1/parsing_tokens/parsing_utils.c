@@ -67,7 +67,7 @@ int	get_quote(char *token, char quote)
 	int	i;
 
 	i = 0;
-	while (token[i] && token[i] != quote)
+	while (token && token[i] && token[i] != quote)
 		i++;
 	if (token[i])
 		return (i);
