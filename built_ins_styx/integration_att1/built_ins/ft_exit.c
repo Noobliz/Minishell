@@ -5,40 +5,20 @@
 #include "../libbig.h"
 
 
-int	ft_isdigit(int c)
+int	check_sign(const char *str, int *i, int *overflow)
 {
-	return (c >= '0' && c <= '9');
-}
-
-static int	is_numeric(const char *str)
-{
-	int i = 0;
-	if (str[i] == '+' || str[i] == '-')
-		i++;
-	if (!str[i])
-		return (0);
-	while (str[i])
+	int	sign;
+	
+	sign = 1;
+	if (str[*i] == '+' || str[*i] == '-')
 	{
-		if (!ft_isdigit((unsigned char)str[i]))
-			return (0);
+		if (str[*i] == '-')
+			sign = -1;
 		i++;
 	}
-	return (1);
-}
-
-void	ft_putstr_fd(const char *s, int fd)
-{
-	if (!s)
-		return;
-	while (*s)
-		write(fd, s++, 1);
-}
-
-void	ft_put3str_fd(const char *s1, const char *s2, const char *s3, int fd)
-{
-	ft_putstr_fd(s1, fd);
-	ft_putstr_fd(s2, fd);
-	ft_putstr_fd(s3, fd);
+	if (!str[*i])
+		*overflow = 1;
+	return (sign);
 }
 
 int	safe_atoi(const char *str, int *overflow)
@@ -48,17 +28,10 @@ int	safe_atoi(const char *str, int *overflow)
 	unsigned long	result;
 
 	i = 0;
-	sign = 1;
 	result = 0;
 	*overflow = 0;
-	if (str[i] == '+' || str[i] == '-')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	if (!str[i])
-		*overflow = 1;
+	sign = check_sign(str, &i, overflow);
+
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		result = result * 10 + (str[i] - '0');
@@ -75,44 +48,41 @@ int	safe_atoi(const char *str, int *overflow)
 	return ((int)(sign * result));
 }
 
+void	free_exit_code(t_data *data, long long exit_code, char *str)
+{
+	if (str)
+		ft_putstr_fd(str, 2);
+	free_all_things(data);
+	data->last_exit_code = exit_code;
+	exit(exit_code);
+}
+
 int	ft_exit(t_data *data)
 {
-	char		**argv = data->cmds->argv;
 	int			overflow;
 	long long	code;
 
-	if (!argv[1])
+	if (!data->cmds->argv[1])
 	{
 		ft_putstr_fd("exit\n", 2);
-		free_all_things(data);
-		data->last_exit_code = 0;
-		exit(0);
+		free_exit_code(data, 0, "exit\n");
 	}
-	if (!is_numeric(argv[1]))
+	if (!is_numeric(data->cmds->argv[1]))
 	{
-		ft_put3str_fd("minishell: exit: ", argv[1], ": numeric argument required\n", 2);
-		free_all_things(data);
-		data->last_exit_code = 2;
-		exit(2);
+		ft_put3str_fd("minishell: exit: ", data->cmds->argv[1], ": numeric argument required\n", 2);
+		free_exit_code(data, 2, NULL);
 	}
-	code = safe_atoi(argv[1], &overflow);
+	code = safe_atoi(data->cmds->argv[1], &overflow);
 	if (overflow)
-	{
-		ft_putstr_fd("exit\n", 2);
-		free_all_things(data);
-		data->last_exit_code = 2;
-		exit(2);
-	}
-	if (argv[2])
+		free_exit_code(data, 2, "exit\n");
+	if (data->cmds->argv[2])
 	{
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 		data->last_exit_code = 1;
 		return (1);
 	}
-	ft_putstr_fd("exit\n", 2);
-	free_all_things(data);
-	data->last_exit_code = ((unsigned char)code);
-	exit((unsigned char)code);
+	free_exit_code(data, code, "exit\n");
+	return (0);
 }
 
 
