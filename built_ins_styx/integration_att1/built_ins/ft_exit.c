@@ -63,10 +63,7 @@ int	ft_exit(t_data *data)
 	long long	code;
 
 	if (!data->cmds->argv[1])
-	{
-		ft_putstr_fd("exit\n", 2);
 		free_exit_code(data, 0, "exit\n");
-	}
 	if (!is_numeric(data->cmds->argv[1]))
 	{
 		ft_put3str_fd("minishell: exit: ", data->cmds->argv[1], ": numeric argument required\n", 2);
