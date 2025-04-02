@@ -25,6 +25,7 @@ extraction/extraction.c\
 built_ins/built_ins.c\
 built_ins/export_unset.c\
 built_ins/ft_exit.c\
+built_ins/exit_utils.c\
 built_ins/cd.c\
 utils.c \
 exec_utils/libft_utils.c\

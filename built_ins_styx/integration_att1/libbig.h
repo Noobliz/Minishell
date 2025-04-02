@@ -211,9 +211,15 @@ int		built_in_att1(int func, char **argv, char **envp, t_data *data);
 
 // created from yours but added line + clear_history and reset pointers to null
 int	free_all_things(t_data *data);
+
 // cd and exit
 int	ft_exit(t_data *data);
 int cd(char **args, t_env *env);
+
+// from exit_utils
+void	ft_put3str_fd(const char *s1, const char *s2, const char *s3, int fd);
+void	ft_putstr_fd(const char *s, int fd);
+int	is_numeric(const char *str);
 
 // exec_cmds and exec_builtin alone
 void execute_command_or_builtin(t_data *data);
