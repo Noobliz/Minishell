@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 15:40:39 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/02 13:04:56 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/02 14:02:48 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static void	exec_child(t_cmd *tmp, int new_pipe[2], int old_pipe[2], t_data *dat
 	dup_out(tmp, data, new_pipe);
 	builtin_in_fork(tmp, data);
 	close_fd_new(tmp, tmp->next);
-	if (!tmp->argv && !(tmp->infile || tmp->outfile))
+	if (!tmp->argv && (tmp->infile == -2 || tmp->outfile == -2))
 		free_exit(data, 127);
 	if (tmp->argv && execve(tmp->argv[0], tmp->argv, data->env_array) ==
 				-1)
