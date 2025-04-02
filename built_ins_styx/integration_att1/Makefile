@@ -29,10 +29,12 @@ built_ins/cd.c\
 utils.c \
 exec_utils/libft_utils.c\
 exec_utils/exec_free_close_utils.c\
-exec_builtin_alone.c \
-exec_cmds2.c
+exec_utils/fork_utils.c\
+execution/exec_builtin_alone.c \
+execution/exec_single_cmd.c\
+execution/exec_cmds.c
 
-NAME=bi_minishell
+NAME=minishell
 
 all: $(NAME)
 

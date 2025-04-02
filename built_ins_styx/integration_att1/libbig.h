@@ -214,10 +214,27 @@ int	free_all_things(t_data *data);
 // cd and exit
 int	ft_exit(t_data *data);
 int cd(char **args, t_env *env);
+
 // exec_cmds and exec_builtin alone
 void execute_command_or_builtin(t_data *data);
 int	exec_builtins(t_cmd *tmp, t_data *data);
 int	check_perm(t_data *data);
+
+// from exec_single_cmd
+void	exec_single_cmd(t_cmd *tmp, t_data *data);
+
+// from exec_free_close_utils
+void	close_all_pipes(int pipe[2]);
+void	free_exit(t_data *data, int exit_code);
+void	close_fd_new(t_cmd *prev, t_cmd *next);
+
+// from fork_utils
+void	wait_for_kids(t_cmd *cmds, t_data *data);
+void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2],
+		t_data *data);
+void	create_pipe(int new_pipe[2], t_cmd *tmp, t_data *data);
+void	update_pipe(t_cmd *current, int old_pipe[2], int new_pipe[2]);
+void	builtin_in_fork(t_cmd *tmp, t_data *data);
 
 //from our main_main.c
 int isis(char *cat, char *copy);
@@ -228,12 +245,9 @@ void	sig_handler(int code);
 void	sig_handler_heredoc(int code);
 void	sig_do_nothing(int code);
 
-// from exec_free_close_utils
-void	close_all_pipes(int pipe[2]);
-void	free_exit(t_data *data, int exit_code);
-void	close_fd_new(t_cmd *prev, t_cmd *next);
 
 // libft utils
+void	msg_error(t_data *data, char *str, int code);
 void	ft_bzero(void *s, size_t n);
 char	*ft_strcat(char *dest, const char *src);
 int     ft_strncmp(const char *s1, const char *s2, size_t n);

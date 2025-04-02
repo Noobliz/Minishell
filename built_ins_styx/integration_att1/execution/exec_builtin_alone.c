@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtin_alone.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:22:30 by lguiet            #+#    #+#             */
-/*   Updated: 2025/03/31 15:32:34 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/02 12:54:18 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libbig.h"
+#include "../libbig.h"
 
 int	check_perm(t_data *data)
 {
@@ -25,7 +25,7 @@ int	check_perm(t_data *data)
 	return (0);
 }
 
-int	restore_in_out(t_cmd *tmp, int infile, int outfile)
+static int	restore_in_out(t_cmd *tmp, int infile, int outfile)
 {
 	if (tmp->infile >= 0)
 	{
@@ -50,6 +50,36 @@ int	restore_in_out(t_cmd *tmp, int infile, int outfile)
 	return (0);
 }
 
+static int 	dup_infile(t_cmd *tmp, int *infile)
+{
+	
+	*infile = dup(0);
+	if (*infile == -1)
+		return (-1);
+	close(0);
+	if (dup2(tmp->infile, STDIN_FILENO) == -1)
+	{
+		perror("dup2");
+		return (-1);
+	}
+	return (0);
+}
+
+static int	dup_outfile(t_cmd *tmp, int *outfile)
+{
+
+	*outfile = dup(1);
+	if (*outfile == -1)
+		return (-1);
+	close(1);
+	if (dup2(tmp->outfile, STDOUT_FILENO) == -1)
+	{
+		perror("dup2");
+		return (-1);
+	}
+	return (0);
+}
+
 int	exec_builtins(t_cmd *tmp, t_data *data)
 {
 	int infile;
@@ -57,27 +87,13 @@ int	exec_builtins(t_cmd *tmp, t_data *data)
 
 	if (tmp->infile >= 0)
 	{
-		infile = dup(0);
-		if (infile == -1)
+		if (dup_infile(tmp, &infile) == -1)
 			return (-1);
-		close(0);
-		if (dup2(tmp->infile, STDIN_FILENO) == -1)
-		{
-			perror("dup2");
-			return (-1);
-		}
 	}
 	if (tmp->outfile >= 0)
 	{
-		outfile = dup(1);
-		if (outfile == -1)
+		if (dup_outfile(tmp, &outfile) == -1)
 			return (-1);
-		close(1);
-		if (dup2(tmp->outfile, STDOUT_FILENO) == -1)
-		{
-			perror("dup2");
-			return (-1);
-		}
 	}
 	if (built_in_att1(tmp->built_in, tmp->argv, data->env_array, data) == -1)
 		return (-1);
