@@ -3,6 +3,12 @@
 #include "../libbig.h"
 #include <stdlib.h>
 
+void	msg_error(t_data *data, char *str, int code)
+{
+	perror(str);
+	data->last_exit_code = code;
+}
+
 void	*ft_memset(void *s, int c, size_t n)
 {
 	unsigned char	*ptr;

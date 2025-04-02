@@ -9,6 +9,7 @@ int	ft_isdigit(int c)
 {
 	return (c >= '0' && c <= '9');
 }
+
 static int	is_numeric(const char *str)
 {
 	int i = 0;
@@ -73,39 +74,6 @@ int	safe_atoi(const char *str, int *overflow)
 		*overflow = 1;
 	return ((int)(sign * result));
 }
-
-// int	ft_exit(char **argv, t_cmd *cmds)
-// {
-// 	int			overflow;
-// 	long long	code;
-
-// 	if (!argv[1])
-// 	{
-// 		ft_putstr_fd("exit\n", 2);
-// 		//free_all
-// 		exit(cmds->last_exit_code);
-// 	}
-// 	if (!is_numeric(argv[1]))
-// 	{
-// 		ft_put3str_fd("minishell: exit: ", argv[1], ": numeric argument required\n", 2);
-// 		//free_all
-// 		exit(2);
-// 	}
-// 	code = safe_atoi(argv[1], &overflow);
-// 	if (overflow)
-// 	{
-// 		ft_putstr_fd("exit\n", 2);
-// 		//free_all
-// 		exit(2);
-// 	}
-// 	if (argv[2])
-// 	{
-// 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-// 		return (1);
-// 	}
-// 	ft_putstr_fd("exit\n", 2);
-// 	exit((unsigned char)code);
-// }
 
 int	ft_exit(t_data *data)
 {
