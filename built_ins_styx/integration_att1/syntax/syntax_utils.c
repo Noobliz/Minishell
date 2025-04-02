@@ -16,7 +16,7 @@
 //can change to "minishell" instead of "bash" if necessary
 void	print_syntax_err(char *str)
 {
-	print("\033[35mShell_no! :\033[0m syntax error near unexpected token \'");
+	print("\033[35myou shell not pass:\033[0m syntax error near unexpected token \'");
 	print(str);
 	print("\'\n");
 }
@@ -57,7 +57,7 @@ int	forbidden(char a)
 //(used in parsing for quotes or acc variables)
 int	missing_quote(char quote)
 {
-	print("you shell not pass: missing matching '");
+	print("\033[35myou shell not pass:\033[0m missing matching '");
 	write(1, &quote, 1);
 	print("'\n");
 	return (-2);
