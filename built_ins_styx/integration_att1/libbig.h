@@ -196,12 +196,18 @@ int		built_in(int func, char **argv, char **envp, t_data *data);
 
 //from cd.c and ft_exit.c
 int		ft_exit(t_data *data);
-int		cd(char **args, t_env *env);
+int	cd(char **args, t_env **env);
 
 //from exit_utils.c
 void	ft_put3str_fd(const char *s1, const char *s2, const char *s3, int fd);
 void	ft_putstr_fd(const char *s, int fd);
 int	is_numeric(const char *str);
+
+//from cd_utils.c
+char *get_env_value(t_env *env, char *name);
+char	*create_env_string(char *name, char *value);
+int	replace_if_exists(t_env *env, char *name, char *new_var);
+int	add_to_env(t_env **env, char *new_var);
 
 //from execution/
 

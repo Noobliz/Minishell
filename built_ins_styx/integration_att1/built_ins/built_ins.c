@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_ins.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:41:11 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/28 16:59:10 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/02 16:17:08 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,6 @@ int	built_in(int func, char **argv, char **envp, t_data *data)
 	if (func == 5)
 		ft_exit(data);
 	if (func == 6)
-		cd(argv, data->env);
+		cd(argv, &data->env);
 	return (0);
 }

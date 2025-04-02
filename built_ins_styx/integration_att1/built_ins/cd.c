@@ -3,112 +3,73 @@
 #include "../libbig.h"
 
 
-char *get_env_value(t_env *env, char *name)
+static int	set_env_var(t_env **env, char *name, char *value)
 {
-	size_t len = len_str(name);
+	char	*new_var;
 
-	while (env)
-	{
-		if (ft_strncmp(env->var, name, len) == 0 && env->var[len] == '=')
-			return (env->var + len + 1);
-		env = env->next;
-	}
-	return (NULL);
-}
-
-int set_env_var(t_env *env, char *name, char *value)
-{
-	t_env *tmp;
-	size_t len;
-	char *new_var;
-	t_env	*new;
-	
-	tmp = env;
-	len = len_str(name);
-	new_var = malloc(len + len_str(value) + 2);
+	new_var = create_env_string(name, value);
 	if (!new_var)
 		return (-1);
-	ft_strcpy(new_var, name);
-	ft_strcat(new_var, "=");
-	ft_strcat(new_var, value);
-	while (tmp)
-	{
-		if (ft_strncmp(tmp->var, name, len) == 0 && tmp->var[len] == '=')
-		{
-			free(tmp->var);
-			tmp->var = new_var;
-			return (0);
-		}
-		tmp = tmp->next;
-	}
-	new = malloc(sizeof(t_env));
-	if (!new)
+	if (replace_if_exists(*env, name, new_var))
+		return (0);
+	if (add_to_env(env, new_var) == -1)
 	{
 		free(new_var);
 		return (-1);
 	}
-	new->var = new_var;
-	new->next = NULL;
-	tmp = env;
-	if (!tmp)
-		env = new;
-	else
-	{
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = new;
-	}
 	return (0);
 }
 
-
-int cd(char **args, t_env *env)
+static char	*get_target(char **args, t_env *env)
 {
-	char *target;
-	char *oldpwd;
-	t_env	*tmp;
-
-	target = NULL;
-	oldpwd = getcwd(NULL, 0);
-	tmp = env;
-	if (!env)
-	{
-		printf("env not found\n");
-		return (-1);
-	}
-	if (!oldpwd)
-	{
-		perror("cd");
-		return (-1);
-	}
+	char	*target;
 
 	if (!args[1] || strcmp(args[1], "~") == 0)
-		target = get_env_value(tmp, "HOME");
-
+		target = get_env_value(env, "HOME");
 	else if (strcmp(args[1], "-") == 0)
 	{
-		target = get_env_value(tmp, "OLDPWD");
+		target = get_env_value(env, "OLDPWD");
 		if (target)
 			printf("%s\n", target);
 	}
 	else
 		target = args[1];
+	return (target);
+}
 
+static int	update_pwd_vars(t_env **env, char *oldpwd)
+{
+	char	*newpwd;
+
+	newpwd = getcwd(NULL, 0);
+	if (!newpwd)
+		return (-1);
+	set_env_var(env, "OLDPWD", oldpwd);
+	set_env_var(env, "PWD", newpwd);
+	set_env_var(env, "1PWD", newpwd);
+	free(newpwd);
+	return (0);
+}
+
+int	cd(char **args, t_env **env)
+{
+	char	*target;
+	char	*oldpwd;
+
+	if (!env || !*env)
+		return (printf("env not found\n"), -1);
+	oldpwd = getcwd(NULL, 0);
+	if (!oldpwd)
+		return (perror("cd"), -1);
+	target = get_target(args, *env);
 	if (!target || chdir(target) != 0)
 	{
 		printf("target not found\n");
 		free(oldpwd);
 		return (-1);
 	}
-
-	char *newpwd = getcwd(NULL, 0);
-	if (newpwd)
-	{
-		set_env_var(tmp, "OLDPWD", oldpwd);
-		set_env_var(tmp, "PWD", newpwd);
-		set_env_var(tmp, "1PWD", newpwd);
-		free(newpwd);
-	}
+	if (update_pwd_vars(env, oldpwd) == -1)
+		return (free(oldpwd), -1);
 	free(oldpwd);
 	return (0);
 }

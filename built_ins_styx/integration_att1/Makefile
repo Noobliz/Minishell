@@ -30,6 +30,7 @@ built_ins/export_unset.c\
 built_ins/ft_exit.c\
 built_ins/exit_utils.c\
 built_ins/cd.c\
+built_ins/cd_utils.c\
 exec_utils/libft_utils.c\
 exec_utils/exec_free_close_utils.c\
 exec_utils/fork_utils.c\
