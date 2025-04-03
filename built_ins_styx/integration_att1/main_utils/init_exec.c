@@ -48,7 +48,7 @@ int	making_tokens(t_token **token, t_env *env, int code)
 	int		check;
 	char	*lec;
 
-	if (!(*token)->value || !(*token)->value[0])
+	if (check_empty(*token, (*token)->value))
 		return (-2);
 	lec = num_str(code);
 	if (!lec)
@@ -121,7 +121,7 @@ int	exec_and_co(t_data *data, int check)
 	data->env_array = env_to_array(data->env);
 	if (check != -2 && g_err_code != 130)
 		execute_command_or_builtin(data);
-	if (check == -2 && data->token->value && data->token->value[0])
+	if (check == -2 && !check_empty(data->token, data->token->value))
 		data->last_exit_code = 2;
 	free_tokens(data->token);
 	data->token = NULL;

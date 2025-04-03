@@ -247,10 +247,10 @@ void	builtin_in_fork(t_cmd *tmp, t_data *data);
 
 // libft utils
 void	msg_error(t_data *data, char *str, int code);
-void	ft_bzero(void *s, size_t n);
 char	*ft_strcat(char *dest, const char *src);
 int     ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strcpy(char *dest, const char *src);
+int		check_empty(t_token *token, char *str);
 
 //from main_utils/
 

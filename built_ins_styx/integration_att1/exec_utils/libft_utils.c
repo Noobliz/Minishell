@@ -18,21 +18,20 @@ void	msg_error(t_data *data, char *str, int code)
 	data->last_exit_code = code;
 }
 
-void	*ft_memset(void *s, int c, size_t n)
+int	check_empty(t_token *token, char *str)
 {
-	unsigned char	*ptr;
-	unsigned char	stuff;
-	size_t			i;
+	int	i;
 
-	ptr = s;
-	stuff = c;
+	if (token->next)
+		return (0);
+	if (!str)
+		return (1);
 	i = 0;
-	while (i < n)
-	{
-		ptr[i] = stuff;
+	while (str[i] && str[i] == ' ')
 		i++;
-	}
-	return (s);
+	if (!str[i])
+		return (1);
+	return (0);
 }
 
 char	*ft_strcpy(char *dest, const char *src)
