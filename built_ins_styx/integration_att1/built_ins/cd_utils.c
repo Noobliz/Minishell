@@ -1,11 +1,22 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd_utils.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/03 12:26:19 by lguiet            #+#    #+#             */
+/*   Updated: 2025/04/03 12:29:09 by lguiet           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../libbig.h"
 
-char *get_env_value(t_env *env, char *name)
+char	*get_env_value(t_env *env, char *name)
 {
-	size_t len = len_str(name);
+	size_t	len;
 
+	len = len_str(name);
 	while (env)
 	{
 		if (ft_strncmp(env->var, name, len) == 0 && env->var[len] == '=')

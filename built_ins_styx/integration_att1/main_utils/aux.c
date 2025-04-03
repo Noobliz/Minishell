@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   aux.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/03 12:49:21 by lguiet            #+#    #+#             */
+/*   Updated: 2025/04/03 12:52:33 by lguiet           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../libbig.h"
 
 //checks if the str cat and copy are the same
@@ -47,8 +59,8 @@ int	free_all_things(t_data *data)
 char	*num_str(int code)
 {
 	char	*lec;
-	int	len;
-	int	tens;
+	int		len;
+	int		tens;
 
 	len = 0;
 	tens = 1;
@@ -92,7 +104,7 @@ char	**env_to_array(t_env *env)
 	int		i;
 	char	**env_array;
 	int		size;
-	
+
 	size = env_size(env);
 	env_array = malloc(sizeof(char *) * (size + 1));
 	if (!env_array)
@@ -110,4 +122,3 @@ char	**env_to_array(t_env *env)
 	env_array[i] = NULL;
 	return (env_array);
 }
-

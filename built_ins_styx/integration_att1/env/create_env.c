@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_env.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:54:02 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/22 19:54:05 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/04/03 12:33:45 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	update_lst_cmd(t_env *env, t_cmd *cmd)
 {
 	char	*res;
-	int	here;
+	int		here;
 
 	if (!cmd)
 		return (0);

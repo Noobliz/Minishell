@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/03 12:29:26 by lguiet            #+#    #+#             */
+/*   Updated: 2025/04/03 12:30:31 by lguiet           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../libbig.h"
 
@@ -8,7 +19,9 @@ static int	ft_isdigit(int c)
 
 int	is_numeric(const char *str)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	if (str[i] == '+' || str[i] == '-')
 		i++;
 	if (!str[i])
@@ -25,7 +38,7 @@ int	is_numeric(const char *str)
 void	ft_putstr_fd(const char *s, int fd)
 {
 	if (!s)
-		return;
+		return ;
 	while (*s)
 		write(fd, s++, 1);
 }

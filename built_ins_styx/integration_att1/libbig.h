@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libbig.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/03 12:19:33 by lguiet            #+#    #+#             */
+/*   Updated: 2025/04/03 14:48:54 by lguiet           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef LIBBIG_H
 # define LIBBIG_H
@@ -24,7 +35,7 @@
 # define GRAY    "\033[90m"
 
 //variable globale
-extern int g_err_code;
+extern int 	g_err_code;
 
 typedef struct s_data
 {
@@ -170,7 +181,7 @@ void	free_cmds_new(t_cmd *prev, t_cmd *next);
 int		get_file(t_token *token, t_cmd *cmd, t_env *env, t_data *data);
 
 //from heredoc.c
-int	get_heredoc_inloop(char *line, t_env *env, int pipefd[2], int code);
+int		get_heredoc_inloop(char *line, t_env *env, int pipefd[2], int code);
 int		get_heredoc(char *value, t_env *env, t_data *data);
 
 //from get_commands.c
@@ -195,19 +206,19 @@ int		unset(char **argv, t_env *env);
 int		built_in(int func, char **argv, char **envp, t_data *data);
 
 //from cd.c and ft_exit.c
-int		ft_exit(t_data *data);
-int	cd(char **args, t_env **env);
+int		ft_exit(char **argv, t_data *data);
+int		cd(char **args, t_env **env);
 
 //from exit_utils.c
 void	ft_put3str_fd(const char *s1, const char *s2, const char *s3, int fd);
 void	ft_putstr_fd(const char *s, int fd);
-int	is_numeric(const char *str);
+int		is_numeric(const char *str);
 
 //from cd_utils.c
-char *get_env_value(t_env *env, char *name);
+char 	*get_env_value(t_env *env, char *name);
 char	*create_env_string(char *name, char *value);
-int	replace_if_exists(t_env *env, char *name, char *new_var);
-int	add_to_env(t_env **env, char *new_var);
+int		replace_if_exists(t_env *env, char *name, char *new_var);
+int		add_to_env(t_env **env, char *new_var);
 
 //from execution/
 
@@ -251,10 +262,10 @@ int		free_all_things(t_data *data);
 
 //from init_exec.c
 char	*get_prompt(t_env *env);
-int	making_tokens(t_token **token, t_env *env, int code);
-int	data_init(t_data *data, char **envp);
-int	reset_readline(t_data *data);
-int	exec_and_co(t_data *data, int check);
+int		making_tokens(t_token **token, t_env *env, int code);
+int		data_init(t_data *data, char **envp);
+int		reset_readline(t_data *data);
+int		exec_and_co(t_data *data, int check);
 
 //from signal_utils.c [autman (signals)]
 void	sig_handler(int code);
@@ -264,7 +275,7 @@ void	sig_handler_sigpipe(int code);
 
 
 //from dead_utils.c
-void print_tokens(t_token *tokens);
-void print_cmds(t_cmd *cmd);
+void	print_tokens(t_token *tokens);
+void	print_cmds(t_cmd *cmd);
 
 #endif

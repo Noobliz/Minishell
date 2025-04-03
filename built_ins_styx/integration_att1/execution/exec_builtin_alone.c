@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtin_alone.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:22:30 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/02 16:53:17 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/03 12:42:18 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,8 @@ static int	restore_in_out(t_cmd *tmp, int infile, int outfile)
 	return (0);
 }
 
-static int 	dup_infile(t_cmd *tmp, int *infile)
+static int	dup_infile(t_cmd *tmp, int *infile)
 {
-	
 	*infile = dup(0);
 	if (*infile == -1)
 		return (-1);
@@ -67,7 +66,6 @@ static int 	dup_infile(t_cmd *tmp, int *infile)
 
 static int	dup_outfile(t_cmd *tmp, int *outfile)
 {
-
 	*outfile = dup(1);
 	if (*outfile == -1)
 		return (-1);
@@ -82,8 +80,8 @@ static int	dup_outfile(t_cmd *tmp, int *outfile)
 
 int	exec_builtins(t_cmd *tmp, t_data *data)
 {
-	int infile;
-	int outfile;
+	int	infile;
+	int	outfile;
 	int	exit_code;
 
 	if (tmp->infile >= 0)

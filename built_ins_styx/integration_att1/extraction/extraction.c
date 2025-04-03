@@ -3,21 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   extraction.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 17:02:44 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/27 14:45:12 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/03 12:47:06 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libbig.h"
 
-//alright, so plan is we separate this one into two functions :: one checks files(first, and if issue return immediately)
+//alright, so plan is we separate this one into two functions :: 
+//one checks files(first, and if issue return immediately)
 //one checks commands (second), and so same;
 
 static int	checking_files(t_token *token, t_cmd *cmd, t_data *data)
 {
-	int check;
+	int	check;
 
 	while (token)
 	{

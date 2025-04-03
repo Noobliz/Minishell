@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 17:33:00 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/23 13:05:38 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/04/03 12:57:12 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,9 @@ static int	parsing_inloop(t_token *current, t_env *env, char *lec)
 	return (0);
 }
 
-//here, and then in double / handle_var and then same switch in heredoc. take in char * already created, use it like a get_env would return;
+//here, and then in double / handle_var and then same switch 
+//in heredoc. take in char * already created, 
+//use it like a get_env would return;
 //full quotes and vars parsing
 int	parsing_pt1(t_token *tokens, t_env *env, char *lec)
 {

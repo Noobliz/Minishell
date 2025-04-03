@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_exec.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/03 12:52:47 by lguiet            #+#    #+#             */
+/*   Updated: 2025/04/03 12:54:23 by lguiet           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../libbig.h"
 
-//gets the current rep from the environment and adds a '>' with minishell, now in color
+//gets the current rep from the environment and adds a '>' 
+//with minishell, now in color
 char	*get_prompt(t_env *env)
 {
 	char	*str;
@@ -27,7 +40,9 @@ char	*get_prompt(t_env *env)
 	return (str);
 }
 
-//does all of the token related tasks and returns error if error there is (-2 syntax error, -1 malloc error, 0 success), protected for line == NULL
+//does all of the token related tasks and returns error 
+//if error there is (-2 syntax error, -1 malloc error, 0 success),
+// protected for line == NULL
 int	making_tokens(t_token **token, t_env *env, int code)
 {
 	int		check;
@@ -88,7 +103,6 @@ int	reset_readline(t_data *data)
 	data->prompt = get_prompt(data->env);
 	if (!data->prompt)
 		return (free_all_things(data));
-
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &sig_handler);
 	data->line = readline(data->prompt);

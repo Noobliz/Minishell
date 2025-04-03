@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmds.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 15:40:39 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/02 14:02:48 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/03 12:44:41 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static void	dup_out(t_cmd *tmp, t_data *data, int new_pipe[2])
 	}
 }
 
-static void	exec_child(t_cmd *tmp, int new_pipe[2], int old_pipe[2], t_data *data)
+void	exec_child(t_cmd *tmp, int new_pipe[2], int old_pipe[2], t_data *data)
 {
 	check_files(tmp, old_pipe, new_pipe, data);
 	dup_in(tmp, data, old_pipe);
@@ -76,14 +76,14 @@ static void	exec_child(t_cmd *tmp, int new_pipe[2], int old_pipe[2], t_data *dat
 	close_fd_new(tmp, tmp->next);
 	if (!tmp->argv && (tmp->infile == -2 || tmp->outfile == -2))
 		free_exit(data, 127);
-	if (tmp->argv && execve(tmp->argv[0], tmp->argv, data->env_array) ==
-				-1)
+	if (tmp->argv && execve(tmp->argv[0], tmp->argv, data->env_array)
+		== -1)
 	{
 		perror(tmp->cmd);
 		free_exit(data, 127);
 	}
-
 }
+
 static void	execute_pipeline(t_data *data)
 {
 	t_cmd	*tmp;
@@ -107,7 +107,6 @@ static void	execute_pipeline(t_data *data)
 	close_all_pipes(old_pipe);
 	wait_for_kids(data->cmds, data);
 }
-
 
 void	execute_command_or_builtin(t_data *data)
 {

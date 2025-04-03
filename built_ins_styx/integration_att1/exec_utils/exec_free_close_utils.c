@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_free_close_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 15:39:01 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/02 12:41:31 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/03 12:34:36 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ static void	close_fd_bw(t_cmd *head)
 		head->outfile = -2;
 	}
 }
+
 void	close_fd_new(t_cmd *prev, t_cmd *next)
 {
 	if (!prev && !next)

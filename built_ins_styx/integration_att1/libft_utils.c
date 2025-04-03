@@ -1,6 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/03 12:18:12 by lguiet            #+#    #+#             */
+/*   Updated: 2025/04/03 12:18:39 by lguiet           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-
-#include <stdlib.h>
 #include "libbig.h"
 
 void	*ft_memset(void *s, int c, size_t n)
@@ -19,6 +28,7 @@ void	*ft_memset(void *s, int c, size_t n)
 	}
 	return (s);
 }
+
 void	ft_bzero(void *s, size_t n)
 {
 	ft_memset(s, '\0', n);
@@ -37,6 +47,7 @@ char	*ft_strcpy(char *dest, const char *src)
 	dest[i] = '\0';
 	return (dest);
 }
+
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
 	size_t	i;
@@ -50,6 +61,7 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	}
 	return (0);
 }
+
 char	*ft_strcat(char *dest, const char *src)
 {
 	int	i;

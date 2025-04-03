@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_var.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 21:13:15 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/22 21:13:17 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/04/03 12:55:54 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ static int	handle_reg_var(t_token *token, t_env *env, int i)
 	return (0);
 }
 
-static int handle_lec(t_token *token, char *lec, int i)
+static int	handle_lec(t_token *token, char *lec, int i)
 {
 	char	*str;
 

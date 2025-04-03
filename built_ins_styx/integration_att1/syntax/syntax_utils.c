@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 13:08:11 by naorakot          #+#    #+#             */
-/*   Updated: 2025/04/02 10:22:50 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/03 13:01:00 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 //can change to "minishell" instead of "bash" if necessary
 void	print_syntax_err(char *str)
 {
-	print("\033[35myou shell not pass:\033[0m syntax error near unexpected token \'");
+	print("\033[35myou shell not pass:\033[0m ");
+	print("syntax error near unexpected token \'");
 	print(str);
 	print("\'\n");
 }

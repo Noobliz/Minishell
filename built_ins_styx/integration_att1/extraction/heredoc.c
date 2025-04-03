@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 16:02:06 by naorakot          #+#    #+#             */
-/*   Updated: 2025/04/02 10:08:37 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/03 12:47:42 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,16 @@ static int	heredoc_child(int pipefd[2], t_env *env, t_data *data, char *value)
 
 	line = get_heredoc_line();
 	if (g_err_code == 130)
-		return(done_heredoc(line, pipefd, data, 21));
+		return (done_heredoc(line, pipefd, data, 21));
 	while (line && !isis(line, value))
 	{
 		if (get_heredoc_inloop(line, env, pipefd, data->last_exit_code) == -1)
 			return (done_heredoc(line, pipefd, data, -1));
 		line = get_heredoc_line();
 		if (g_err_code == 130)
-			return(done_heredoc(line, pipefd, data, 21));
+			return (done_heredoc(line, pipefd, data, 21));
 	}
-	return(done_heredoc(line, pipefd, data, 0));
+	return (done_heredoc(line, pipefd, data, 0));
 }
 
 static int	heredoc_setup(int *pid, t_data *data, int pipefd[2])

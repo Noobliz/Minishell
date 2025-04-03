@@ -1,6 +1,6 @@
 CC=cc
 FLAGS=-Wall -Werror -Wextra -g
-SRC=main_main.c\
+SRC=main.c\
 main_utils/signal_utils.c\
 main_utils/aux.c\
 main_utils/init_exec.c\

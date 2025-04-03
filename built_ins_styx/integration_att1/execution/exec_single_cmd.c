@@ -1,4 +1,14 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_single_cmd.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/03 12:44:58 by lguiet            #+#    #+#             */
+/*   Updated: 2025/04/03 12:45:44 by lguiet           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../libbig.h"
 
@@ -23,6 +33,7 @@ static void	dup_files(t_cmd *tmp, t_data *data)
 		}
 	}
 }
+
 void	exec_single_cmd(t_cmd *tmp, t_data *data)
 {
 	tmp->pid = fork();
@@ -40,5 +51,4 @@ void	exec_single_cmd(t_cmd *tmp, t_data *data)
 		}
 	}
 	wait_for_kids(tmp, data);
-
 }
