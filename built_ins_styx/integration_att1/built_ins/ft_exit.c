@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:30:43 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/03 14:48:27 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/03 15:24:11 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	safe_atoi(const char *str, int *overflow)
 void	free_exit_code(t_data *data, long long exit_code, char *str)
 {
 	if (str)
-		ft_putstr_fd(str, 2);
+		ft_putstr_fd(str, 1);
 	free_all_things(data);
 	data->last_exit_code = exit_code;
 	exit(exit_code);
