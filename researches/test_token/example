@@ -1,0 +1,33 @@
+#include ""
+
+//dans la structure ::
+//pour echo ::
+cmds == {
+  char **argv == NULL;
+  char *cmd = "echo";
+  int infile = infile;
+  int outfile = outfile;
+  int  (*built_in)() == &echo;
+}
+//pour cat -e
+cmds == {
+  char **argv == {"/bin/cat", "-e"};
+  char *cmd = "cat";
+  int infile = infile;
+  int outfile = outfile;
+  int  (*built_in)() == NULL;
+}
+//dans la verification
+{
+  if (cmds->next == NULL && cmds->built_in != NULL)
+      cmds->built_in(cmds, envp); //ici si echo est seul
+  else
+      exec_pipeline(cmds, envp); //ici pour cat ou si echo est suivi
+}
+//et dans un child de pipeline
+{
+  if (cmds->built_in == NULL)
+      execve(cmds->argv[0], cmds->argv, envp); //ici pour cat, avec les pipes necessaires
+  else
+      built_in(cmds, envp); //ici pour echo, pareil pour les pipes
+}

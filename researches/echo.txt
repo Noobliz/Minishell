@@ -1,0 +1,45 @@
+okay, a little more about echo ::
+
+>> if any issue at all with a given file to append or overwrite, will simply shut down -- even if the file isn't the last one and therefore irrelevant (implies the function used for checking files is a stopper, and fd is merely closed and replaced once a new > or >> is encountered)
+
+parsing-wise :: echo appears to decide on the fd by last input with > or >>, and simply ignore any and all tokens that follow the file framework; any other "valid" tokens are either appended or overwritten on the chosen file.
+
+I can't help but recommend a function that would work something like this ::
+
+char *str == the line that will be written into the document/terminal;
+char *line == the untouched input;
+int fd == the fd to write into;
+add_to_str(char **s, char *add, int quote) == joins s and add (adding a space if s non NULL), frees previous s if s non NULL :: returns i for line[i] right after the ending;
+(note :: the int qhote indicates where we should stop :: at the next isspace, or at the next quote ?)
+get_fd(int *fd, char *file) == opens and assigns the fd (using different flags depending on the > or >> parsing with a malloc'd filename) :: returns the i for line[i] after the filename;
+print_fd(int fd) == prints str in fd (prints nothing if str == NULL);
+
+void	echo(char *line) //line here starts after "echo" and all spaces
+{
+	char *str = NULL;
+	int	i = 0;
+	int fd = 1;
+	while (line[i])
+	{
+		while (line[i] == ' ')
+			i++;
+		if (line[i] == '\"' || line[i] == '\'')
+			i = i + add_to_str(&str, &line[i], 1);
+		else if (line[i] == '>')
+			i = i + get_fd(&fd, &line[i]);
+		else
+			i = i + add_to_str(&str, &line[i], 0);
+		if (fd == -1 || !str)
+			break ;
+	}
+	if (fd != -1)
+		print_fd(str, fd);
+	if (fd > 1)
+		close(fd);
+	if (str)
+		free(str);
+}
+
+//note :: this might get harder to handle once we start taking variables into account, since something like $> echo this and this into >> $FILENAME also functions.
+//other options are available, like for example fixing a char **tab of itemized objects in line (vars already changed, filenames already checked and fd stored in a struct of some kind, etc.), which would be my preferred option (very biased here)
+//i'm definitely open to other suggestions though

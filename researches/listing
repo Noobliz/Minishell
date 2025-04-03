@@ -1,0 +1,32 @@
+signal, sigaction, sigemptyset, sigaddset,  
+ ioctl,
+ tcsetattr, tcgetattr, tgetent, tgetflag,
+tgetnum, tgetstr, tgoto, tputs
+
+
+next up ::
+
+readline, rl_clear_history, rl_on_new_line,
+rl_replace_line, rl_redisplay, add_history,
+//waiting for the libraries
+isatty, ttyname, ttyslot,
+
+done  ::
+
+getcwd, chdir,
+stat, lstat, fstat,
+opendir, readdir, closedir,
+kill(pid_t pid(id no doublon || 0 to all || -1 to all permitted || -id doublons), int sig) == send sig to processes;
+getenv,
+
+
+known   ::
+
+access, open, read, close,
+malloc, free,
+printf, write,
+fork, wait, waitpid, wait3, wait4,
+strerror, perror,
+execve, exit,
+dup, dup2, pipe,
+unlink,
