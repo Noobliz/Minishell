@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:30:43 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/03 15:24:11 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/03 16:56:57 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ int	check_sign(const char *str, int *i, int *overflow)
 	{
 		if (str[*i] == '-')
 			sign = -1;
-		i++;
+		(*i)++;
 	}
-	if (!str[*i])
+	if (!str || !str[*i])
 		*overflow = 1;
 	return (sign);
 }
@@ -45,7 +45,7 @@ int	safe_atoi(const char *str, int *overflow)
 		if ((sign == 1 && result > LLONG_MAX)
 			|| (sign == -1 && result > (unsigned long)LLONG_MAX + 1))
 		{
-			*overflow = 1;
+			*overflow = 2;
 			return (0);
 		}
 		i++;
