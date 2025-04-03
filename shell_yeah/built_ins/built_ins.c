@@ -39,7 +39,7 @@ int	echo(char **argv)
 	new_line = 1;
 	if (!argv)
 		return (0);
-	if (check_n(argv[1]))
+	while (check_n(argv[i]))
 	{
 		new_line = 0;
 		i++;
