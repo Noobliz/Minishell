@@ -154,7 +154,7 @@ int		parsing_pt1(t_token *tokens, t_env *env, char *lec);
 
 //from syntax_utils.c
 void	print_syntax_err(char *str);
-int		check_src(int type2, char next);
+int	check_src(int type2, int next);
 int		missing_quote(char quote);
 int		forbidden(char a);
 

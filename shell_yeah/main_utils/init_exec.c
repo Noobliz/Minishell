@@ -47,23 +47,22 @@ int	making_tokens(t_token **token, t_env *env, char *lec)
 {
 	int		check;
 
-	if (check_empty(*token, (*token)->value))
-		return (-2);
 	if (!lec)
 		return (-1);
 	check = parsing_pt1(*token, env, lec);
 	free(lec);
 	if (check < 0)
 		return (check);
+	if (check_empty(*token, (*token)->value))
+		return (-2);
 	check = split_and_sign(token);
-	if (check < 0)
-		return (check);
-	check = spec_check(*token);
 	if (check < 0)
 		return (check);
 	check = assign_types(token);
 	if (check < 0)
 		return (check);
+	if (spec_check(*token) == -2)
+		return (-2);
 	check = stick_quotes(*token);
 	if (check < 0)
 		return (check);

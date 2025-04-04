@@ -12,6 +12,18 @@
 
 #include "../libbig.h"
 
+static void	clean_up(t_token **token)
+{
+	t_token	*tmp;
+
+	if ((*token)->next)
+		tmp = (*token)->next;
+	else
+		tmp = (*token)->previous;
+	delete_token(*token);
+	*token = tmp;
+}
+
 //first we separate redirs and pipes from the rest of a string
 //(if its in a string)
 // --careful, if split the special tokens have a NULL value
@@ -22,10 +34,7 @@ static int	assign_types_splits(t_token *token)
 	while (token)
 	{
 		if (token->type != IGNORE && token->value && !token->value[0])
-		{
-			token = token->next;
-			delete_token(token->previous);
-		}
+			clean_up(&token);
 		if (token->type != IGNORE && token->value)
 		{
 			type = get_type(token->value, "<|>");
@@ -58,9 +67,8 @@ int	assign_types(t_token **head)
 	{
 		if (token->type != IGNORE && get_type(token->value, "<|>") != -1)
 			token->type = get_type(token->value, "<|>");
-		//if (token->type == IGNORE)
-		//	token->type = CMD;
-		if (token->next && is_redir(token->next->type, 0))
+		if (token->next && token->next->type != IGNORE
+			&& !is_redir(token->next->type, 1) && is_redir(token->type, 0))
 			token->next->type = DIR;
 		token = token->next;
 	}

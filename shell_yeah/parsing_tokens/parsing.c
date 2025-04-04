@@ -77,23 +77,20 @@ static int	parsing_inloop(t_token *current, t_env *env, char *lec)
 {
 	int	i;
 	int	res;
+	char	a;
 
 	i = 0;
-	while (current->value[i])
+	while (current->type != IGNORE && current->value[i])
 	{
-		if (current->value[i] == '\'' || current->value[i] == '\"'
-			|| current->value[i] == '$')
+		a = current->value[i];
+		if (a == '\'' || a == '\"' || a == '$')
 		{
 			res = distribute_parsing(current, i, env, lec);
 			if (res == -1 || res == -2)
 				return (res);
-			if (current->value[i] == '\'' || current->value[i] == '\"')
-			{
-				if (i)
-					current = current->next;
+			if (a == '\'' || a == '\"')
 				break ;
-			}
-			if (current->value[i] != '$')
+			if (a == '$')
 				i--;
 		}
 		i++;

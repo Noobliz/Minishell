@@ -25,7 +25,7 @@ void	print_syntax_err(char *str)
 //in this one i check what character i'm supposed to display
 //as the unexpected token
 //(i've checked every possible situation i could think of)
-int	check_src(int type2, char next)
+int	check_src(int type2, int next)
 {
 	if (type2 == PIPE)
 		print_syntax_err("|");
@@ -35,7 +35,7 @@ int	check_src(int type2, char next)
 		print_syntax_err("<<");
 	else if (type2 == APPEND)
 		print_syntax_err(">>");
-	else if (type2 == REDIR_OUT && next == '|')
+	else if (type2 == REDIR_OUT && next == PIPE)
 		print_syntax_err(">|");
 	else
 		print_syntax_err(">");
