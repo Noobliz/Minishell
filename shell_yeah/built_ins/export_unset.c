@@ -56,7 +56,7 @@ int	exportt(char **argv, t_env *env)
 	if (!argv)
 		return (0);
 	if (!argv[1])
-		disp_env(env);
+		disp_env(env, 1);
 	return (one_line_export(argv, 1, env));
 }
 

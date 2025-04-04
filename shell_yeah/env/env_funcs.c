@@ -12,12 +12,14 @@
 
 #include "../libbig.h"
 
-void	disp_env(t_env *env)
+void	disp_env(t_env *env, int exp)
 {
 	while (env)
 	{
 		if (is_alpha(env->var[0]))
 		{
+			if (exp)
+				print("declare -x ");
 			print(env->var);
 			print("\n");
 		}

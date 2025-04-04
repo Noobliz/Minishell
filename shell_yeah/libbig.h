@@ -112,7 +112,7 @@ int		update_var(t_env *env, char *newvar);
 int		add_env(t_env *env, char *newvar);
 void	del_env(t_env *env, char *del);
 char	*get_env(char *var, t_env *env);
-void	disp_env(t_env *env);
+void	disp_env(t_env *env, int exp);
 
 //from parsing_tokens/
 

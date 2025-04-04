@@ -90,7 +90,7 @@ int	built_in(int func, char **argv, char **envp, t_data *data)
 	if (func == 3)
 		return (unset(argv, data->env));
 	if (func == 4)
-		disp_env(data->env);
+		disp_env(data->env, 0);
 	if (func == 5)
 		return (ft_exit(argv, data));
 	if (func == 6)
