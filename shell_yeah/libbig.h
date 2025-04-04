@@ -131,8 +131,10 @@ int		stick_quotes(t_token *token);
 void	final_types(t_token *token);
 //reassigns IGNORE types to correct type
 
-//from handle_var.c
+//from handle_var_utils.c
 char	*replace(char *s, char *var, int where, int next);
+
+//fomr handle_var.c
 int		handle_var(t_token *token, t_env *env, int here, char *lec);
 
 //from parsing_utils.c

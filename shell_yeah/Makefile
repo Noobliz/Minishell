@@ -9,6 +9,7 @@ env/create_env.c\
 env/env_funcs.c\
 parsing_tokens/split_spaces.c\
 parsing_tokens/stick_split_utils.c\
+parsing_tokens/handle_var_utils.c\
 parsing_tokens/handle_var.c\
 parsing_tokens/parsing_utils.c\
 parsing_tokens/split_token.c\

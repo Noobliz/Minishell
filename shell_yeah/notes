@@ -22,5 +22,3 @@ looks good now, fixed a handle_var on numerical first character issue, pushing
 echo tests variations ::
 
 echo \n hello :: us:"\n hello" || bash:"n hello"
-echo $'HOME' :: us:"$HOME" || bash:"HOME"
-
