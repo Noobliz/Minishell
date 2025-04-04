@@ -38,5 +38,6 @@ int	main(int argc, char **argv, char **envp)
 		if (!reset_readline(&data))
 			return (0);
 	}
+	write(1, "exit\n", 5);
 	return (free_all_things(&data));
 }
