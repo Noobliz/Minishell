@@ -90,7 +90,7 @@ static int	parsing_inloop(t_token *current, t_env *env, char *lec)
 				return (res);
 			if (a == '\'' || a == '\"')
 				break ;
-			if (a == '$')
+			if (res != 1)
 				i--;
 		}
 		i++;

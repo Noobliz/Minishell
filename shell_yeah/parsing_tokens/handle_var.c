@@ -121,6 +121,19 @@ static int	handle_lec(t_token *token, char *lec, int i)
 	return (0);
 }
 
+static int	handle_var_loop(char *value, int i, int here)
+{
+	while (value[i] && !(value[i] == '$'
+			&& (is_alphanum(value[i + 1])
+				|| value[i + 1] == '{' || value[i + 1] == '?')))
+	{
+		if (value[i] == '$' && here > -1)
+			return (-2);
+		i++;
+	}
+	return (i);
+}
+
 //celle-ci prend soit juste la premiere variable (here != -1)
 //soit toutes les variables (here == -1)
 //et elle remplace le $VAR par sa valeur dans la token->value
@@ -129,10 +142,11 @@ int	handle_var(t_token *token, t_env *env, int here, char *lec)
 	int	i;
 
 	i = 0;
-	while (token->value[i] && !(token->value[i] == '$'
-			&& (is_alphanum(token->value[i + 1])
-				|| token->value[i + 1] == '{' || token->value[i + 1] == '?')))
-		i++;
+	if (here > -1)
+		i = here;
+	i = handle_var_loop(token->value, i, here);
+	if (i == -2)
+		return (1);
 	if (!token->value[i])
 		return (0);
 	if (token->value[i + 1] == '{')
