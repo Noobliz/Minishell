@@ -113,7 +113,10 @@ static int	handle_lec(t_token *token, char *lec, int i)
 {
 	char	*str;
 
-	str = replace(token->value, lec, i, i + 2);
+	if (lec[0])
+		str = replace(token->value, lec, i, i + 2);
+	else
+		str = replace(token->value, lec, i, i + 1);
 	if (!str)
 		return (-1);
 	free(token->value);
@@ -125,7 +128,8 @@ static int	handle_var_loop(char *value, int i, int here)
 {
 	while (value[i] && !(value[i] == '$'
 			&& (is_alphanum(value[i + 1])
-				|| value[i + 1] == '{' || value[i + 1] == '?')))
+				|| value[i + 1] == '{' || value[i + 1] == '?'
+				|| value[i + 1] == '\'' || value[i + 1] == '\"')))
 	{
 		if (value[i] == '$' && here > -1)
 			return (-2);
@@ -155,6 +159,8 @@ int	handle_var(t_token *token, t_env *env, int here, char *lec)
 		i = handle_reg_var(token, env, i);
 	else if (token->value[i + 1] == '?')
 		i = handle_lec(token, lec, i);
+	else if (token->value[i + 1] == '\'' || token->value[i + 1] == '"')
+		i = handle_lec(token, "", i);
 	if (i < 0 || here > -1)
 		return (i);
 	else
