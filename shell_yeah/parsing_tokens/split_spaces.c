@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   stick_and_split.c                                  :+:      :+:    :+:   */
+/*   split_spaces.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,24 +11,6 @@
 /* ************************************************************************** */
 
 #include "../libbig.h"
-
-//joins two tokens into one
-static int	add_up(t_token *beg, t_token *end)
-{
-	char	*str;
-
-	str = join(beg->value, end->value);
-	if (!str)
-		return (-1);
-	free(beg->value);
-	free(end->value);
-	beg->value = str;
-	beg->next = end->next;
-	if (end->next)
-		end->next->previous = beg;
-	free(end);
-	return (0);
-}
 
 static int	get_sign(t_token *token, t_token *tmp, int sign)
 {
@@ -42,10 +24,10 @@ static int	get_sign(t_token *token, t_token *tmp, int sign)
 	}
 	if ((sign == 1 || sign == 3)
 		&& tmp->previous && tmp->previous->type == IGNORE)
-		tmp->type = APPEND;
+		tmp->sign = 1;
 	if ((sign == 2 || sign == 3)
 		&& token->next && token->next->type == IGNORE)
-		token->type = HEREDOC;
+		token->sign = token->sign + 2;
 	return (0);
 }
 
@@ -80,48 +62,54 @@ static int	split_inner_spaces(t_token *token)
 
 //first we trim and split the non quotes tokens
 //turning them into HEREDOC should they be added with an IGNORE token;
-static int	preface_quotes(t_token *token)
+static int	preface_quotes(t_token **tokens)
 {
 	t_token	*tmp;
+	t_token *token;
 
-	while (token)
+	token = *tokens;
+	tmp = token;
+	while (tmp)
 	{
 		tmp = token->next;
-		if (token->type != IGNORE && token->type != HEREDOC)
+		if (token->type != IGNORE)
 		{
 			if (split_inner_spaces(token) == -1)
 				return (-1);
 		}
-		token = tmp;
+		if (tmp)
+			token = tmp;
 	}
+	while (token->previous)
+		token = token->previous;
+	*tokens = token;
 	return (0);
 }
 
 //fix_quotes is our new trim_split
 //adjusts the quotes if supposed to be part of a bigger token;
-int	fix_quotes(t_token *token)
+int	split_and_sign(t_token **tokens)
 {
-	if (preface_quotes(token) == -1)
+	t_token	*tmp;
+	t_token	*token;
+
+	if (preface_quotes(tokens) == -1)
 		return (-1);
-	while (token)
+	token = *tokens;
+	tmp = token;
+	while (tmp)
 	{
-		if (token->type == IGNORE && token->next)
-		{
-			if (token->next->type == IGNORE || token->next->type == APPEND)
-			{
-				if (add_up(token, token->next) == -1)
-					return (-1);
-			}
-		}
-		else if (token->type == HEREDOC && token->next)
-		{
-			if (token->next->type == IGNORE)
-			{
-				if (add_up(token, token->next) == -1)
-					return (-1);
-			}
-		}
-		token = token->next;
+		tmp = token->next;
+		if (token->type == IGNORE && token->next
+			&& token->next->type == IGNORE)
+			token->sign = 2;
+		if (token->type != IGNORE && token->value && !token->value[0])
+			delete_token(token);
+		else
+			*tokens = token;
+		token = tmp;
 	}
+	while ((*tokens)->previous)
+		*tokens = (*tokens)->previous;
 	return (0);
 }

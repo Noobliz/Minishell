@@ -95,6 +95,8 @@ static int	handle_reg_var(t_token *token, t_env *env, int i)
 	j = i + 1;
 	while (token->value[j] && is_alphanum(token->value[j]))
 		j++;
+	if (token->value[i + 1] >= '0' && token->value[i + 1] <= '9')
+		j = i + 2;
 	var = get_env(&token->value[i + 1], env);
 	if (!var)
 		var = replace(token->value, "", i, j);
@@ -128,14 +130,14 @@ int	handle_var(t_token *token, t_env *env, int here, char *lec)
 
 	i = 0;
 	while (token->value[i] && !(token->value[i] == '$'
-			&& (is_alpha(token->value[i + 1])
+			&& (is_alphanum(token->value[i + 1])
 				|| token->value[i + 1] == '{' || token->value[i + 1] == '?')))
 		i++;
 	if (!token->value[i])
 		return (0);
 	if (token->value[i + 1] == '{')
 		i = handle_acc_var(token, env, i);
-	else if (is_alpha(token->value[i + 1]))
+	else if (is_alphanum(token->value[i + 1]))
 		i = handle_reg_var(token, env, i);
 	else if (token->value[i + 1] == '?')
 		i = handle_lec(token, lec, i);

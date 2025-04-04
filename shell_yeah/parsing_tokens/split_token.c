@@ -98,6 +98,10 @@ int	split_token(t_token *token, int quote)
 	free(token->value);
 	token->value = splat[0];
 	free(splat);
+	if (token->sign == 2 || token->sign == 3)
+		item->sign = 2;
+	if (token->sign == 2)
+		token->sign = 0;
 	item->next = token->next;
 	if (token->next)
 		token->next->previous = item;

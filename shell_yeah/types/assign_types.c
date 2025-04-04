@@ -58,10 +58,9 @@ int	assign_types(t_token **head)
 	{
 		if (token->type != IGNORE && get_type(token->value, "<|>") != -1)
 			token->type = get_type(token->value, "<|>");
-		if (token->type == IGNORE)
-			token->type = CMD;
-		if (token->next && token->type != DIR
-			&& token->type != CMD && token->type != PIPE)
+		//if (token->type == IGNORE)
+		//	token->type = CMD;
+		if (token->next && is_redir(token->next->type, 0))
 			token->next->type = DIR;
 		token = token->next;
 	}

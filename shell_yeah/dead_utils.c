@@ -46,3 +46,34 @@ void	print_cmds(t_cmd *cmd)
 		cmd = cmd->next;
 	}
 }
+
+//resets all tokens to CMD type to avoid later confusion;
+void	all_cmd_type(t_token **tokens)
+{
+	t_token	*tmp;
+	t_token	*token;
+
+	token = *tokens;
+	if (!token)
+		return ;
+	while (token->previous)
+		token = token->previous;
+	tmp = token;
+	while (tmp)
+	{
+		tmp = token->next;
+		if (token->type != IGNORE && token->value && !token->value[0])
+			delete_token(token);
+		else if (token->type != IGNORE)
+		{
+			token->type = CMD;
+			*tokens = token;
+		}
+		if (tmp)
+			token = tmp;
+	}
+	while ((*tokens)->previous)
+		*tokens = (*tokens)->previous;
+}
+
+

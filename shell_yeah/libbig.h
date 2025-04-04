@@ -70,6 +70,7 @@ typedef struct s_token
 {
     char            *value;
     t_type          type;
+    int			sign;
     struct s_token	*previous;
     struct s_token	*next;
 }   t_token;
@@ -119,12 +120,16 @@ void	disp_env(t_env *env);
 char	*del_spaces(char *str);
 char	last_char(char *str);
 void	delete_token(t_token *token);
-void	all_cmd_type(t_token *token);
-//resets all tokens to CMD || IGNORE
 
-//from stick_and_split.c
-int		fix_quotes(t_token *token);
-//fixes previous quote splits if necessary, trims and splits non quotes
+//from split_spaces.c
+int		split_and_sign(t_token **token);
+//splits non-quotes
+
+//from final.c
+int		stick_quotes(t_token *token);
+//sticks quotes to appropriate other tokens
+void	final_types(t_token *token);
+//reassigns IGNORE types to correct type
 
 //from handle_var.c
 char	*replace(char *s, char *var, int where, int next);
@@ -135,6 +140,8 @@ t_token *new_token(char *value, t_type type, t_token *prev);
 void	free_tokens(t_token *token);
 int		get_quote(char *token, char quote);
 int		empty_quote(t_token *token);
+int		is_redir(int type, int is_pipe);
+//tells if its a REDIR (IN, OUT, APPEND, HEREDOC) and if is_pipe, a PIPE
 
 //from split_token.c
 char	**split_once(char *str, int quote);
@@ -262,7 +269,7 @@ int		free_all_things(t_data *data);
 
 //from init_exec.c
 char	*get_prompt(t_env *env);
-int		making_tokens(t_token **token, t_env *env, int code);
+int		making_tokens(t_token **token, t_env *env, char *lec);
 int		data_init(t_data *data, char **envp);
 int		reset_readline(t_data *data);
 int		exec_and_co(t_data *data, int check);
@@ -277,5 +284,7 @@ void	sig_handler_sigpipe(int code);
 //from dead_utils.c
 void	print_tokens(t_token *tokens);
 void	print_cmds(t_cmd *cmd);
+void	all_cmd_type(t_token **tokens); //unused rn
+//resets all tokens to CMD || IGNORE
 
 #endif

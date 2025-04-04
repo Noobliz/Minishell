@@ -12,26 +12,6 @@
 
 #include "../libbig.h"
 
-//resets all tokens to CMD type to avoid later confusion;
-void	all_cmd_type(t_token *token)
-{
-	t_token	*tmp;
-
-	if (!token)
-		return ;
-	while (token->previous)
-		token = token->previous;
-	while (token)
-	{
-		tmp = token->next;
-		if (token->type != IGNORE && token->value && !token->value[0])
-			delete_token(token);
-		else if (token->type != IGNORE)
-			token->type = CMD;
-		token = tmp;
-	}
-}
-
 //getting the last character of a string
 char	last_char(char *str)
 {

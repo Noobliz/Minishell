@@ -43,30 +43,31 @@ char	*get_prompt(t_env *env)
 //does all of the token related tasks and returns error 
 //if error there is (-2 syntax error, -1 malloc error, 0 success),
 // protected for line == NULL
-int	making_tokens(t_token **token, t_env *env, int code)
+int	making_tokens(t_token **token, t_env *env, char *lec)
 {
 	int		check;
-	char	*lec;
 
 	if (check_empty(*token, (*token)->value))
 		return (-2);
-	lec = num_str(code);
 	if (!lec)
 		return (-1);
 	check = parsing_pt1(*token, env, lec);
 	free(lec);
 	if (check < 0)
 		return (check);
-	check = fix_quotes(*token);
+	check = split_and_sign(token);
 	if (check < 0)
 		return (check);
-	all_cmd_type(*token);
 	check = spec_check(*token);
 	if (check < 0)
 		return (check);
 	check = assign_types(token);
 	if (check < 0)
 		return (check);
+	check = stick_quotes(*token);
+	if (check < 0)
+		return (check);
+	final_types(*token);
 	cmd_shuffle(*token);
 	return (0);
 }

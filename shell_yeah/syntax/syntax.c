@@ -49,19 +49,19 @@ int	spec_check(t_token *token)
 
 	type2 = -1;
 	type = -1;
-	if (token && token->value[0] == '|')
+	if (token && token->type != IGNORE && token->value[0] == '|')
 		return (check_src(PIPE, 'a'));
 	while (token)
 	{
-		if (token->type != IGNORE)
-		{
-			if (spec_check_inloop(token, &type, &type2) == -2)
-				return (-2);
-		}
+		if (token->type != IGNORE
+			&& spec_check_inloop(token, &type, &type2) == -2)
+			return (-2);
 		else
+		{
 			type = -1;
-		if (!token->next && (type2 != -1
-				|| (token->type != CMD && token->type != IGNORE)))
+			type2 = -1;
+		}
+		if (!token->next && (type2 != -1 || is_redir(token->type, 1)))
 		{
 			print_syntax_err("newline");
 			return (-2);

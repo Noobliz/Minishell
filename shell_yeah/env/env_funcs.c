@@ -106,6 +106,8 @@ char	*get_env(char *var, t_env *env)
 
 	if (!var[0])
 		return ("$");
+	if (var[0] == '1')
+		return (NULL);
 	current = env;
 	i = 0;
 	while (current)

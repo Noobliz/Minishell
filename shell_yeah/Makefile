@@ -7,12 +7,13 @@ main_utils/init_exec.c\
 env/env_utils.c\
 env/create_env.c\
 env/env_funcs.c\
-parsing_tokens/stick_and_split.c\
+parsing_tokens/split_spaces.c\
 parsing_tokens/stick_split_utils.c\
 parsing_tokens/handle_var.c\
 parsing_tokens/parsing_utils.c\
 parsing_tokens/split_token.c\
 parsing_tokens/parsing.c\
+parsing_tokens/final.c\
 syntax/syntax_utils.c\
 syntax/syntax.c\
 types/split_types.c\

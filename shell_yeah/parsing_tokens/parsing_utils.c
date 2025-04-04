@@ -58,6 +58,7 @@ t_token	*new_token(char *value, t_type type, t_token *prev)
 	new->type = type;
 	new->next = NULL;
 	new->previous = prev;
+	new->sign = 0;
 	return (new);
 }
 
@@ -72,4 +73,15 @@ int	get_quote(char *token, char quote)
 	if (token[i])
 		return (i);
 	return (-1);
+}
+
+//returns one on redir types
+int	is_redir(int type, int is_pipe)
+{
+	if (type == REDIR_IN || type == REDIR_OUT
+		|| type == APPEND || type == HEREDOC)
+		return (1);
+	if (is_pipe && type == PIPE)
+		return (1);
+	return (0);
 }
