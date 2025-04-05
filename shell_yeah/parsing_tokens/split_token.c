@@ -100,8 +100,8 @@ int	split_token(t_token *token, int quote)
 	free(splat);
 	if (token->sign == 2 || token->sign == 3)
 		item->sign = 2;
-	if (token->sign == 2)
-		token->sign = 0;
+	if (token->sign == 2 || token->sign == 3)
+		token->sign = token->sign - 2;
 	item->next = token->next;
 	if (token->next)
 		token->next->previous = item;
