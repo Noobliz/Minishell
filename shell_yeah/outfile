@@ -1,4 +1,4 @@
-
+pwd is not working anymore :(
 
 -- heufhuieh << EOF
 mauvaise cmd avant heredoc ne lance pas heredoc (alors que dans bash si)
