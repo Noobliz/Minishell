@@ -58,14 +58,14 @@ static int	handle_reg_var(t_token *token, t_env *env, int i)
 	return (0);
 }
 
-static int	handle_lec(t_token *token, char *lec, int i)
+static int	handle_lec(t_token *token, char *lec, int i, char a)
 {
 	char	*str;
 
-	if (lec[0])
-		str = replace(token->value, lec, i, i + 2);
-	else
+	if (a == '\'' || a == '"')
 		str = replace(token->value, lec, i, i + 1);
+	else
+		str = replace(token->value, lec, i, i + 2);
 	if (!str)
 		return (-1);
 	free(token->value);
@@ -104,12 +104,13 @@ int	handle_var(t_token *token, t_env *env, int here, char *lec)
 		return (0);
 	if (token->value[i + 1] == '{')
 		i = handle_acc_var(token, env, i);
-	else if (is_alphanum(token->value[i + 1]))
+	else if (is_alpha(token->value[i + 1]))
 		i = handle_reg_var(token, env, i);
 	else if (token->value[i + 1] == '?')
-		i = handle_lec(token, lec, i);
-	else if (token->value[i + 1] == '\'' || token->value[i + 1] == '"')
-		i = handle_lec(token, "", i);
+		i = handle_lec(token, lec, i, 'o');
+	else if (token->value[i + 1] == '\'' || token->value[i + 1] == '"'
+		|| (token->value[i +1] <= '9' && token->value[i +1] >= '0'))
+		i = handle_lec(token, "", i, token->value[i +1]);
 	if (i < 0 || here > -1)
 		return (i);
 	else
