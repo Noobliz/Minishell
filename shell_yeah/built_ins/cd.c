@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:27:38 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 14:38:21 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/07 15:11:18 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	update_pwd_vars(t_env **env, char *oldpwd)
 	char	*newpwd;
 
 	newpwd = getcwd(NULL, 0);
-	if (!newpwd)
+	if (!newpwd || !oldpwd)
 		return (-1);
 	set_env_var(env, "OLDPWD", oldpwd);
 	set_env_var(env, "PWD", newpwd);
@@ -67,8 +67,10 @@ int	cd(char **args, t_env **env)
 	char	*oldpwd;
 
 	if (!env || !*env)
-		return (printf("env not found\n"), -1);
+		return (ft_putstr_fd("env not found\n", 2), -1);
 	value = get_env_value(*env, "PWD");
+	if (!value)
+		return (ft_putstr_fd("target not found\n", 2), -1);
 	oldpwd = strdup(value);
 	if (!oldpwd)
 		return (perror("cd : malloc"), -1);
