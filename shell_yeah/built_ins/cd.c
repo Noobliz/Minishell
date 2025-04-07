@@ -87,7 +87,7 @@ int	cd(char **args, t_env **env)
 	target = get_target(args, *env);
 	oldpwd = ft_strdup(value);
 	if (!oldpwd)
-		return (perror("cd : malloc"), -1);
+		return (perror("cd : malloc"), 12);
 	if (!target || chdir(target) != 0)
 	{
 		perror("cd");
@@ -95,7 +95,7 @@ int	cd(char **args, t_env **env)
 		return (1);
 	}
 	if (update_pwd_vars(env, oldpwd, target) == -1)
-		return (free(oldpwd), -1);
+		return (free(oldpwd), 12);
 	free(oldpwd);
 	return (0);
 }
