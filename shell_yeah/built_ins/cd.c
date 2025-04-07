@@ -57,7 +57,7 @@ static int	update_pwd_vars(t_env **env, char *oldpwd, char *target)
 	if (!newpwd)
 	{
 		perror("cd: getcwd");
-		tmp = join(get_env("1PWD", *env), "/");
+		tmp = join(get_env("PWD", *env), "/");
 		if (!tmp)
 			return (-1);
 		newpwd = join(tmp, target);
