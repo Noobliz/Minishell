@@ -16,10 +16,10 @@
 //can change to "minishell" instead of "bash" if necessary
 void	print_syntax_err(char *str)
 {
-	print("\033[35myou shell not pass:\033[0m ");
-	print("syntax error near unexpected token \'");
-	print(str);
-	print("\'\n");
+	print_err("\033[35myou shell not pass:\033[0m ");
+	print_err("syntax error near unexpected token \'");
+	print_err(str);
+	print_err("\'\n");
 }
 
 //in this one i check what character i'm supposed to display
@@ -58,8 +58,8 @@ int	forbidden(char a)
 //(used in parsing for quotes or acc variables)
 int	missing_quote(char quote)
 {
-	print("\033[35myou shell not pass:\033[0m missing matching '");
-	write(1, &quote, 1);
-	print("'\n");
+	print_err("\033[35myou shell not pass:\033[0m missing matching '");
+	write(2, &quote, 1);
+	print_err("'\n");
 	return (-2);
 }

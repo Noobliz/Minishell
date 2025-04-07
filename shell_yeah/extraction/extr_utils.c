@@ -15,11 +15,11 @@
 //prints out the error message like so :: "bash : filename : error_msg\n"
 void	print_bash_err(char *filename, char *err_msg)
 {
-	print("Shell_no! : ");
-	print(filename);
-	print(" : ");
-	print(err_msg);
-	print("\n");
+	print_err("Shell_no! : ");
+	print_err(filename);
+	print_err(" : ");
+	print_err(err_msg);
+	print_err("\n");
 }
 
 //checks if the command is a built_in function

@@ -15,9 +15,9 @@
 //export syntax error
 static void	print_exp_syntax(char *str)
 {
-	print("\033[35myou shell not pass:\033[0m : export: `");
-	print(str);
-	print("': not a valid identifier\n");
+	print_err("\033[35myou shell not pass:\033[0m : export: `");
+	print_err(str);
+	print_err("': not a valid identifier\n");
 }
 
 //export but the line by line process

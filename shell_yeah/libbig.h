@@ -94,6 +94,9 @@ int		is_alphanum(int a);
 char	*join(char *s, char *s2);
 int		len_str(char *str);
 
+//from utils2.c
+void	print_err(char *str);
+
 //from env/
 
 //from create_env.c

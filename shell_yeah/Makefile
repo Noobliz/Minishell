@@ -40,6 +40,7 @@ execution/exec_builtin_alone.c \
 execution/exec_single_cmd.c\
 execution/exec_cmds.c\
 utils.c\
+utils2.c\
 dead_utils.c
 
 NAME=minishell
