@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:27:38 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 16:19:55 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/07 17:49:33 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,45 +80,23 @@ int	cd(char **args, t_env **env)
 	char	*oldpwd;
 
 	if (!env || !*env)
-		return (ft_putstr_fd("env not found\n", 2), -1);
+		return (ft_putstr_fd("env not found\n", 2), -2);
 	value = get_env_value(*env, "PWD");
 	if (!value)
 		return (ft_putstr_fd("target not found\n", 2), -1);
 	target = get_target(args, *env);
-	oldpwd = strdup(value);
+	oldpwd = ft_strdup(value);
 	if (!oldpwd)
 		return (perror("cd : malloc"), -1);
 	if (!target || chdir(target) != 0)
 	{
 		ft_putstr_fd("target not found\n", 2);
 		free(oldpwd);
-		return (-1);
+		return (1);
 	}
 	if (update_pwd_vars(env, oldpwd, target) == -1)
 		return (free(oldpwd), -1);
 	free(oldpwd);
 	return (0);
 }
-// int	cd(char **args, t_env **env)
-// {
-// 	char	*target;
-// 	char	*oldpwd;
 
-// 	if (!env || !*env)
-// 		return (printf("env not found\n"), -1);
-// 	oldpwd = getcwd(NULL, 0);
-// 	target = get_target(args, *env);
-// 	if (!target || chdir(target) != 0)
-// 	{
-// 		perror("cd");
-// 		if(oldpwd)
-// 			free(oldpwd);
-// 		return (-1);
-// 	}
-// 	if (!oldpwd)
-// 		return (perror("cd"), -1);
-// 	if (update_pwd_vars(env, oldpwd) == -1)
-// 		return (free(oldpwd), -1);
-// 	free(oldpwd);
-// 	return (0);
-// }

@@ -6,11 +6,34 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:26:19 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 13:19:20 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/07 17:48:54 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libbig.h"
+
+#include <stdlib.h>
+
+char	*ft_strdup(char *s)
+{
+	char	*dup;
+	int	i;
+
+	if (!s)
+		return (NULL);
+	i = len_str(s);
+	dup = malloc(sizeof(char) * (i + 1));
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (s[i])
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
+}
 
 char	*get_env_value(t_env *env, char *name)
 {
