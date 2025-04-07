@@ -13,24 +13,25 @@
 #include "../libbig.h"
 
 //export syntax error
-static void	print_exp_syntax(char *str)
+static int	print_exp_syntax(char *str)
 {
 	print_err("\033[35myou shell not pass:\033[0m : export: `");
 	print_err(str);
 	print_err("': not a valid identifier\n");
+	return (1);
 }
 
 //export but the line by line process
-static int	one_line_export(char **argv, int i, t_env *env)
+static int	one_line_export(char **argv, int i, t_env *env, int res)
 {
 	int	j;
 
 	if (!argv[i])
-		return (0);
+		return (res);
 	if (!is_alpha(argv[i][0]))
 	{
-		print_exp_syntax(argv[i]);
-		return (one_line_export(argv, i + 1, env));
+		res = print_exp_syntax(argv[i]);
+		return (one_line_export(argv, i + 1, env, res));
 	}
 	j = 1;
 	while (argv[i][j] && argv[i][j] != '=')
@@ -38,15 +39,15 @@ static int	one_line_export(char **argv, int i, t_env *env)
 		if (!is_alphanum(argv[i][j])
 			&& !(argv[i][j] == '+' && argv[i][j +1] == '='))
 		{
-			print_exp_syntax(argv[i]);
-			return (one_line_export(argv, i + 1, env));
+			res = print_exp_syntax(argv[i]);
+			return (one_line_export(argv, i + 1, env, res));
 		}
 		j++;
 	}
 	if (argv[i][j] == '=' && env
 		&& add_env(env, argv[i]) == -1)
 		return (-1);
-	return (one_line_export(argv, i + 1, env));
+	return (one_line_export(argv, i + 1, env, res));
 }
 
 //export, sets new variable unless syntax is poor
@@ -57,7 +58,7 @@ int	exportt(char **argv, t_env *env)
 		return (0);
 	if (!argv[1])
 		disp_env(env, 1);
-	return (one_line_export(argv, 1, env));
+	return (one_line_export(argv, 1, env, 0));
 }
 
 //checking validity before sending it to delete
