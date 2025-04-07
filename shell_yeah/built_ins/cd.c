@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:27:38 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 17:49:33 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/07 18:07:41 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,14 +83,14 @@ int	cd(char **args, t_env **env)
 		return (ft_putstr_fd("env not found\n", 2), -2);
 	value = get_env_value(*env, "PWD");
 	if (!value)
-		return (ft_putstr_fd("target not found\n", 2), -1);
+		return (ft_putstr_fd("target not found\n", 2), 1);
 	target = get_target(args, *env);
 	oldpwd = ft_strdup(value);
 	if (!oldpwd)
 		return (perror("cd : malloc"), -1);
 	if (!target || chdir(target) != 0)
 	{
-		ft_putstr_fd("target not found\n", 2);
+		perror("cd");
 		free(oldpwd);
 		return (1);
 	}
