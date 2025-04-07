@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:34:50 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/03 12:37:03 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/07 17:38:17 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,15 +73,11 @@ void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2],
 
 void	builtin_in_fork(t_cmd *tmp, t_data *data)
 {
+	int code;
 	if (tmp->built_in >= 0)
 	{
-		if (built_in(tmp->built_in, tmp->argv, data->env_array, data)
-			== -1)
-		{
-			close_fd_new(tmp, tmp->next);
-			free_exit(data, 1);
-		}
+		code = built_in(tmp->built_in, tmp->argv, data->env_array, data);
 		close_fd_new(tmp, tmp->next);
-		free_exit(data, 0);
+		free_exit(data, code);
 	}
 }
