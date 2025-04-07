@@ -80,9 +80,10 @@ static t_env	*get_inv_path(void)
 
 	path = getcwd(NULL, 0);
 	if (!path)
-		return (NULL);
+		path = "";
 	var = join("1PWD=", path);
-	free(path);
+	if (path[0])
+		free(path);
 	if (!var)
 		return (NULL);
 	res = env_item(var, 0);
