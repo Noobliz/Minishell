@@ -64,7 +64,7 @@ int	pwd(t_env *env)
 
 	str = get_env("1PWD", env);
 	if (!str)
-		return (-1);
+		return (1);
 	print(str);
 	print("\n");
 	return (0);
@@ -79,7 +79,7 @@ int	built_in(int func, char **argv, char **envp, t_data *data)
 	{
 		data->env = create_env(envp);
 		if (!data->env)
-			return (-1);
+			return (12);
 	}
 	if (func == 0)
 		return (echo(argv));

@@ -46,7 +46,7 @@ static int	one_line_export(char **argv, int i, t_env *env, int res)
 	}
 	if (argv[i][j] == '=' && env
 		&& add_env(env, argv[i]) == -1)
-		return (-1);
+		return (12);
 	return (one_line_export(argv, i + 1, env, res));
 }
 
