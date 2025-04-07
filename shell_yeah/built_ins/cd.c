@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:27:38 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 12:01:31 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/07 14:38:21 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	update_pwd_vars(t_env **env, char *oldpwd)
 	char	*newpwd;
 
 	newpwd = getcwd(NULL, 0);
-	if (!newpwd || !oldpwd)
+	if (!newpwd)
 		return (-1);
 	set_env_var(env, "OLDPWD", oldpwd);
 	set_env_var(env, "PWD", newpwd);
@@ -63,22 +63,47 @@ static int	update_pwd_vars(t_env **env, char *oldpwd)
 int	cd(char **args, t_env **env)
 {
 	char	*target;
+	char	*value;
 	char	*oldpwd;
 
 	if (!env || !*env)
 		return (printf("env not found\n"), -1);
+	value = get_env_value(*env, "PWD");
+	oldpwd = strdup(value);
+	if (!oldpwd)
+		return (perror("cd : malloc"), -1);
 	target = get_target(args, *env);
-	oldpwd = getcwd(NULL, 0);
 	if (!target || chdir(target) != 0)
 	{
-		printf("target not found\n");
+		ft_putstr_fd("target not found\n", 2);
 		free(oldpwd);
 		return (-1);
 	}
-	if (!oldpwd)
-		return (perror("cd"), -1);
 	if (update_pwd_vars(env, oldpwd) == -1)
 		return (free(oldpwd), -1);
 	free(oldpwd);
 	return (0);
 }
+// int	cd(char **args, t_env **env)
+// {
+// 	char	*target;
+// 	char	*oldpwd;
+
+// 	if (!env || !*env)
+// 		return (printf("env not found\n"), -1);
+// 	target = get_target(args, *env);
+// 	oldpwd = getcwd(NULL, 0);
+// 	if (!target || chdir(target) != 0)
+// 	{
+// 		printf("target not found\n");
+// 		if (oldpwd)
+// 			free(oldpwd);
+// 		return (-1);
+// 	}
+// 	if (!oldpwd)
+// 		perror("cd");
+// 	if (update_pwd_vars(env, oldpwd) == -1)
+// 		return (-1);
+// 	free(oldpwd);
+// 	return (0);
+// }

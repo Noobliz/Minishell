@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:26:19 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/03 12:29:09 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/07 13:19:20 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 char	*get_env_value(t_env *env, char *name)
 {
 	size_t	len;
-
+	t_env *tmp = env;
 	len = len_str(name);
-	while (env)
+	while (tmp)
 	{
-		if (ft_strncmp(env->var, name, len) == 0 && env->var[len] == '=')
-			return (env->var + len + 1);
-		env = env->next;
+		if (ft_strncmp(tmp->var, name, len) == 0 && tmp->var[len] == '=')
+			return (tmp->var + len + 1);
+		tmp = tmp->next;
 	}
 	return (NULL);
 }
