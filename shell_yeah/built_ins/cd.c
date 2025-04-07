@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:27:38 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 15:11:18 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/07 16:19:55 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,19 @@ static char	*get_target(char **args, t_env *env)
 	return (target);
 }
 
-static int	update_pwd_vars(t_env **env, char *oldpwd)
+static int	update_pwd_vars(t_env **env, char *oldpwd, char *target)
 {
 	char	*newpwd;
 
 	newpwd = getcwd(NULL, 0);
-	if (!newpwd || !oldpwd)
+	if (!newpwd)
+	{
+		perror("cd");
+		set_env_var(env, "OLDPWD", oldpwd);
+		set_env_var(env, "PWD", target);
+		set_env_var(env, "1PWD", target);
 		return (-1);
+	}
 	set_env_var(env, "OLDPWD", oldpwd);
 	set_env_var(env, "PWD", newpwd);
 	set_env_var(env, "1PWD", newpwd);
@@ -71,17 +77,17 @@ int	cd(char **args, t_env **env)
 	value = get_env_value(*env, "PWD");
 	if (!value)
 		return (ft_putstr_fd("target not found\n", 2), -1);
+	target = get_target(args, *env);
 	oldpwd = strdup(value);
 	if (!oldpwd)
 		return (perror("cd : malloc"), -1);
-	target = get_target(args, *env);
 	if (!target || chdir(target) != 0)
 	{
 		ft_putstr_fd("target not found\n", 2);
 		free(oldpwd);
 		return (-1);
 	}
-	if (update_pwd_vars(env, oldpwd) == -1)
+	if (update_pwd_vars(env, oldpwd, target) == -1)
 		return (free(oldpwd), -1);
 	free(oldpwd);
 	return (0);
@@ -93,19 +99,19 @@ int	cd(char **args, t_env **env)
 
 // 	if (!env || !*env)
 // 		return (printf("env not found\n"), -1);
-// 	target = get_target(args, *env);
 // 	oldpwd = getcwd(NULL, 0);
+// 	target = get_target(args, *env);
 // 	if (!target || chdir(target) != 0)
 // 	{
-// 		printf("target not found\n");
-// 		if (oldpwd)
+// 		perror("cd");
+// 		if(oldpwd)
 // 			free(oldpwd);
 // 		return (-1);
 // 	}
 // 	if (!oldpwd)
-// 		perror("cd");
+// 		return (perror("cd"), -1);
 // 	if (update_pwd_vars(env, oldpwd) == -1)
-// 		return (-1);
+// 		return (free(oldpwd), -1);
 // 	free(oldpwd);
 // 	return (0);
 // }
