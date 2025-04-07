@@ -83,7 +83,7 @@ int	cd(char **args, t_env **env)
 		return (ft_putstr_fd("env not found\n", 2), -2);
 	value = get_env_value(*env, "PWD");
 	if (!value)
-		return (ft_putstr_fd("target not found\n", 2), 1);
+		return (ft_putstr_fd("minishell: pwd not set\n", 2), 1);
 	target = get_target(args, *env);
 	oldpwd = ft_strdup(value);
 	if (!oldpwd)
