@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:27:38 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/03 12:28:05 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/07 12:01:31 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	update_pwd_vars(t_env **env, char *oldpwd)
 	char	*newpwd;
 
 	newpwd = getcwd(NULL, 0);
-	if (!newpwd)
+	if (!newpwd || !oldpwd)
 		return (-1);
 	set_env_var(env, "OLDPWD", oldpwd);
 	set_env_var(env, "PWD", newpwd);
@@ -67,16 +67,16 @@ int	cd(char **args, t_env **env)
 
 	if (!env || !*env)
 		return (printf("env not found\n"), -1);
-	oldpwd = getcwd(NULL, 0);
-	if (!oldpwd)
-		return (perror("cd"), -1);
 	target = get_target(args, *env);
+	oldpwd = getcwd(NULL, 0);
 	if (!target || chdir(target) != 0)
 	{
 		printf("target not found\n");
 		free(oldpwd);
 		return (-1);
 	}
+	if (!oldpwd)
+		return (perror("cd"), -1);
 	if (update_pwd_vars(env, oldpwd) == -1)
 		return (free(oldpwd), -1);
 	free(oldpwd);
