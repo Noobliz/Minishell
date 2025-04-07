@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libbig.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:19:33 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/03 14:48:54 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/07 17:50:41 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,6 +227,7 @@ void	ft_putstr_fd(const char *s, int fd);
 int		is_numeric(const char *str);
 
 //from cd_utils.c
+char	*ft_strdup(char *s);
 char 	*get_env_value(t_env *env, char *name);
 char	*create_env_string(char *name, char *value);
 int		replace_if_exists(t_env *env, char *name, char *new_var);
