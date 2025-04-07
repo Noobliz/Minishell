@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:34:50 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 17:38:17 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/07 17:59:18 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	create_pipe(int new_pipe[2], t_cmd *tmp, t_data *data)
 	if (tmp->next)
 	{
 		if (pipe(new_pipe) == -1)
-			return (msg_error(data, "pipe", -1));
+			return (msg_error(data, "pipe", 1));
 	}
 }
 

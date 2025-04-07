@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_single_cmd.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:44:58 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/03 12:45:44 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/07 17:58:29 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	exec_single_cmd(t_cmd *tmp, t_data *data)
 {
 	tmp->pid = fork();
 	if (tmp->pid == -1)
-		return (msg_error(data, "fork", -1));
+		return (msg_error(data, "fork", 1));
 	if (tmp->pid == 0)
 	{
 		dup_files(tmp, data);

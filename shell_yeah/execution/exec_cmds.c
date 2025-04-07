@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmds.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 15:40:39 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/03 12:44:41 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/07 17:57:31 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ static void	execute_pipeline(t_data *data)
 		create_pipe(new_pipe, tmp, data);
 		tmp->pid = fork();
 		if (tmp->pid == -1)
-			return (msg_error(data, "fork", -1));
+			return (msg_error(data, "fork", 1));
 		if (tmp->pid == 0)
 			exec_child(tmp, new_pipe, old_pipe, data);
 		if (tmp->previous)
