@@ -49,21 +49,28 @@ static char	*get_target(char **args, t_env *env)
 static int	update_pwd_vars(t_env **env, char *oldpwd, char *target)
 {
 	char	*newpwd;
+	char	*tmp;
+	int	res;
 
 	newpwd = getcwd(NULL, 0);
+	res = 0;
 	if (!newpwd)
 	{
-		perror("cd");
-		set_env_var(env, "OLDPWD", oldpwd);
-		set_env_var(env, "PWD", target);
-		set_env_var(env, "1PWD", target);
-		return (-1);
+		perror("cd: getcwd");
+		tmp = join(get_env("1PWD", *env), "/");
+		if (!tmp)
+			return (-1);
+		newpwd = join(tmp, target);
+		free(tmp);
+		if (!newpwd)
+			return (-1);
+		res = -1;
 	}
 	set_env_var(env, "OLDPWD", oldpwd);
 	set_env_var(env, "PWD", newpwd);
 	set_env_var(env, "1PWD", newpwd);
 	free(newpwd);
-	return (0);
+	return (res);
 }
 
 int	cd(char **args, t_env **env)
