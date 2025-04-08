@@ -185,7 +185,7 @@ int		get_heredoc(int fd, char *value, t_env *env, t_data *data);
 int		get_command(t_token *token, t_cmd *cmd, char *path);
 
 //from extr_utils.c
-void	print_bash_err(char *filename, char *err_msg);
+int	print_bash_err(char *filename, char *err_msg);
 int		is_built_in(char *function, t_cmd *cmd);
 void	ignore_cmd(t_cmd *cmd);
 int		str_len_path(char *str);

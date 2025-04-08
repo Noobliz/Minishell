@@ -43,7 +43,7 @@ static char	*join_path(char *s, char *s2)
 }
 
 // finds the command if it's not a built_in
-// through PATH
+// through PATH or 1PWD
 static int	find_command(char *paths, char **command)
 {
 	int		i;
@@ -57,7 +57,7 @@ static int	find_command(char *paths, char **command)
 			com = join_path(&paths[i + 1], *command);
 			if (!com)
 				return (-1);
-			if (access(com, X_OK) == 0)
+			if (access(com, F_OK) == 0)
 			{
 				free(*command);
 				*command = com;
@@ -67,7 +67,7 @@ static int	find_command(char *paths, char **command)
 		}
 		i++;
 	}
-	if (access(*command, X_OK) == -1)
+	if (access(*command, F_OK) == -1)
 		return (-2);
 	return (0);
 }
@@ -131,7 +131,9 @@ int	get_command(t_token *token, t_cmd *cmd, char *path)
 		return (-1);
 	if (!is_built_in(token->value, cmd))
 		check = find_command(path, &str);
-	if (check == -2)
+	if (cmd->built_in == -1 && access(str, X_OK) == -1)
+		check = print_bash_err(token->value, "permission denied");
+	else if (check == -2)
 		print_bash_err(token->value, "command not found");
 	if (check == -1 || check == -2)
 	{
