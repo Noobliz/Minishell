@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtin_alone.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:22:30 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 17:56:07 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/08 12:22:01 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ int	exec_builtins(t_cmd *tmp, t_data *data)
 	int	outfile;
 	int	exit_code;
 
+	outfile = 0;
+	infile = 0;
 	if (tmp->infile >= 0)
 	{
 		if (dup_infile(tmp, &infile) == -1)
@@ -95,7 +97,7 @@ int	exec_builtins(t_cmd *tmp, t_data *data)
 			return (1);
 	}
 	exit_code = built_in(tmp->built_in, tmp->argv, data->env_array, data);
-	if (restore_in_out(tmp, infile, outfile) == -1)
-		return (-1);
+	if (restore_in_out(tmp, infile, outfile) == 1)
+		return (1);
 	return (exit_code);
 }
