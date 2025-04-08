@@ -75,5 +75,3 @@ void	all_cmd_type(t_token **tokens)
 	while ((*tokens)->previous)
 		*tokens = (*tokens)->previous;
 }
-
-

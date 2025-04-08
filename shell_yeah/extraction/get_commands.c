@@ -12,7 +12,7 @@
 
 #include "../libbig.h"
 
-// modded join for the specific path needs
+// modded join for specific path needs
 static char	*join_path(char *s, char *s2)
 {
 	int		len;

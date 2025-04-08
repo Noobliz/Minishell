@@ -175,11 +175,11 @@ void	free_cmds(t_cmd *head);
 void	free_cmds_new(t_cmd *prev, t_cmd *next);
 
 //from get_files.c
-int		get_file(t_token *token, t_cmd *cmd, t_env *env, t_data *data);
+int		get_file(t_token *token, t_cmd *cmd);
 
 //from heredoc.c
 int		get_heredoc_inloop(char *line, t_env *env, int pipefd[2], int code);
-int		get_heredoc(char *value, t_env *env, t_data *data);
+int		get_heredoc(int fd, char *value, t_env *env, t_data *data);
 
 //from get_commands.c
 int		get_command(t_token *token, t_cmd *cmd, char *path);
@@ -191,7 +191,8 @@ void	ignore_cmd(t_cmd *cmd);
 int		str_len_path(char *str);
 
 //from extraction.c
-int		extraction(t_token *token, t_cmd **prev, char *path, t_data *data);
+int		extraction_heredoc(t_token *token, t_cmd **prev, t_data *data);
+int		extraction(t_token *token, t_cmd *cmd, t_data *data);
 
 //from built_ins/
 

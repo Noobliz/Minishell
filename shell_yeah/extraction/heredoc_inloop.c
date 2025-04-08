@@ -19,20 +19,13 @@ static int	set_j(char *line, int i)
 
 	j = i + 1;
 	j++;
-	//if (str[i + 1] == '{' && str[i + 2] == '?' && str[i + 3] == '}')
-		//return (j + 2);
 	if (line[i + 1] == '?')
 		return (j);
 	while (is_alphanum(line[j]))
 		j++;
-	/*if (line[i + 1] == '{' && line[j] != '}')
-		j = i + 1;
-	else if (line[i + 1] == '{')
-		j++;*/
 	return (j);
 }
 
-//finds var if var there is
 static char	*get_var(char *line, t_env *env, int i, int j)
 {
 	char	*var;
@@ -41,11 +34,7 @@ static char	*get_var(char *line, t_env *env, int i, int j)
 	if (line[i + 1] == '?')
 		return (var);
 	if (j != i + 1)
-	{
-		/*if (line[i + 1] == '{')
-			i++;*/
 		var = get_env(&line[i + 1], env);
-	}
 	return (var);
 }
 
@@ -57,9 +46,8 @@ char	*handle_var_str(char *line, t_env *env, char *lec)
 	char	*var;
 
 	i = 0;
-	while (line && line[i]
-		&& !(line[i] == '$'
-			&& (is_alphanum(line[i + 1]) /*|| line[i + 1] == '{' */|| line[i + 1] == '?')))
+	while (line && line[i] && !(line[i] == '$'
+			&& (is_alphanum(line[i + 1]) || line[i + 1] == '?')))
 		i++;
 	if (!line || !line[i])
 		return (line);
@@ -80,7 +68,6 @@ char	*handle_var_str(char *line, t_env *env, char *lec)
 	return (handle_var_str(var, env, lec));
 }
 
-//heredoc per line
 int	get_heredoc_inloop(char *line, t_env *env, int pipefd[2], int code)
 {
 	char	*var;

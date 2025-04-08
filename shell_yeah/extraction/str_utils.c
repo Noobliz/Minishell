@@ -48,7 +48,7 @@ static void	free_cmds_bw(t_cmd *head)
 	free(head);
 }
 
-//new free_cmds from whichever link within the list
+//free_cmds from whichever link within the list
 void	free_cmds_new(t_cmd *prev, t_cmd *next)
 {
 	if (!prev && !next)
@@ -57,8 +57,6 @@ void	free_cmds_new(t_cmd *prev, t_cmd *next)
 	free_cmds_bw(prev);
 }
 
-//creates a new command link
-//all variables set to their untouched versions;
 t_cmd	*new_cmd(t_cmd *prev)
 {
 	t_cmd	*cmd;
@@ -76,7 +74,6 @@ t_cmd	*new_cmd(t_cmd *prev)
 	return (cmd);
 }
 
-//freeing a char **, classic
 void	free_tab(char **tab)
 {
 	int	i;

@@ -12,7 +12,7 @@
 
 #include "libbig.h"
 
-//int	g_err_code;
+int	g_err_code;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -31,8 +31,8 @@ int	main(int argc, char **argv, char **envp)
 				num_str(data.last_exit_code));
 		if (check == -1)
 			return (free_all_things(&data));
-		if (check != -2 && extraction(data.token, &data.cmds, get_env("PATH",
-					data.env), &data) < 0)
+		if (check != -2 && (extraction_heredoc(data.token, &data.cmds,
+					&data) < 0 || extraction(data.token, data.cmds, &data) < 0))
 			return (free_all_things(&data));
 		if (!exec_and_co(&data, check))
 			return (0);

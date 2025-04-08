@@ -53,8 +53,10 @@ static int	heredoc_child(int pipefd[2], t_env *env, t_data *data, char *value)
 	return (done_heredoc(line, pipefd, data, 0));
 }
 
-static int	heredoc_setup(int *pid, t_data *data, int pipefd[2])
+static int	heredoc_setup(int *pid, t_data *data, int pipefd[2], int fd)
 {
+	if (fd >= 0)
+		close(fd);
 	*pid = fork();
 	if (*pid == -1)
 	{
@@ -67,10 +69,7 @@ static int	heredoc_setup(int *pid, t_data *data, int pipefd[2])
 	return (0);
 }
 
-//trying out heredoc, pipe ver.
-//tried the other version, but couldn't rewind
-//!! will have to add the env so i can take it with me up to here -- added
-int	get_heredoc(char *value, t_env *env, t_data *data)
+int	get_heredoc(int fd, char *value, t_env *env, t_data *data)
 {
 	int		pipefd[2];
 	int		pid;
@@ -83,7 +82,7 @@ int	get_heredoc(char *value, t_env *env, t_data *data)
 		data->last_exit_code = -1;
 		return (-1);
 	}
-	if (heredoc_setup(&pid, data, pipefd) == -1)
+	if (heredoc_setup(&pid, data, pipefd, fd) == -1)
 		return (-1);
 	if (pid == 0)
 		exit(heredoc_child(pipefd, env, data, value));

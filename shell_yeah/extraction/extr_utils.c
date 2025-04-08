@@ -12,7 +12,6 @@
 
 #include "../libbig.h"
 
-//prints out the error message like so :: "bash : filename : error_msg\n"
 void	print_bash_err(char *filename, char *err_msg)
 {
 	print_err("Shell_no! : ");
