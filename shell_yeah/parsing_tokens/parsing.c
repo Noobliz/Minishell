@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 17:33:00 by naorakot          #+#    #+#             */
-/*   Updated: 2025/04/03 12:57:12 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/08 15:43:50 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ static int	distribute_parsing(t_token *current, int i, t_env *env, char *lec)
 //parsing per token
 static int	parsing_inloop(t_token *current, t_env *env, char *lec)
 {
-	int	i;
-	int	res;
+	int		i;
+	int		res;
 	char	a;
 
 	i = 0;

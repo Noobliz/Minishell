@@ -73,7 +73,8 @@ void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2],
 
 void	builtin_in_fork(t_cmd *tmp, t_data *data)
 {
-	int code;
+	int	code;
+
 	if (tmp->built_in >= 0)
 	{
 		code = built_in(tmp->built_in, tmp->argv, data->env_array, data);

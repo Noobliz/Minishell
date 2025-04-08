@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   export_unset.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:47:43 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/22 19:47:45 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:23:47 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libbig.h"
 
-//export syntax error
 static int	print_exp_syntax(char *str)
 {
 	print_err("\033[35myou shell not pass:\033[0m : export: `");
@@ -21,7 +20,6 @@ static int	print_exp_syntax(char *str)
 	return (1);
 }
 
-//export but the line by line process
 static int	one_line_export(char **argv, int i, t_env *env, int res)
 {
 	int	j;
@@ -50,8 +48,8 @@ static int	one_line_export(char **argv, int i, t_env *env, int res)
 	return (one_line_export(argv, i + 1, env, res));
 }
 
-//export, sets new variable unless syntax is poor
-//if bad syntax in which case prints err message
+//sets new variable unless syntax is poor
+//if bad syntax prints err message
 int	exportt(char **argv, t_env *env)
 {
 	if (!argv)
@@ -61,7 +59,7 @@ int	exportt(char **argv, t_env *env)
 	return (one_line_export(argv, 1, env, 0));
 }
 
-//checking validity before sending it to delete
+//checking validity before sending it to del_env
 static int	check_var(char *var)
 {
 	int	i;
@@ -78,7 +76,6 @@ static int	check_var(char *var)
 	return (1);
 }
 
-//unsets var
 int	unset(char **argv, t_env *env)
 {
 	int	i;

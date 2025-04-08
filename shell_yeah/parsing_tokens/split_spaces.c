@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_spaces.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 20:18:14 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/22 20:18:27 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/04/08 15:52:04 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,11 @@ static int	get_sign(t_token *token, t_token *tmp, int sign)
 }
 
 //splits all inner spaces of a token
-//assigns HEREDOC if a non IGNORE needs to be stuck to an IGNORE
+//assigns sign if a non IGNORE needs to be stuck to an IGNORE
+//0 for no
+//1 for stick to the one behind
+//2 for stick to the one ahead
+//3 for both
 static int	split_inner_spaces(t_token *token)
 {
 	int		sign;
@@ -61,11 +65,11 @@ static int	split_inner_spaces(t_token *token)
 }
 
 //first we trim and split the non quotes tokens
-//turning them into HEREDOC should they be added with an IGNORE token;
+//adding signs to those that need to be stuck later
 static int	preface_quotes(t_token **tokens)
 {
 	t_token	*tmp;
-	t_token *token;
+	t_token	*token;
 
 	token = *tokens;
 	tmp = token;
@@ -86,8 +90,8 @@ static int	preface_quotes(t_token **tokens)
 	return (0);
 }
 
-//fix_quotes is our new trim_split
-//adjusts the quotes if supposed to be part of a bigger token;
+//adds the signs to IGNOREs that need stick together
+//cleans up empty CMD tokens
 int	split_and_sign(t_token **tokens)
 {
 	t_token	*tmp;

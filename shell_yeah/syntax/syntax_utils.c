@@ -6,14 +6,12 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 13:08:11 by naorakot          #+#    #+#             */
-/*   Updated: 2025/04/03 13:01:00 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/08 15:55:24 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libbig.h"
 
-//for printing syntax errors
-//can change to "minishell" instead of "bash" if necessary
 void	print_syntax_err(char *str)
 {
 	print_err("\033[35myou shell not pass:\033[0m ");
@@ -24,7 +22,6 @@ void	print_syntax_err(char *str)
 
 //in this one i check what character i'm supposed to display
 //as the unexpected token
-//(i've checked every possible situation i could think of)
 int	check_src(int type2, int next)
 {
 	if (type2 == PIPE)
@@ -42,7 +39,6 @@ int	check_src(int type2, int next)
 	return (-2);
 }
 
-//forbidden characters
 int	forbidden(char a)
 {
 	if (a == ';')
@@ -55,7 +51,6 @@ int	forbidden(char a)
 }
 
 //error message for a missing matching quote or acc
-//(used in parsing for quotes or acc variables)
 int	missing_quote(char quote)
 {
 	print_err("\033[35myou shell not pass:\033[0m missing matching '");

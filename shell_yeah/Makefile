@@ -53,6 +53,8 @@ $(NAME): $(SRC) libbig.h
 clean:
 	rm -f $(NAME)
 
-re: clean all
+fclean: clean
 
-.PHONY: clean all re
+re: fclean all
+
+.PHONY: clean all re fclean

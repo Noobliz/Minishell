@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:27:38 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 18:07:41 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/08 17:21:17 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ static char	*get_target(char **args, t_env *env)
 		target = get_env_value(env, "OLDPWD");
 		if (target)
 			printf("%s\n", target);
+		else
+			print_err("cd: OLPWD not set\n");
 	}
 	else
 		target = args[1];
@@ -50,7 +52,7 @@ static int	update_pwd_vars(t_env **env, char *oldpwd, char *target)
 {
 	char	*newpwd;
 	char	*tmp;
-	int	res;
+	int		res;
 
 	newpwd = getcwd(NULL, 0);
 	res = 0;
@@ -83,14 +85,15 @@ int	cd(char **args, t_env **env)
 		return (ft_putstr_fd("env not found\n", 2), -2);
 	value = get_env_value(*env, "PWD");
 	if (!value)
-		return (ft_putstr_fd("minishell: pwd not set\n", 2), 1);
+		value = "";
 	target = get_target(args, *env);
 	oldpwd = ft_strdup(value);
 	if (!oldpwd)
 		return (perror("cd : malloc"), 12);
 	if (!target || chdir(target) != 0)
 	{
-		perror("cd");
+		if (!args[1] || args[1][0] != '-')
+			perror("cd");
 		free(oldpwd);
 		return (1);
 	}
@@ -99,4 +102,3 @@ int	cd(char **args, t_env **env)
 	free(oldpwd);
 	return (0);
 }
-

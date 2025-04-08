@@ -6,12 +6,13 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:54:02 by naorakot          #+#    #+#             */
-/*   Updated: 2025/04/03 12:33:45 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/08 14:52:58 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libbig.h"
 
+//updates the env var "_" to the last command executed
 int	update_lst_cmd(t_env *env, t_cmd *cmd)
 {
 	char	*res;
@@ -38,7 +39,6 @@ int	update_lst_cmd(t_env *env, t_cmd *cmd)
 	return (here);
 }
 
-//cree une nouvelle structure env et la renvoie
 t_env	*env_item(char *var, int cpy)
 {
 	t_env	*item;
@@ -59,7 +59,6 @@ t_env	*env_item(char *var, int cpy)
 	return (item);
 }
 
-//free l'environnement, retourne NULL
 t_env	*free_env(t_env *env)
 {
 	t_env	*res;
@@ -92,7 +91,6 @@ static t_env	*get_inv_path(void)
 	return (res);
 }
 
-//cree le nouvel environnement a partir de celui donne
 t_env	*create_env(char **env)
 {
 	t_env	*head;

@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:41:11 by naorakot          #+#    #+#             */
-/*   Updated: 2025/04/03 14:49:20 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/08 17:19:29 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ int	check_n(char *str)
 	return (1);
 }
 
-// echo prints everything it has, with or without new_line dependent on above
+// prints everything it has
+// with or without new_line dependent on above
 int	echo(char **argv)
 {
 	int	new_line;
@@ -56,8 +57,7 @@ int	echo(char **argv)
 	return (0);
 }
 
-// prints the pwd variable
-//(later will show the hidden var)
+// prints the 1pwd var
 int	pwd(t_env *env)
 {
 	char	*str;
@@ -70,9 +70,8 @@ int	pwd(t_env *env)
 	return (0);
 }
 
-// here the function to call,
-// it distributes over to different built_ins
-// returns their error code (-1 malloc error, 0 success)
+// distributes over to different built_ins
+// returns their error code
 int	built_in(int func, char **argv, char **envp, t_data *data)
 {
 	if (envp && !data->env)

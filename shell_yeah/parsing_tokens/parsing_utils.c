@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 11:53:32 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/26 17:21:04 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/08 15:48:01 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int	empty_quote(t_token *token)
 	return (0);
 }
 
-//same as your create_tokens, except no strdup and i've added the previous token
 t_token	*new_token(char *value, t_type type, t_token *prev)
 {
 	t_token	*new;
@@ -64,7 +63,7 @@ t_token	*new_token(char *value, t_type type, t_token *prev)
 	return (new);
 }
 
-//takes the value and finds the index of the quote, or -1 if no quote
+//takes the token->value and finds the index of the quote, or -1 if no quote
 int	get_quote(char *token, char quote)
 {
 	int	i;
@@ -77,7 +76,7 @@ int	get_quote(char *token, char quote)
 	return (-1);
 }
 
-//returns one on redir types
+//returns one on redir types, 1 if pipes included
 int	is_redir(int type, int is_pipe)
 {
 	if (type == REDIR_IN || type == REDIR_OUT

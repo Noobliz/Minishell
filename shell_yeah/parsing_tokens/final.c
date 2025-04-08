@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   final.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 20:18:14 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/22 20:18:27 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/04/08 15:44:24 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libbig.h"
 
-//joins two tokens into one, keeps relevant type
+//joins two tokens into one, keeps relevant type+signs
 static int	add_up(t_token **begs, t_token *end)
 {
 	char	*str;

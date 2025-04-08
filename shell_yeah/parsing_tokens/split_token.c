@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_token.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 11:58:05 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/23 11:58:07 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/04/08 15:53:44 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,7 @@ static char	**mallocking(char *str, int quote)
 	return (res);
 }
 
-//comme un split mais un seul, a l'index quote
-//au cas ou il y a plusieurs quotes dedans (quote exclue bein sur)
+//splits once at quote, excludes str[quote]
 char	**split_once(char *str, int quote)
 {
 	char	**res;
@@ -67,6 +66,8 @@ char	**split_once(char *str, int quote)
 	return (res);
 }
 
+//in case of quote at the beginning of token->value
+//moves right
 static int	null_quote(t_token *token)
 {
 	char	*str;
@@ -80,7 +81,7 @@ static int	null_quote(t_token *token)
 }
 
 //splits the token at the quote index into
-//two separate tokens (quote excluded of course)
+//two separate tokens (quote excluded)
 int	split_token(t_token *token, int quote)
 {
 	char	**splat;

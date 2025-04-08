@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 21:13:15 by naorakot          #+#    #+#             */
-/*   Updated: 2025/04/03 12:55:54 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/08 15:47:00 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	handle_acc_var(t_token *token, t_env *env, int i)
 	return (0);
 }
 
-//for the variables given like this :: $VAR
+//for the variables given as :: $VAR
 static int	handle_reg_var(t_token *token, t_env *env, int i)
 {
 	int		j;
@@ -58,6 +58,7 @@ static int	handle_reg_var(t_token *token, t_env *env, int i)
 	return (0);
 }
 
+//for last exit code
 static int	handle_lec(t_token *token, char *lec, int i, char a)
 {
 	char	*str;
@@ -87,9 +88,9 @@ static int	handle_var_loop(char *value, int i, int here)
 	return (i);
 }
 
-//celle-ci prend soit juste la premiere variable (here != -1)
-//soit toutes les variables (here == -1)
-//et elle remplace le $VAR par sa valeur dans la token->value
+//replaces variables in token->value
+//for here == -1, all of them
+//for here != -1, the specific one here is on
 int	handle_var(t_token *token, t_env *env, int here, char *lec)
 {
 	int	i;

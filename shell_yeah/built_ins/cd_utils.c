@@ -3,21 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:26:19 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 17:48:54 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/08 17:22:26 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libbig.h"
 
-#include <stdlib.h>
-
 char	*ft_strdup(char *s)
 {
 	char	*dup;
-	int	i;
+	int		i;
 
 	if (!s)
 		return (NULL);
@@ -38,8 +36,10 @@ char	*ft_strdup(char *s)
 char	*get_env_value(t_env *env, char *name)
 {
 	size_t	len;
-	t_env *tmp = env;
+	t_env	*tmp;
+
 	len = len_str(name);
+	tmp = env;
 	while (tmp)
 	{
 		if (ft_strncmp(tmp->var, name, len) == 0 && tmp->var[len] == '=')

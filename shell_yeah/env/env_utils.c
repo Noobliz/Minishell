@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:58:29 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/22 19:58:31 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/04/08 14:55:35 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libbig.h"
 
-//parcourt la variable environnement to_parse
-//cherche la variable donnee to_find
 int	found(char *to_parse, char *to_find)
 {
 	int	i;
@@ -30,7 +28,6 @@ int	found(char *to_parse, char *to_find)
 	return (0);
 }
 
-//copy/strdup
 char	*copy(char *str)
 {
 	char	*s;
@@ -54,8 +51,7 @@ char	*copy(char *str)
 	return (s);
 }
 
-//and the part two where i fill the new string;
-char	*take_out_pt2(char *s, char *str, int cut)
+static char	*take_out_pt2(char *s, char *str, int cut)
 {
 	int	i;
 	int	len;

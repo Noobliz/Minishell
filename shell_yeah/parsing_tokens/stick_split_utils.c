@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   stick_split_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 20:19:48 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/22 20:20:03 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/04/08 15:54:20 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static int	set_j(char *str)
 	return (j);
 }
 
-//getting rid of spaces in the appropriate tokens here (token->type == CMD)
+//gets rid of spaces in the CMD tokens
 char	*del_spaces(char *str)
 {
 	char	*s;

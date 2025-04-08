@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   assign_types.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 14:28:42 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/23 14:09:11 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:00:18 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	clean_up(t_token **token)
 }
 
 //first we separate redirs and pipes from the rest of a string
-//(if its in a string)
+//(if its in a bigger string)
 // --careful, if split the special tokens have a NULL value
 static int	assign_types_splits(t_token *token)
 {
@@ -52,7 +52,7 @@ static int	assign_types_splits(t_token *token)
 	return (0);
 }
 
-//this one is supposed to assign all types once split
+//splits then assigns already cut redirs and pipes
 int	assign_types(t_token **head)
 {
 	t_token	*token;

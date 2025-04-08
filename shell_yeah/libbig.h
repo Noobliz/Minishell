@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   libbig.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:19:33 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 17:50:41 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/08 17:24:07 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBBIG_H
 # define LIBBIG_H
 
-# define _GNU_SOURCE
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
@@ -25,30 +24,20 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 
-# define RESET   "\033[0m"
-# define RED     "\033[31m"
-# define GREEN   "\033[32m"
-# define YELLOW  "\033[33m"
-# define BLUE    "\033[34m"
-# define MAGENTA "\033[35m"
-# define CYAN    "\033[36m"
-# define GRAY    "\033[90m"
-
-//variable globale
-extern int 	g_err_code;
+extern int	g_err_code;
 
 typedef struct s_data
 {
-    char			*line;
-    char			*prompt;
-    char			**env_array;
-    int				last_exit_code;
-    struct s_cmd	*cmds;
-    struct s_env	*env;
-    struct s_token	*token;
-}   t_data;
+	char			*line;
+	char			*prompt;
+	char			**env_array;
+	int				last_exit_code;
+	struct s_cmd	*cmds;
+	struct s_env	*env;
+	struct s_token	*token;
+}				t_data;
 
-typedef struct	s_env
+typedef struct s_env
 {
 	char			*var;
 	struct s_env	*next;
@@ -64,28 +53,28 @@ typedef enum e_type
 	APPEND,
 	HEREDOC,
 	IGNORE
-}   t_type;
+}			t_type;
 
 typedef struct s_token
 {
-    char            *value;
-    t_type          type;
-    int			sign;
-    struct s_token	*previous;
-    struct s_token	*next;
-}   t_token;
+	char			*value;
+	t_type			type;
+	int				sign;
+	struct s_token	*previous;
+	struct s_token	*next;
+}				t_token;
 
-typedef struct  s_cmd
+typedef struct s_cmd
 {
 	char			**argv;
 	char			*cmd;
 	int				infile;
 	int				outfile;
 	int				built_in;
-	pid_t   		pid;
+	pid_t			pid;
 	struct s_cmd	*previous;
 	struct s_cmd	*next;
-}             t_cmd;
+}				t_cmd;
 
 //from utils.c
 void	print(char *str);
@@ -126,13 +115,10 @@ void	delete_token(t_token *token);
 
 //from split_spaces.c
 int		split_and_sign(t_token **token);
-//splits non-quotes
 
 //from final.c
 int		stick_quotes(t_token *token);
-//sticks quotes to appropriate other tokens
 void	final_types(t_token *token);
-//reassigns IGNORE types to correct type
 
 //from handle_var_utils.c
 char	*replace(char *s, char *var, int where, int next);
@@ -141,16 +127,15 @@ char	*replace(char *s, char *var, int where, int next);
 int		handle_var(t_token *token, t_env *env, int here, char *lec);
 
 //from parsing_utils.c
-t_token *new_token(char *value, t_type type, t_token *prev);
+t_token	*new_token(char *value, t_type type, t_token *prev);
 void	free_tokens(t_token *token);
 int		get_quote(char *token, char quote);
 int		empty_quote(t_token *token);
 int		is_redir(int type, int is_pipe);
-//tells if its a REDIR (IN, OUT, APPEND, HEREDOC) and if is_pipe, a PIPE
 
 //from split_token.c
 char	**split_once(char *str, int quote);
-int		split_token(t_token *token, int	quote);
+int		split_token(t_token *token, int quote);
 
 //from parsing.c
 int		parsing_pt1(t_token *tokens, t_env *env, char *lec);
@@ -159,7 +144,7 @@ int		parsing_pt1(t_token *tokens, t_env *env, char *lec);
 
 //from syntax_utils.c
 void	print_syntax_err(char *str);
-int	check_src(int type2, int next);
+int		check_src(int type2, int next);
 int		missing_quote(char quote);
 int		forbidden(char a);
 
@@ -228,7 +213,7 @@ int		is_numeric(const char *str);
 
 //from cd_utils.c
 char	*ft_strdup(char *s);
-char 	*get_env_value(t_env *env, char *name);
+char	*get_env_value(t_env *env, char *name);
 char	*create_env_string(char *name, char *value);
 int		replace_if_exists(t_env *env, char *name, char *new_var);
 int		add_to_env(t_env **env, char *new_var);
@@ -253,7 +238,7 @@ void	close_fd_new(t_cmd *prev, t_cmd *next);
 //from fork_utils.c
 void	wait_for_kids(t_cmd *cmds, t_data *data);
 void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2],
-		t_data *data);
+			t_data *data);
 void	create_pipe(int new_pipe[2], t_cmd *tmp, t_data *data);
 void	update_pipe(t_cmd *current, int old_pipe[2], int new_pipe[2]);
 void	builtin_in_fork(t_cmd *tmp, t_data *data);
@@ -261,7 +246,7 @@ void	builtin_in_fork(t_cmd *tmp, t_data *data);
 // libft utils
 void	msg_error(t_data *data, char *str, int code);
 char	*ft_strcat(char *dest, const char *src);
-int     ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strcpy(char *dest, const char *src);
 int		check_empty(t_token *token, char *str);
 
@@ -280,17 +265,15 @@ int		data_init(t_data *data, char **envp);
 int		reset_readline(t_data *data);
 int		exec_and_co(t_data *data, int check);
 
-//from signal_utils.c [autman (signals)]
+//from signal_utils.c
 void	sig_handler(int code);
 void	sig_handler_heredoc(int code);
 void	sig_do_nothing(int code);
 void	sig_handler_sigpipe(int code);
 
-
 //from dead_utils.c
 void	print_tokens(t_token *tokens);
 void	print_cmds(t_cmd *cmd);
 void	all_cmd_type(t_token **tokens); //unused rn
-//resets all tokens to CMD || IGNORE
 
 #endif

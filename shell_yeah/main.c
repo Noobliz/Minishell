@@ -6,13 +6,13 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:17:22 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/03 14:50:14 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/08 17:32:51 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libbig.h"
 
-int	g_err_code;
+//int	g_err_code;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -27,7 +27,8 @@ int	main(int argc, char **argv, char **envp)
 		data.token = new_token(data.line, CMD, NULL);
 		if (!data.token)
 			return (free_all_things(&data));
-		check = making_tokens(&data.token, data.env, num_str(data.last_exit_code));
+		check = making_tokens(&data.token, data.env,
+				num_str(data.last_exit_code));
 		if (check == -1)
 			return (free_all_things(&data));
 		if (check != -2 && extraction(data.token, &data.cmds, get_env("PATH",

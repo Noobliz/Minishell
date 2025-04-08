@@ -1,6 +1,0 @@
-mkdir test 1, mkdri test2, rm test1, cd ~ doesn't work 
-
--- heufhuieh << EOF
-mauvaise cmd avant heredoc ne lance pas heredoc (alors que dans bash si)
-
--- pressing enter or syntax error = break the shell

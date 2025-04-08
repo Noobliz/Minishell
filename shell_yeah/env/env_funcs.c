@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   new_env.c                                          :+:      :+:    :+:   */
+/*   env_funcs.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naorakot <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 18:27:31 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/04 18:48:34 by naorakot         ###   ########.fr       */
+/*   Updated: 2025/04/08 14:54:03 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,6 @@ int	update_var(t_env *env, char *newvar)
 	return (0);
 }
 
-//pour ajouter une variable. prend la nouvelle chaine str
-//(deja malloc et gardee, ne pas free)
-//retourne 0 succes, -1 erreur de malloc
 int	add_env(t_env *env, char *newvar)
 {
 	char	*var;
@@ -76,8 +73,6 @@ int	add_env(t_env *env, char *newvar)
 	return (0);
 }
 
-//pour supprimer une variable
-//prend le nom de la variable (VAR), et la supprime
 void	del_env(t_env *env, char *del)
 {
 	t_env	*tmp;
@@ -98,9 +93,6 @@ void	del_env(t_env *env, char *del)
 	free(tmp);
 }
 
-//recupere une variable donnee
-//(var donnee au debut du nom de la variable, par example $VAR sur le V)
-//renvoie la valeur associee (dans VAR=VALUE, VALUE)
 char	*get_env(char *var, t_env *env)
 {
 	t_env	*current;
