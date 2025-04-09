@@ -20,7 +20,7 @@ static int	checking_files(t_token *token, t_cmd *cmd)
 	{
 		if (token->type == DIR)
 		{
-			if (g_err_code != 130)
+			if (g_err_code == 130)
 				return (-2);
 			check = get_file(token->previous, cmd);
 			if (check == -1 || check == -2)
@@ -115,10 +115,10 @@ int	extraction_heredoc(t_token *token, t_cmd **prev, t_data *data)
 	{
 		if (token->type == DIR && token->previous->type == HEREDOC)
 		{
-			if (g_err_code == 130)
-				return (-2);
 			cmds->infile = get_heredoc(cmds->infile,
 					token->value, data->env, data);
+			if (g_err_code == 130)
+				return (-2);
 		}
 		token = token->next;
 	}
