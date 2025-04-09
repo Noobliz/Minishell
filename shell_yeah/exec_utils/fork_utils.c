@@ -6,7 +6,7 @@
 /*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:34:50 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 17:59:18 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/09 09:44:41 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	builtin_in_fork(t_cmd *tmp, t_data *data)
 
 	if (tmp->built_in >= 0)
 	{
-		code = built_in(tmp->built_in, tmp->argv, data->env_array, data);
+		code = built_in(tmp->built_in, tmp->argv, data, 1);
 		close_fd_new(tmp, tmp->next);
 		free_exit(data, code);
 	}

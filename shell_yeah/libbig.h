@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libbig.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:19:33 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/08 17:24:07 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/09 09:45:46 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,10 +201,10 @@ int		exportt(char **argv, t_env *env);
 int		unset(char **argv, t_env *env);
 
 //from built_ins.c
-int		built_in(int func, char **argv, char **envp, t_data *data);
+int		built_in(int func, char **argv, t_data *data, int fork);
 
 //from cd.c and ft_exit.c
-int		ft_exit(char **argv, t_data *data);
+int		ft_exit(char **argv, t_data *data, int fork);
 int		cd(char **args, t_env **env);
 
 //from exit_utils.c

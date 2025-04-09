@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:30:43 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/08 17:24:27 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/09 09:53:54 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,37 +55,40 @@ int	safe_atoi(const char *str, int *overflow)
 	return ((int)(sign * result));
 }
 
-void	free_exit_code(t_data *data, long long exit_code, char *str)
+void	free_exit_code(t_data *data, long long exit_code, char *str, int fork)
 {
-	if (str)
+	if (str && fork == 0)
 		ft_putstr_fd(str, 1);
 	free_all_things(data);
 	data->last_exit_code = exit_code;
 	exit(exit_code);
 }
 
-int	ft_exit(char **argv, t_data *data)
+int	ft_exit(char **argv, t_data *data, int fork)
 {
 	int			overflow;
 	long long	code;
 
 	if (argv[1] == NULL)
-		free_exit_code(data, 0, "exit\n");
+		free_exit_code(data, 0, "exit\n", fork);
 	if (!is_numeric(argv[1]))
 	{
-		ft_put3str_fd("minishell: exit: ", data->cmds->argv[1],
+		ft_put3str_fd("minishell: exit: ", argv[1],
 			": numeric argument required\n", 2);
-		free_exit_code(data, 2, NULL);
+		free_exit_code(data, 2, NULL, -2);
 	}
 	code = safe_atoi(argv[1], &overflow);
 	if (overflow)
-		free_exit_code(data, 2, "exit\n");
+	{
+		ft_put3str_fd("minishell: exit: ", argv[1],
+			": numeric argument required\n", 2);
+		free_exit_code(data, 2, NULL, -2);
+	}
 	if (argv[2])
 	{
-		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 		data->last_exit_code = 1;
-		return (1);
+		return ((ft_putstr_fd("minishell: exit: too many arguments\n", 2)), 1);
 	}
-	free_exit_code(data, code, "exit\n");
+	free_exit_code(data, code, "exit\n", fork);
 	return (1);
 }

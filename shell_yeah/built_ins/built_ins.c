@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_ins.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:41:11 by naorakot          #+#    #+#             */
-/*   Updated: 2025/04/08 17:19:29 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/09 09:45:29 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,10 @@ int	pwd(t_env *env)
 
 // distributes over to different built_ins
 // returns their error code
-int	built_in(int func, char **argv, char **envp, t_data *data)
+int	built_in(int func, char **argv, t_data *data, int fork)
 {
-	if (envp && !data->env)
-	{
-		data->env = create_env(envp);
-		if (!data->env)
+	if (!data->env)
 			return (12);
-	}
 	if (func == 0)
 		return (echo(argv));
 	if (func == 1)
@@ -91,7 +87,7 @@ int	built_in(int func, char **argv, char **envp, t_data *data)
 	if (func == 4)
 		disp_env(data->env, 0);
 	if (func == 5)
-		return (ft_exit(argv, data));
+		return (ft_exit(argv, data, fork));
 	if (func == 6)
 		return (cd(argv, &data->env));
 	return (0);
