@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_ins.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:41:11 by naorakot          #+#    #+#             */
-/*   Updated: 2025/04/09 09:45:29 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/09 13:05:41 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	pwd(t_env *env)
 int	built_in(int func, char **argv, t_data *data, int fork)
 {
 	if (!data->env)
-			return (12);
+		return (12);
 	if (func == 0)
 		return (echo(argv));
 	if (func == 1)

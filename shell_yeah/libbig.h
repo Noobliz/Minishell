@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libbig.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:19:33 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/09 09:45:46 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/09 13:05:53 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ int		get_heredoc(int fd, char *value, t_env *env, t_data *data);
 int		get_command(t_token *token, t_cmd *cmd, char *path);
 
 //from extr_utils.c
-int	print_bash_err(char *filename, char *err_msg);
+int		print_bash_err(char *filename, char *err_msg);
 int		is_built_in(char *function, t_cmd *cmd);
 void	ignore_cmd(t_cmd *cmd);
 int		str_len_path(char *str);
