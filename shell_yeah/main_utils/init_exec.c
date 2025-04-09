@@ -28,12 +28,12 @@ char	*get_prompt(t_env *env)
 		i++;
 	while (i && str[i - 1] != '/')
 		i--;
-	str2 = join("\e[0;94mMinishell -- ", &str[i]);
+	str2 = join("\1\e[0;94m\2Minishell -- ", &str[i]);
 	if (!str2)
 		return (NULL);
 	if (get_env("PWD", env) == NULL)
 		free(str);
-	str = join(str2, "> \e[0;94m\x1b[0m\033[0m");
+	str = join(str2, "> \1\e[0;94m\x1b[0m\033[0m\2");
 	free(str2);
 	if (!str)
 		return (NULL);
@@ -119,7 +119,7 @@ int	reset_readline(t_data *data)
 int	exec_and_co(t_data *data, int check)
 {
 	data->env_array = env_to_array(data->env);
-	if (check != -2 && g_err_code != 130)
+	if (data->cmds && g_err_code != 130)
 		execute_command_or_builtin(data);
 	if (check == -2 && !check_empty(data->token, data->token->value))
 		data->last_exit_code = 2;

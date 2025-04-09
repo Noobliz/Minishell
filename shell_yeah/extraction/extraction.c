@@ -76,7 +76,7 @@ static int	assign_cmds(t_token *token, t_cmd *cmd, t_env *env)
 
 //extracts all the info from the tokens, bar HEREDOC
 //checks the validity of commands and in/outfiles
-int	extraction(t_token *token, t_cmd *cmds, t_data *data)
+int	extraction_pt2(t_token *token, t_cmd *cmds, t_data *data)
 {
 	int		check;
 
@@ -91,7 +91,8 @@ int	extraction(t_token *token, t_cmd *cmds, t_data *data)
 		ignore_cmd(cmds);
 	while (token && token->type != PIPE)
 		token = token->next;
-	return (extraction(token, cmds->next, data));
+	check = extraction_pt2(token, cmds->next, data);
+	return (check);
 }
 
 //all heredocs first

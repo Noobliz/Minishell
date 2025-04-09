@@ -131,7 +131,7 @@ int	get_command(t_token *token, t_cmd *cmd, char *path)
 		return (-1);
 	if (!is_built_in(token->value, cmd))
 		check = find_command(path, &str);
-	if (cmd->built_in == -1 && access(str, X_OK) == -1)
+	if (check != -2 && cmd->built_in == -1 && access(str, X_OK) == -1)
 		check = print_bash_err(token->value, "permission denied");
 	else if (check == -2)
 		print_bash_err(token->value, "command not found");

@@ -12,6 +12,25 @@
 
 #include "../libbig.h"
 
+//distributes extraction :: heredoc then everything else
+int	extraction(t_token *token, t_data *data)
+{
+	int	check;
+
+	check = extraction_heredoc(token, &(data->cmds), data);
+	if (check == -2)
+	{
+		if (data->cmds)
+			free_cmds_new(data->cmds, data->cmds->next);
+		data->cmds = NULL;
+		return (0);
+	}
+	if (check == -1)
+		return (-1);
+	check = extraction_pt2(token, data->cmds, data);
+	return (check);
+}
+
 int	print_bash_err(char *filename, char *err_msg)
 {
 	print_err("Shell_no! : ");

@@ -43,7 +43,7 @@ int	empty_quote(t_token *token)
 		free(str);
 		return (-1);
 	}
-	if (token->next->value[0] && token->next->value[0] != ' ')
+	if (token->next->value[0] && !sp(token->next->value[0]))
 		token->next->sign = 1;
 	return (0);
 }

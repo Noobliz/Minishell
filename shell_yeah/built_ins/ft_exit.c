@@ -84,11 +84,10 @@ int	ft_exit(char **argv, t_data *data, int fork)
 			": numeric argument required\n", 2);
 		free_exit_code(data, 2, NULL, -2);
 	}
+	if (argv[2] && !fork)
+		ft_putstr_fd("exit\n", 1);
 	if (argv[2])
-	{
-		data->last_exit_code = 1;
 		return ((ft_putstr_fd("minishell: exit: too many arguments\n", 2)), 1);
-	}
 	free_exit_code(data, code, "exit\n", fork);
 	return (1);
 }

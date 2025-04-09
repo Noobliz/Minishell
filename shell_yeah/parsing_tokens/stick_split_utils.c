@@ -44,12 +44,12 @@ static int	set_j(char *str)
 	int	j;
 
 	i = 0;
-	while (str[i] && str[i] == ' ')
+	while (str[i] && sp(str[i]))
 		i++;
 	j = i;
 	while (str[i] && str[i + 1])
 		i++;
-	while (i && str[i] == ' ')
+	while (i && sp(str[i]))
 	{
 		i--;
 		j++;
@@ -72,7 +72,7 @@ char	*del_spaces(char *str)
 		return (NULL);
 	i = 0;
 	j = 0;
-	while (str[i] == ' ')
+	while (sp(str[i]))
 		i++;
 	while (j < len)
 	{
@@ -81,4 +81,13 @@ char	*del_spaces(char *str)
 	}
 	s[j] = '\0';
 	return (s);
+}
+
+int	sp(int a)
+{
+	if (a <= 13 && a >= 9)
+		return (1);
+	if (a == 32)
+		return (1);
+	return (0);
 }

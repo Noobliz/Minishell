@@ -12,13 +12,31 @@
 
 #include "../libbig.h"
 
+static int	get_sp(char *str)
+{
+	int	a;
+	int	space;
+	int	quote;
+
+	a = 9;
+	space = get_quote(str, ' ');
+	while (a < 14)
+	{
+		quote = get_quote(str, a);
+		if (quote != -1 && (space == -1 || quote < space))
+			space = quote;
+		a++;
+	}
+	return (space);
+}
+
 static int	get_sign(t_token *token, t_token *tmp, int sign)
 {
 	if (!tmp)
 	{
-		if (token->value[0] != ' ')
+		if (!sp(token->value[0]))
 			sign = 1;
-		if (last_char(token->value) != ' ')
+		if (!sp(last_char(token->value)))
 			sign = sign + 2;
 		return (sign);
 	}
@@ -46,7 +64,7 @@ static int	split_inner_spaces(t_token *token)
 
 	tmp = token;
 	sign = get_sign(token, NULL, 0);
-	space = get_quote(token->value, ' ');
+	space = get_sp(token->value);
 	while (space != -1)
 	{
 		var = del_spaces(token->value);
@@ -54,7 +72,7 @@ static int	split_inner_spaces(t_token *token)
 			return (-1);
 		free(token->value);
 		token->value = var;
-		space = get_quote(token->value, ' ');
+		space = get_sp(token->value);
 		if (space != -1 && split_token(token, space) == -1)
 			return (-1);
 		if (space != -1)

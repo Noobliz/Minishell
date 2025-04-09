@@ -112,6 +112,7 @@ void	disp_env(t_env *env, int exp);
 char	*del_spaces(char *str);
 char	last_char(char *str);
 void	delete_token(t_token *token);
+int		sp(int a);
 
 //from split_spaces.c
 int		split_and_sign(t_token **token);
@@ -189,10 +190,11 @@ int		print_bash_err(char *filename, char *err_msg);
 int		is_built_in(char *function, t_cmd *cmd);
 void	ignore_cmd(t_cmd *cmd);
 int		str_len_path(char *str);
+int		extraction(t_token *token, t_data *data);
 
 //from extraction.c
 int		extraction_heredoc(t_token *token, t_cmd **prev, t_data *data);
-int		extraction(t_token *token, t_cmd *cmd, t_data *data);
+int		extraction_pt2(t_token *token, t_cmd *cmd, t_data *data);
 
 //from built_ins/
 
@@ -271,10 +273,5 @@ void	sig_handler(int code);
 void	sig_handler_heredoc(int code);
 void	sig_do_nothing(int code);
 void	sig_handler_sigpipe(int code);
-
-//from dead_utils.c
-void	print_tokens(t_token *tokens);
-void	print_cmds(t_cmd *cmd);
-void	all_cmd_type(t_token **tokens); //unused rn
 
 #endif
