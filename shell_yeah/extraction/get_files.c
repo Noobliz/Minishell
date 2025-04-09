@@ -12,7 +12,7 @@
 
 #include "../libbig.h"
 
-int	new_outfile(char *file, int type)
+static int	new_outfile(char *file, int type)
 {
 	int	fd;
 
@@ -28,20 +28,35 @@ int	new_outfile(char *file, int type)
 }
 
 //closes previously opened infiles and outfiles
-void	close_previous_fds(int type, t_cmd *cmd)
+static int	close_previous_fds(int type, t_cmd *cmd, t_token *token)
 {
+	int	fd;
+
 	if (type == REDIR_OUT || type == APPEND)
 	{
 		if (cmd->outfile > 0)
 			close(cmd->outfile);
+		return (0);
 	}
+	if (type == REDIR_IN && cmd->infile != -2)
+	{
+		fd = open(token->value, O_RDONLY);
+		if (fd == -1)
+		{
+			print_bash_err(token->value, strerror(errno));
+			return (-2);
+		}
+		close(fd);
+	}
+	return (0);
 }
 
 //this is the function for testing out any file
 //on error, prints the error and returns -2
 int	get_file(t_token *token, t_cmd *cmd)
 {
-	close_previous_fds(token->type, cmd);
+	if (close_previous_fds(token->type, cmd, token->next) == -2)
+		return (-2);
 	if (token->type == REDIR_IN && cmd->infile == -2)
 		cmd->infile = open(token->next->value, O_RDONLY);
 	if (token->type == REDIR_OUT)
