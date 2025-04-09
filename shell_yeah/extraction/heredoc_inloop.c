@@ -94,3 +94,30 @@ int	get_heredoc_inloop(char *line, t_env *env, int pipefd[2], int code)
 	free(lec);
 	return (0);
 }
+
+void	heredoc_check(t_token *token, t_cmd *cmd)
+{
+	int	hered;
+
+	if (!token || !cmd)
+		return ;
+	if (token->type == PIPE)
+		token = token->next;
+	hered = 1;
+	while (token && token->type != PIPE && token->type != HEREDOC)
+		token = token->next;
+	while (token && token->type != PIPE)
+	{
+		if (token->type == REDIR_IN)
+			hered = 0;
+		if (token->type == HEREDOC)
+			hered = 1;
+		token = token->next;
+	}
+	if (!hered && cmd->infile >= 0)
+	{
+		close(cmd->infile);
+		cmd->infile = -2;
+	}
+	heredoc_check(token, cmd->next);
+}

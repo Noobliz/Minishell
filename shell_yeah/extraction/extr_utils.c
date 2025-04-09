@@ -27,6 +27,7 @@ int	extraction(t_token *token, t_data *data)
 	}
 	if (check == -1)
 		return (-1);
+	heredoc_check(token, data->cmds);
 	check = extraction_pt2(token, data->cmds, data);
 	return (check);
 }

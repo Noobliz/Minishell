@@ -30,12 +30,7 @@ int	new_outfile(char *file, int type)
 //closes previously opened infiles and outfiles
 void	close_previous_fds(int type, t_cmd *cmd)
 {
-	if (type == REDIR_IN)
-	{
-		if (cmd->infile > 0)
-			close(cmd->infile);
-	}
-	else if (type != HEREDOC)
+	if (type == REDIR_OUT || type == APPEND)
 	{
 		if (cmd->outfile > 0)
 			close(cmd->outfile);
@@ -47,7 +42,7 @@ void	close_previous_fds(int type, t_cmd *cmd)
 int	get_file(t_token *token, t_cmd *cmd)
 {
 	close_previous_fds(token->type, cmd);
-	if (token->type == REDIR_IN)
+	if (token->type == REDIR_IN && cmd->infile == -2)
 		cmd->infile = open(token->next->value, O_RDONLY);
 	if (token->type == REDIR_OUT)
 	{

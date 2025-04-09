@@ -178,8 +178,11 @@ void	free_cmds_new(t_cmd *prev, t_cmd *next);
 //from get_files.c
 int		get_file(t_token *token, t_cmd *cmd);
 
-//from heredoc.c
+//from heredoc_inloop.c
 int		get_heredoc_inloop(char *line, t_env *env, int pipefd[2], int code);
+void	heredoc_check(t_token *token, t_cmd *cmd);
+
+//from heredoc.c
 int		get_heredoc(int fd, char *value, t_env *env, t_data *data);
 
 //from get_commands.c
