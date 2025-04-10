@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmds.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 15:40:39 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/07 17:57:31 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/10 17:37:12 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,11 @@ void	exec_child(t_cmd *tmp, int new_pipe[2], int old_pipe[2], t_data *data)
 	dup_out(tmp, data, new_pipe);
 	builtin_in_fork(tmp, data);
 	close_fd_new(tmp, tmp->next);
-	if (!tmp->argv && (tmp->infile == -2 || tmp->outfile == -2))
+	if (!tmp->argv && tmp->cmd && tmp->cmd[0] == '\n'
+		&& (tmp->infile == -2 || tmp->outfile == -2))
 		free_exit(data, 127);
+	if (!tmp->argv || !tmp->cmd)
+		free_exit(data, 0);
 	if (tmp->argv && execve(tmp->argv[0], tmp->argv, data->env_array)
 		== -1)
 	{

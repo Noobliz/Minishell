@@ -22,6 +22,8 @@ int	check_n(char *str)
 	if (str[0] != '-')
 		return (0);
 	i = 1;
+	if (str[i] != 'n')
+		return (0);
 	while (str[i] && str[i] == 'n')
 		i++;
 	if (str[i] != '\0')

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtin_alone.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 16:22:30 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/09 09:43:30 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/10 17:27:49 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,18 @@
 
 int	check_perm(t_data *data)
 {
-	if (!(data->cmds && (data->cmds->argv)))
+	if (data->cmds->cmd && data->cmds->cmd[0] == '\n')
 	{
 		if (data->cmds->infile == -1 || data->cmds->outfile == -1)
 			data->last_exit_code = 1;
 		else
 			data->last_exit_code = 127;
 		return (-1);
+	}
+	if (!data->cmds->cmd || !data->cmds->argv)
+	{
+			data->last_exit_code = 0;
+			return (-1);
 	}
 	return (0);
 }

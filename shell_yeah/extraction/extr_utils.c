@@ -71,6 +71,9 @@ void	ignore_cmd(t_cmd *cmd)
 	if (cmd->argv)
 		free_tab(cmd->argv);
 	cmd->argv = NULL;
+	if (cmd->cmd)
+		free(cmd);
+	cmd->cmd = "\n";
 }
 
 //modded len_str for the join_path

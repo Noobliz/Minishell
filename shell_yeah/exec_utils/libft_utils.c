@@ -27,7 +27,7 @@ int	check_empty(t_token *token, char *str)
 	if (!str)
 		return (1);
 	i = 0;
-	while (str[i] && str[i] == ' ')
+	while (str[i] && sp(str[i]))
 		i++;
 	if (!str[i])
 		return (1);
