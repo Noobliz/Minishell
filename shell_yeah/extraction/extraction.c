@@ -71,6 +71,13 @@ static int	assign_cmds(t_token *token, t_cmd *cmd, t_env *env)
 	check = checking_cmd(token, cmd, path);
 	if (check < 0)
 		return (check);
+	if (cmd->cmd && cmd->built_in == -1 && get_env("PATH", env)
+		&& isis(cmd->cmd, cmd->argv[0])
+		&& cmd->cmd[0] != '/' && cmd->cmd[0] != '.')
+	{
+		print_bash_err(cmd->cmd, "command not found");
+		return (-2);
+	}
 	return (0);
 }
 
