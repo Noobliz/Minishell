@@ -12,8 +12,31 @@
 
 #include "../libbig.h"
 
+static int	check_forbidden(t_token *token)
+{
+	int	i;
+
+	while (token)
+	{
+		if (token->type != IGNORE && token->value)
+		{
+			i = 0;
+			while (token->value[i])
+			{
+				if (forbidden(token->value[i]))
+					return (-2);
+				i++;
+			}
+		}
+		token = token->next;
+	}
+	return (0);
+}
+
 int	spec_check(t_token *token)
 {
+	if (check_forbidden(token) == -2)
+		return (-2);
 	if (token && token->type == PIPE)
 		return (check_src(PIPE, CMD));
 	while (token)

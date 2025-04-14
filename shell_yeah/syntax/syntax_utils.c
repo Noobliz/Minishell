@@ -45,6 +45,14 @@ int	forbidden(char a)
 		print_syntax_err(";");
 	else if (a == '&')
 		print_syntax_err("&");
+	else if (a == ':')
+		print_syntax_err(":");
+	else if (a == '!')
+		print_syntax_err("!");
+	else if (a == '(')
+		print_syntax_err("(");
+	else if (a == ')')
+		print_syntax_err(")");
 	else
 		return (0);
 	return (1);
