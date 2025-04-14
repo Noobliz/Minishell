@@ -11,6 +11,27 @@
 /* ************************************************************************** */
 
 #include "../libbig.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+
+int	is_directory(char *dir_name)
+{
+	struct stat	statbuf;
+  
+	if (access(dir_name, F_OK) == -1)
+		return (0);
+	if (lstat(dir_name, &statbuf) == -1)
+	{
+		perror("lstat");
+		return (-1);
+	}
+	if ((statbuf.st_mode & S_IFMT) == S_IFDIR)
+	{
+		print_bash_err(dir_name, "is a directory");
+		return (-2);
+	}
+	return (0);
+}
 
 static int	new_outfile(char *file, int type)
 {

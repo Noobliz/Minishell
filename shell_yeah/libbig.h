@@ -176,6 +176,7 @@ void	free_cmds(t_cmd *head);
 void	free_cmds_new(t_cmd *prev, t_cmd *next);
 
 //from get_files.c
+int		is_directory(char *dir_name);
 int		get_file(t_token *token, t_cmd *cmd);
 
 //from heredoc_inloop.c
