@@ -3,14 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:27:38 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/08 17:21:17 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/14 13:53:36 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libbig.h"
+
+int	ft_strcmp(const char *s1, const char *s2)
+{
+	int	i;
+
+	i = 0;
+	while ((unsigned char)s1[i] && (unsigned char)s2[i]
+		&& s1[i] == s2[i])
+		i++;
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
 
 static int	set_env_var(t_env **env, char *name, char *value)
 {
@@ -33,9 +44,9 @@ static char	*get_target(char **args, t_env *env)
 {
 	char	*target;
 
-	if (!args[1] || strcmp(args[1], "~") == 0)
+	if (!args[1] || ft_strcmp(args[1], "~") == 0 || ft_strcmp(args[1], "~/") == 0)
 		target = get_env_value(env, "HOME");
-	else if (strcmp(args[1], "-") == 0)
+	else if (ft_strcmp(args[1], "-") == 0)
 	{
 		target = get_env_value(env, "OLDPWD");
 		if (target)
