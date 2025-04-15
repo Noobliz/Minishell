@@ -74,9 +74,10 @@ void	exec_child(t_cmd *tmp, int new_pipe[2], int old_pipe[2], t_data *data)
 	dup_out(tmp, data, new_pipe);
 	builtin_in_fork(tmp, data);
 	close_fd_new(tmp, tmp->next);
-	if (!tmp->argv && tmp->cmd && tmp->cmd[0] == '\n'
-		&& (tmp->infile == -2 || tmp->outfile == -2))
+	if (tmp->built_in == -2)
 		free_exit(data, 127);
+	if (tmp->built_in == -3)
+		free_exit(data, 126);
 	if (!tmp->argv || !tmp->cmd)
 		free_exit(data, 0);
 	if (tmp->argv && execve(tmp->argv[0], tmp->argv, data->env_array)

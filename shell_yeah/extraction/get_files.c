@@ -14,7 +14,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-int	is_directory(char *dir_name)
+int	is_directory(char *dir_name, t_cmd *cmd)
 {
 	struct stat	statbuf;
   
@@ -28,6 +28,7 @@ int	is_directory(char *dir_name)
 	if ((statbuf.st_mode & S_IFMT) == S_IFDIR)
 	{
 		print_bash_err(dir_name, "is a directory");
+		cmd->built_in = -3;
 		return (-2);
 	}
 	return (0);

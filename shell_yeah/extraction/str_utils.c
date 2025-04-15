@@ -21,7 +21,7 @@ void	free_cmds(t_cmd *head)
 	free_cmds(head->next);
 	if (head->argv)
 		free_tab(head->argv);
-	if (head->cmd && head->cmd[0] != '\n')
+	if (head->cmd)
 		free(head->cmd);
 	if (head->infile > 0)
 		close(head->infile);
@@ -39,7 +39,7 @@ static void	free_cmds_bw(t_cmd *head)
 	free_cmds_bw(head->previous);
 	if (head->argv)
 		free_tab(head->argv);
-	if (head->cmd && head->cmd[0] != '\n')
+	if (head->cmd)
 		free(head->cmd);
 	if (head->infile > 0)
 		close(head->infile);

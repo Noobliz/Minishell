@@ -14,12 +14,20 @@
 
 int	check_perm(t_data *data)
 {
-	if (data->cmds->cmd && data->cmds->cmd[0] == '\n')
+	if (data->cmds->built_in == -2)
 	{
 		if (data->cmds->infile == -1 || data->cmds->outfile == -1)
 			data->last_exit_code = 1;
 		else
 			data->last_exit_code = 127;
+		return (-1);
+	}
+	if (data->cmds->built_in == -3)
+	{
+		if (data->cmds->infile == -1 || data->cmds->outfile == -1)
+			data->last_exit_code = 1;
+		else
+			data->last_exit_code = 126;
 		return (-1);
 	}
 	if (!data->cmds->cmd || !data->cmds->argv)
