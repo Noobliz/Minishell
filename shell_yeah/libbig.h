@@ -277,5 +277,6 @@ void	sig_handler(int code);
 void	sig_handler_heredoc(int code);
 void	sig_do_nothing(int code);
 void	sig_handler_sigpipe(int code);
+void	sig_do_not(int code);
 
 #endif

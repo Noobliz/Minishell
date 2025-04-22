@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_files.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 15:28:59 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/27 14:43:54 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/15 09:29:31 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 int	is_directory(char *dir_name, t_cmd *cmd)
 {
 	struct stat	statbuf;
-  
+
 	if (access(dir_name, F_OK) == -1)
 		return (0);
 	if (lstat(dir_name, &statbuf) == -1)

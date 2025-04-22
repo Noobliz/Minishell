@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 15:38:37 by naorakot          #+#    #+#             */
-/*   Updated: 2025/03/31 13:32:09 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/04/15 09:30:59 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static int	find_command(char *paths, char **command)
 	char	*com;
 
 	i = -1;
-	while (*(command)[0] && *(command)[0]!= '.' && paths && paths[i + 1])
+	while (*(command)[0] && *(command)[0] != '.' && paths && paths[i + 1])
 	{
 		if (i == -1 || paths[i] == ':')
 		{

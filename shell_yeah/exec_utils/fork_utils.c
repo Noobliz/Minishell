@@ -36,6 +36,8 @@ void	wait_for_kids(t_cmd *cmds, t_data *data)
 	int		status;
 
 	tmp = cmds;
+	signal(SIGINT, &sig_do_not);
+	signal(SIGQUIT, &sig_do_not);
 	while (tmp)
 	{
 		waitpid(tmp->pid, &status, 0);
@@ -48,6 +50,8 @@ void	wait_for_kids(t_cmd *cmds, t_data *data)
 		}
 		tmp = tmp->next;
 	}
+	signal(SIGINT, &sig_do_nothing);
+	signal(SIGQUIT, &sig_do_not);
 }
 
 void	check_files(t_cmd *current, int old_pipe[2], int new_pipe[2],

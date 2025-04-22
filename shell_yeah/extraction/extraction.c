@@ -41,8 +41,9 @@ static int	checking_cmd(t_token *token, t_cmd *cmd, char *path)
 	{
 		if (token && token->type == CMD)
 		{
-			if (is_directory(token->value, cmd))
-				return (-2);
+			check = is_directory(token->value, cmd);
+			if (check != 0)
+				return (check);
 			check = get_command(token, cmd, path);
 			if (check == -1 || check == -2)
 				return (check);

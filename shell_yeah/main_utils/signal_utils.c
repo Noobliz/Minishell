@@ -41,3 +41,8 @@ void	sig_do_nothing(int code)
 	(void)code;
 	write(1, "\n", 1);
 }
+
+void	sig_do_not(int code)
+{
+	(void)code;
+}

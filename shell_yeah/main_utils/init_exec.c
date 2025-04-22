@@ -112,7 +112,7 @@ int	reset_readline(t_data *data)
 		g_err_code = 0;
 	}
 	signal(SIGINT, &sig_do_nothing);
-	signal(SIGQUIT, &sig_do_nothing);
+	signal(SIGQUIT, &sig_do_not);
 	return (1);
 }
 

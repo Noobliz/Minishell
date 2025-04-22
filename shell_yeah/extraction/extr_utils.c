@@ -66,6 +66,7 @@ int	is_built_in(char *function, t_cmd *cmd)
 }
 
 //sets argv to NULL so we ignore this command later
+//built-in -2 for not found, -3 for dir
 void	ignore_cmd(t_cmd *cmd)
 {
 	if (cmd->argv)

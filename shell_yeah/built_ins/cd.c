@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:27:38 by lguiet            #+#    #+#             */
-/*   Updated: 2025/04/14 13:53:36 by lisux            ###   ########.fr       */
+/*   Updated: 2025/04/15 09:28:55 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ static char	*get_target(char **args, t_env *env)
 {
 	char	*target;
 
-	if (!args[1] || ft_strcmp(args[1], "~") == 0 || ft_strcmp(args[1], "~/") == 0)
+	if (!args[1] || ft_strcmp(args[1], "~") == 0
+		|| ft_strcmp(args[1], "~/") == 0)
 		target = get_env_value(env, "HOME");
 	else if (ft_strcmp(args[1], "-") == 0)
 	{

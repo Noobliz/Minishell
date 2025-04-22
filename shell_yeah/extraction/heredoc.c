@@ -30,7 +30,6 @@ static char	*get_heredoc_line(void)
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &sig_handler_heredoc);
 	line = readline("> ");
-	signal(SIGQUIT, &sig_do_nothing);
 	signal(SIGINT, &sig_do_nothing);
 	return (line);
 }
@@ -55,6 +54,7 @@ static int	heredoc_child(int pipefd[2], t_env *env, t_data *data, char *value)
 
 static int	heredoc_setup(int *pid, t_data *data, int pipefd[2], int fd)
 {
+	signal(SIGQUIT, SIG_IGN);
 	if (fd >= 0)
 		close(fd);
 	*pid = fork();
@@ -94,5 +94,6 @@ int	get_heredoc(int fd, char *value, t_env *env, t_data *data)
 		g_err_code = 130;
 	}
 	close(pipefd[1]);
+	signal(SIGQUIT, &sig_do_nothing);
 	return (pipefd[0]);
 }
