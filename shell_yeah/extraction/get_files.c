@@ -18,6 +18,8 @@ int	is_directory(char *dir_name, t_cmd *cmd)
 {
 	struct stat	statbuf;
 
+	if (dir_name[0] != '.' && dir_name[0] != '/')
+		return (0);
 	if (access(dir_name, F_OK) == -1)
 		return (0);
 	if (lstat(dir_name, &statbuf) == -1)
